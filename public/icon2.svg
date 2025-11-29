@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0d9488" rx="100"/>
+  <path d="M256 120a40 40 0 1 0-40 40 40 40 0 0 0 40-40zm-80 80a80 80 0 0 0-80 80v112h48v-80h64v80h48V280a80 80 0 0 0-80-80z" fill="white" transform="translate(128, 64) scale(0.5)"/>
+  <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="180" fill="white">P</text>
+</svg>
