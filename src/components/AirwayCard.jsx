@@ -36,21 +36,4 @@ const AirwayCard = () => {
                         <div className="text-xs text-slate-500">LMA</div>
                         <div className="font-bold">#{lma}</div>
                     </div>
-                </div>
-            </div>
-            {/* One Lung Ventilation */}
-            <div className="border-t pt-4">
-                <div className="bg-slate-50 p-3 rounded border border-slate-200">
-                    <div className="text-xs font-bold text-slate-500 uppercase mb-1">One Lung Ventilation Recommendation</div>
-                    <div className="flex justify-between items-center">
-                        <div className="text-sm font-bold text-slate-700">{olv.type}</div>
-                        <div className="text-sm font-mono bg-white px-2 py-1 rounded border">{olv.size}</div>
-                    </div>
-                    <div className="text-[9px] text-slate-400 mt-1 italic">Use Fiberoptic for placement. (BB 5Fr OD=2.5mm)</div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default AirwayCard;
+                    export default AirwayCard;
