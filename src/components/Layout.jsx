@@ -15,7 +15,8 @@ import ReferenceCard from './ReferenceCard';
 
 const Layout = () => {
     const {
-        weight, setWeight, age, setAge, ageUnit, setAgeUnit, isPreemie, setIsPreemie
+        weight, setWeight, age, setAge, ageUnit, setAgeUnit,
+        isPreemie, setIsPreemie, isManualWeight, resetToAutoWeight
     } = usePatient();
 
     const [showProfiles, setShowProfiles] = useState(false);
@@ -47,35 +48,15 @@ const Layout = () => {
     return (
         <div className="min-h-screen bg-slate-100 font-sans text-slate-900 pb-12 relative" onClick={() => showProfiles && setShowProfiles(false)}>
             {/* Header */}
-            <header className="bg-slate-800 text-white p-3 sticky top-0 z-50 shadow-md">
-                <div className="max-w-4xl mx-auto flex flex-col gap-2">
-                    <div className="flex justify-between items-start">
-                        <div className="flex flex-col">
-                            <h1 className="text-lg font-bold flex items-center gap-1 leading-none">
-                                <Baby className="text-teal-400" size={20} />
-                                Peds <span className="font-light text-teal-400">Pearl</span>
-                            </h1>
-                            <span className="text-[9px] text-slate-400 mt-0.5 ml-6">Anesthesia Ref</span>
-                        </div>
-
-                        <div className="flex gap-2 items-center">
-                            <label className="flex items-center gap-1 cursor-pointer bg-slate-700 px-2 py-1 rounded border border-slate-600 hover:bg-slate-600 transition">
-                                <input type="checkbox" checked={isPreemie} onChange={e => setIsPreemie(e.target.checked)} className="rounded text-teal-500 w-3 h-3 focus:ring-0" />
-                                <span className="text-[10px] font-bold text-amber-400 whitespace-nowrap">Preemie</span>
                             </label>
                             <button onClick={(e) => { e.stopPropagation(); setShowProfiles(!showProfiles); }} className="bg-slate-700 p-1.5 rounded border border-slate-600 hover:bg-slate-600 text-teal-400">
                                 <Save size={16} />
                             </button>
-                        </div>
-                    </div>
+                        </div >
+                    </div >
 
-                    {/* Input Bar */}
-                    <div className="grid grid-cols-2 gap-2 bg-slate-700 p-2 rounded shadow-inner border border-slate-600">
-                        <div className="flex flex-col">
-                            <label className="text-[9px] text-slate-400 uppercase font-bold mb-0.5">Weight (kg)</label>
-                            <input type="number" value={weight} onChange={e => setWeight(Math.max(0, e.target.value))}
-                                className="w-full bg-slate-800/50 text-white font-bold text-lg p-1 rounded outline-none border border-transparent focus:border-teal-500 text-center" placeholder="0" />
-                        </div>
+    {/* Input Bar */ }
+    < div className = "grid grid-cols-2 gap-2 bg-slate-700 p-2 rounded shadow-inner border border-slate-600" >
                         <div className="flex flex-col">
                             <label className="text-[9px] text-slate-400 uppercase font-bold mb-0.5">Age</label>
                             <div className="flex gap-1 h-full">
@@ -88,13 +69,25 @@ const Layout = () => {
                                 </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </header>
+                        <div className="flex flex-col relative">
+                            <label className="text-[9px] text-slate-400 uppercase font-bold mb-0.5 flex justify-between">
+                                Weight (kg)
+                                {isManualWeight && (
+                                    <button onClick={resetToAutoWeight} className="text-[8px] bg-slate-600 px-1 rounded hover:bg-slate-500 text-teal-300">
+                                        Auto
+                                    </button>
+                                )}
+                            </label>
+                            <input type="number" value={weight} onChange={e => setWeight(Math.max(0, e.target.value))}
+                                className={`w-full bg-slate-800/50 text-white font-bold text-lg p-1 rounded outline-none border border-transparent focus:border-teal-500 text-center ${isManualWeight ? 'text-amber-300' : ''}`} placeholder="0" />
+                        </div>
+                    </div >
+                </div >
+            </header >
 
-            {showProfiles && <ProfileModal onClose={() => setShowProfiles(false)} />}
+    { showProfiles && <ProfileModal onClose={() => setShowProfiles(false)} />}
 
-            {/* Tabs */}
+{/* Tabs */ }
             <div className="bg-white sticky top-[112px] z-40 shadow-sm border-b border-slate-200 overflow-x-auto no-scrollbar">
                 <div className="max-w-4xl mx-auto flex">
                     {tabs.map(tab => (
@@ -119,7 +112,7 @@ const Layout = () => {
                     Always verify doses clinically.
                 </div>
             </main>
-        </div>
+        </div >
     );
 };
 

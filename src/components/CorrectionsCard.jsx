@@ -7,12 +7,12 @@ import { fmt } from '../utils/calc';
 const CorrectionsCard = () => {
     const { weight } = usePatient();
     const w = parseFloat(weight);
-    const [baseExcess, setBaseExcess] = useState(-5);
+    const [baseDeficit, setBaseDeficit] = useState(5); // Positive number representing deficit
 
     const {
         bicarb, d25, d10, kLow, kHigh,
         hyperKCalc, hyperKBicarb, hyperKInsulin, hyperKGluc
-    } = useCorrectionCalc(baseExcess);
+    } = useCorrectionCalc(-baseDeficit); // Pass as negative BE
 
     return (
         <div className="space-y-4">
@@ -68,14 +68,17 @@ const CorrectionsCard = () => {
             {/* Acidosis */}
             <div className="bg-white p-4 rounded border border-slate-200 shadow-sm">
                 <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2"><Calculator size={18} /> Metabolic Acidosis</h3>
-                <div className="flex items-center gap-4 mb-2">
+                <div className="flex items-center gap-2 mb-2">
                     <label className="text-xs font-bold text-slate-600">Base Excess:</label>
-                    <input type="number" value={baseExcess} onChange={e => setBaseExcess(parseFloat(e.target.value))} className="border rounded w-16 p-1 text-center font-bold" />
+                    <div className="flex items-center border rounded bg-slate-50 overflow-hidden">
+                        <span className="px-2 text-slate-500 font-bold border-r bg-slate-100">-</span>
+                        <input type="number" value={baseDeficit} onChange={e => setBaseDeficit(Math.max(0, parseFloat(e.target.value)))} className="w-16 p-1 text-center font-bold outline-none" min="0" />
+                    </div>
                 </div>
                 <div className="bg-rose-50 p-2 rounded flex justify-between">
                     <div>
                         <span className="text-sm font-bold text-rose-800">Sodium Bicarbonate (Full)</span>
-                        <div className="text-[9px] text-rose-500 font-mono">{w}kg × {Math.abs(baseExcess)} × 0.3</div>
+                        <div className="text-[9px] text-rose-500 font-mono">{w}kg × {baseDeficit} × 0.3</div>
                     </div>
                     <span className="text-xl font-bold text-rose-700">{fmt(bicarb)} mEq</span>
                 </div>

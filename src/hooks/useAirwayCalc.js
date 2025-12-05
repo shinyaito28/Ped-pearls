@@ -32,12 +32,19 @@ export const useAirwayCalc = () => {
             blade = ageMonths < 6 ? 'Miller 1' : 'Mac 1 / Miller 1';
         }
 
+        // --- Adult Limit Cap ---
+        const ETT_MAX_UNCUFFED = 8.0;
+        const ETT_MAX_CUFFED = 7.5;
+        if (parseFloat(ettUncuffed) > ETT_MAX_UNCUFFED) { ettUncuffed = `${ETT_MAX_UNCUFFED} mm`; ettRule += ' (Max 8.0)'; }
+        if (parseFloat(ettCuffed) > ETT_MAX_CUFFED) { ettCuffed = `${ETT_MAX_CUFFED} mm`; }
+
         if (w <= 5) lma = '1';
         else if (w <= 10) lma = '1.5';
         else if (w <= 20) lma = '2';
         else if (w <= 30) lma = '2.5';
         else if (w <= 50) lma = '3';
         else lma = '4'; // >50
+        if (w > 70) lma = '5';
     }
 
     if (w <= 3) {
@@ -46,7 +53,9 @@ export const useAirwayCalc = () => {
         else depth = '9 cm';
         depthRule = '1kg=7, 2kg=8, 3kg=9';
     } else if (ageYears >= 1) {
-        depth = `${Math.floor(ageYears + 11)} cm`;
+        let d = Math.floor(ageYears + 11);
+        if (d > 22) d = 22; // Cap depth
+        depth = `${d} cm`;
         depthRule = 'Age + 11 cm';
     } else {
         const id = parseFloat(ettUncuffed);
@@ -54,5 +63,30 @@ export const useAirwayCalc = () => {
         depthRule = 'ID × 3';
     }
 
-    return { ettUncuffed, ettCuffed, ettRule, depth, depthRule, blade, lma };
+    // --- One Lung Ventilation (OLV) ---
+    // Rules of thumb based on research:
+    // DLT: Min 26Fr (>8yr / 130cm / 30kg)
+    // Bronchial Blocker: 5Fr (Extraluminal <2yo, Intraluminal >2yo) or 7Fr
+    // Univent
+
+    let olv = { type: '-', size: '-' };
+    if (ageYears < 2) {
+        olv = { type: 'Bronchial Blocker (Extraluminal)', size: 'Arndt 5Fr (Parallel to ETT)' };
+    } else if (ageYears < 6) {
+        olv = { type: 'Bronchial Blocker (Intraluminal)', size: `Arndt 5Fr (in ${parseFloat(ettUncuffed) >= 4.5 ? '>=4.5' : '??'}mm ETT)` };
+    } else if (ageYears < 8) {
+        olv = { type: 'Bronchial Blocker / Univent', size: 'Arndt 5Fr / 7Fr or Univent 3.5/4.5' };
+    } else if (ageYears < 10) {
+        olv = { type: 'DLT Small / Blocker', size: '26 Fr DLT or Arndt 7Fr' };
+    } else if (ageYears < 12) {
+        olv = { type: 'DLT', size: '28 Fr' };
+    } else if (ageYears < 14) {
+        olv = { type: 'DLT', size: '32 Fr' };
+    } else if (ageYears < 16) {
+        olv = { type: 'DLT', size: '35 Fr' };
+    } else {
+        olv = { type: 'DLT', size: '35/37 Fr (F), 37/39 Fr (M)' };
+    }
+
+    return { ettUncuffed, ettCuffed, ettRule, depth, depthRule, blade, lma, olv };
 };
