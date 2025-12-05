@@ -15,7 +15,7 @@ import ReferenceCard from './ReferenceCard';
 
 const Layout = () => {
     const {
-        weight, setWeight, age, setAge, ageUnit, setAgeUnit,
+        weight, setWeight, age, setAge, ageUnit, setAgeUnit, gender, setGender,
         isPreemie, setIsPreemie, isManualWeight, resetToAutoWeight
     } = usePatient();
 
@@ -60,6 +60,10 @@ const Layout = () => {
                         </div>
 
                         <div className="flex gap-2 items-center">
+                            <div className="flex bg-slate-700 rounded p-0.5 border border-slate-600">
+                                <button onClick={() => setGender('male')} className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${gender === 'male' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}>Male</button>
+                                <button onClick={() => setGender('female')} className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${gender === 'female' ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}>Female</button>
+                            </div>
                             <label className="flex items-center gap-1 cursor-pointer bg-slate-700 px-2 py-1 rounded border border-slate-600 hover:bg-slate-600 transition">
                                 <input type="checkbox" checked={isPreemie} onChange={e => setIsPreemie(e.target.checked)} className="rounded text-teal-500 w-3 h-3 focus:ring-0" />
                                 <span className="text-[10px] font-bold text-amber-400 whitespace-nowrap">Preemie</span>
