@@ -70,8 +70,8 @@ const AllDrugsCard = () => {
                             <div className="text-[10px] text-slate-500">{d.note} ({d.realDose})</div>
                         </div>
                         <div className="text-right">
-                            <div className="font-bold text-teal-700 whitespace-nowrap">{d.calc}</div>
-                            <div className="text-[9px] text-slate-400 font-mono hidden sm:block">{d.formula}</div>
+                            <div className="font-bold text-lg text-teal-700 whitespace-nowrap">{d.calc}</div>
+                            <div className="text-[10px] text-slate-400 font-mono hidden sm:block">{d.formula}</div>
                         </div>
                     </div>
                 ))}

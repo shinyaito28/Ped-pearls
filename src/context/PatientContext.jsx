@@ -152,31 +152,53 @@ export const PatientProvider = ({ children }) => {
         setWeight(calculateStandardWeight(age, ageUnit));
     };
 
-    // --- Profile Management ---
-    const saveProfile = (extraData = {}) => {
-        const newProfile = {
-            id: Date.now(),
-            name: `${gender === 'male' ? 'M' : 'F'} / ${weight}kg / ${age}${ageUnit} ${isPreemie ? '(Preemie)' : ''}`,
-            data: { weight, age, ageUnit, gender, isPreemie, ...extraData }
-        };
-        setSavedProfiles(prev => [...prev, newProfile]);
+    // --- State: Height & Derived ---
+    const [height, setHeight] = useState(''); // cm
+    const [manualHeight, setManualHeight] = useState(false);
+
+    // IBW Calculation (Traub-Johnson / Devine) - Simplified for Peds
+    // Ideal Body Weight is controversial in peds. 
+    // We will use standard growth chart 50th percentile estimation for "Ideal" if only age is known (which we essentially already do with 'auto weight').
+    // If Height is known, we can use:
+    // IBW = 50th percentile weight for that height (Height-Weight method preferred in Peds)
+    // For this app, simply exposing the CDC 50% weight (which is our `weight` when auto) IS the IBW essentially.
+    // But for obese kids, we need a way to see "Ideal" vs "Actual".
+
+    // Let's assume 'weight' state is the ACTUAL weight used for calculations.
+    // We will add a read-only 'idealWeight' derived from Age (CDC 50%) or Height.
+
+    // Height estimation (if not provided): formula age x 6 + 77 (for 2-12y) or similar approximation?
+    // Better to just use CDC length/stature tables if we had them. 
+    // For now, simple estimation:
+    const estimateHeight = (ageY) => {
+        if (ageY < 1) return 50 + (ageY * 25); // very rough: 50cm at birth, 75cm at 1yr
+        if (ageY < 13) return (ageY * 6) + 77;
+        return 160; // teen
     };
 
-    const loadProfile = (profile) => {
-        const d = profile.data;
-        if (d.weight) {
-            setWeight(d.weight);
-            setIsManualWeight(true);
+    const currentHeight = manualHeight && height ? parseFloat(height) : estimateHeight(ageYears);
+
+    // Lean Body Weight (James Formula is for adults, not peds).
+    // For Peds, LBW is often approx by BMI charts or specific formulas (Peters).
+    // Simple logic: LBW generally not exceeding IBW by much. 
+    // We will placeholder LBW as 1.2 * IBW or just 20-30% less than ABW if obese?
+    // Actually, PALS recommends using ABW for most drugs, IBW for some.
+    // We will provide IBW (based on 50th percentile for Age) as the reference.
+
+    const idealWeight = calculateStandardWeight(age, ageUnit);
+    // Note: calculateStandardWeight uses the CDC 50th percentile table we already have.
+
+    // Update Height when Age changes (if auto)
+    useEffect(() => {
+        if (!manualHeight) {
+            setHeight(Math.round(estimateHeight(ageYears)));
         }
-        if (d.age) setAge(d.age);
-        if (d.ageUnit) setAgeUnit(d.ageUnit);
-        if (d.gender) setGender(d.gender);
-        if (d.isPreemie !== undefined) setIsPreemie(d.isPreemie);
-        return d;
-    };
+    }, [ageYears, manualHeight]);
 
-    const deleteProfile = (id) => {
-        setSavedProfiles(prev => prev.filter(p => p.id !== id));
+
+    const handleHeightChange = (val) => {
+        setManualHeight(true);
+        setHeight(val);
     };
 
     return (
@@ -186,8 +208,10 @@ export const PatientProvider = ({ children }) => {
             age, setAge,
             ageUnit, setAgeUnit,
             gender, setGender,
+            height, setHeight: handleHeightChange,
+            idealWeight,
             isPreemie, setIsPreemie,
-            savedProfiles, saveProfile, loadProfile, deleteProfile,
+            savedProfiles, saveProfile, loadProfile,
             ageMonths, ageYears, isNeonate, isTeen
         }}>
             {children}

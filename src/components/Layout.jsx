@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import {
-    Baby, Save, Droplet, Stethoscope, Brain, Anchor, Calculator, Syringe, ClipboardList, Info
+    Baby, Save, Droplet, Stethoscope, Brain, Anchor, Calculator, Syringe, ClipboardList, AlertTriangle
 } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import ProfileModal from './ProfileModal';
@@ -12,10 +13,12 @@ import SedationCard from './SedationCard';
 import CorrectionsCard from './CorrectionsCard';
 import AllDrugsCard from './AllDrugsCard';
 import ReferenceCard from './ReferenceCard';
+import EmergencyCard from './EmergencyCard';
 
 const Layout = () => {
     const {
         weight, setWeight, age, setAge, ageUnit, setAgeUnit, gender, setGender,
+        height, setHeight,
         isPreemie, setIsPreemie, isManualWeight, resetToAutoWeight
     } = usePatient();
 
@@ -23,17 +26,19 @@ const Layout = () => {
     const [activeTab, setActiveTab] = useState('fluids');
 
     const tabs = [
+        { id: 'emergency', label: 'Emergency', icon: AlertTriangle, color: 'text-red-600', activeBg: 'bg-red-50' }, // New Emergency Tab
         { id: 'fluids', label: 'Fluids', icon: Droplet },
         { id: 'airway', label: 'Airway', icon: Stethoscope },
         { id: 'sedation', label: 'Sedation', icon: Brain },
         { id: 'regional', label: 'Regional', icon: Anchor },
-        { id: 'corrections', label: 'Labs', icon: Calculator },
+        { id: 'corrections', label: 'Physio', icon: Calculator }, // Renamed from Labs
         { id: 'all_drugs', label: 'Drugs', icon: Syringe },
         { id: 'reference', label: 'Ref', icon: ClipboardList },
     ];
 
     const renderContent = () => {
         switch (activeTab) {
+            case 'emergency': return <EmergencyCard />;
             case 'fluids': return <FluidCard />;
             case 'airway': return <AirwayCard />;
             case 'sedation': return <SedationCard />;
@@ -75,7 +80,8 @@ const Layout = () => {
                     </div>
 
                     {/* Input Bar */}
-                    <div className="grid grid-cols-2 gap-2 bg-slate-700 p-2 rounded shadow-inner border border-slate-600">
+                    <div className="grid grid-cols-3 gap-2 bg-slate-700 p-2 rounded shadow-inner border border-slate-600">
+                        {/* Age Input */}
                         <div className="flex flex-col">
                             <label className="text-[9px] text-slate-400 uppercase font-bold mb-0.5">Age</label>
                             <div className="flex gap-1 h-full">
@@ -88,6 +94,15 @@ const Layout = () => {
                                 </select>
                             </div>
                         </div>
+
+                        {/* Height Input (New) */}
+                        <div className="flex flex-col relative">
+                            <label className="text-[9px] text-slate-400 uppercase font-bold mb-0.5">Height (cm)</label>
+                            <input type="number" value={height} onChange={e => setHeight(Math.max(0, e.target.value))}
+                                className="w-full bg-slate-800/50 text-white font-bold text-lg p-1 rounded outline-none border border-transparent focus:border-teal-500 text-center placeholder-slate-600" placeholder="Est." />
+                        </div>
+
+                        {/* Weight Input */}
                         <div className="flex flex-col relative">
                             <label className="text-[9px] text-slate-400 uppercase font-bold mb-0.5 flex justify-between">
                                 Weight (kg)
@@ -107,19 +122,25 @@ const Layout = () => {
             {showProfiles && <ProfileModal onClose={() => setShowProfiles(false)} />}
 
             {/* Tabs */}
-            <div className="bg-white sticky top-[112px] z-40 shadow-sm border-b border-slate-200 overflow-x-auto no-scrollbar">
+            <div className="bg-white sticky top-[128px] z-40 shadow-sm border-b border-slate-200 overflow-x-auto no-scrollbar">
                 <div className="max-w-4xl mx-auto flex">
-                    {tabs.map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex-1 min-w-[60px] py-3 text-[10px] font-bold flex flex-col items-center gap-1 border-b-2 transition-colors ${activeTab === tab.id ? 'border-teal-500 text-teal-700 bg-teal-50/20' : 'border-transparent text-slate-500 hover:bg-slate-50'
-                                }`}
-                        >
-                            <tab.icon size={18} />
-                            {tab.label}
-                        </button>
-                    ))}
+                    {tabs.map(tab => {
+                        const isActive = activeTab === tab.id;
+                        const activeClass = isActive
+                            ? (tab.id === 'emergency' ? 'border-red-500 text-red-600 bg-red-50' : 'border-teal-500 text-teal-700 bg-teal-50/20')
+                            : 'border-transparent text-slate-500 hover:bg-slate-50';
+
+                        return (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex-1 min-w-[60px] py-3 text-[10px] font-bold flex flex-col items-center gap-1 border-b-2 transition-colors ${activeClass}`}
+                            >
+                                <tab.icon size={18} className={isActive && tab.id === 'emergency' ? 'animate-pulse' : ''} />
+                                {tab.label}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -136,3 +157,4 @@ const Layout = () => {
 };
 
 export default Layout;
+

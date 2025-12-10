@@ -1,20 +1,30 @@
 export const drugList = [
     // === EMERGENCY ===
-    { name: 'Epinephrine (Cardiac Arrest)', cat: 'Emergency', dose: '10 mcg/kg', note: '1:10,000 (0.1 mL/kg)', max: 1000 },
+    { name: 'Epinephrine (Cardiac Arrest)', cat: 'Emergency', dose: '10 mcg/kg', note: '1:10,000 (0.1 mL/kg). q3-5min', max: 1000 },
+    { name: 'Epinephrine (Anaphylaxis)', cat: 'Emergency', dose: '10 mcg/kg', note: 'IM (max 0.3-0.5 mg). 1mg/mL.', max: 500 }, // Added specific Anaphylaxis entry
     { name: 'Epinephrine (Vasopressor)', cat: 'Emergency', dose: '2-10 mcg/kg', note: 'Bolus for hypotension', max: 1000 },
-    { name: 'Atropine', cat: 'Emergency', dose: '0.02 mg/kg', note: 'Min 0.1mg', max: 'teen_dependent', min: 0.1 }, // Special handling for max in hook
-    { name: 'Succinylcholine', cat: 'Emergency', dose: '1-2 mg/kg', note: 'IV (IM: 4 mg/kg). Airway Emergency.', max: 150 },
+    { name: 'Atropine', cat: 'Emergency', dose: '0.02 mg/kg', note: 'Min 0.1mg. Bradycardia.', max: 'teen_dependent', min: 0.1 },
+    { name: 'Succinylcholine', cat: 'Emergency', dose: '1-2 mg/kg', note: 'IV (IM: 4 mg/kg). RSI.', max: 150 },
+    { name: 'Rocuronium', cat: 'Emergency', dose: '0.6-1.2 mg/kg', note: 'RSI / Intubation', max: null }, // Moving/Duplicating to Emergency for visibility if filtered, but usually just cat changes. We'll rely on name matching for groups.
     { name: 'Adenosine', cat: 'Emergency', dose: '0.1 mg/kg', note: 'Rapid push. Max 6mg (1st), 12mg (2nd)', max: 12 },
-    { name: 'Calcium Chloride', cat: 'Emergency', dose: '10-15 mg/kg', note: 'Central line preferred. Slow IV.', max: 2000 },
-    { name: 'Calcium Gluconate', cat: 'Emergency', dose: '30-50 mg/kg', note: 'Peripheral OK. Slow IV.', max: 2000 },
-    { name: 'Sodium Bicarbonate', cat: 'Emergency', dose: '1-2 mEq/kg', note: 'Dilute 1:1 for infants', max: 50 },
+    { name: 'Calcium Chloride', cat: 'Emergency', dose: '10-20 mg/kg', note: 'Central line preferred. Slow IV.', max: 2000 },
+    { name: 'Calcium Gluconate', cat: 'Emergency', dose: '60-100 mg/kg', note: 'Peripheral OK. Slow IV.', max: 3000 }, // Updated dose range
+    { name: 'Sodium Bicarbonate', cat: 'Emergency', dose: '1-2 mEq/kg', note: 'Acidosis/TCA. Dilute for infants.', max: 50 },
     { name: 'Dantrolene', cat: 'Emergency', dose: '2.5 mg/kg', note: 'Malignant Hyperthermia. Repeat PRN.', max: null },
     { name: 'Lipid Emulsion 20%', cat: 'Emergency', dose: '1.5 mL/kg', note: 'LAST Bolus. Then 0.25 mL/kg/min.', max: 100 },
     { name: 'Vasopressin (Arrest)', cat: 'Emergency', dose: '0.5-1 unit/kg', note: 'Pulseless Arrest', max: 40 },
-    { name: 'Amiodarone (Bolus)', cat: 'Emergency', dose: '5 mg/kg', note: 'VF/VT Arrest. (Perfusing: Load over 20-60m)', max: 300 },
-    { name: 'Naloxone', cat: 'Emergency', dose: '1-10 mcg/kg', note: 'Opioid Reversal', max: null },
-    { name: 'Flumazenil', cat: 'Emergency', dose: '10 mcg/kg', note: 'Benzo Reversal. Max 1mg', max: 1000 },
+    { name: 'Amiodarone (Bolus)', cat: 'Emergency', dose: '5 mg/kg', note: 'VF/VT Arrest / Arrhythmia', max: 300 },
+    { name: 'Lidocaine (Bolus)', cat: 'Emergency', dose: '1 mg/kg', note: 'VF/VT / Arrhythmia', max: 100 }, // Added
+    { name: 'Naloxone', cat: 'Emergency', dose: '2-10 mcg/kg', note: 'Opioid Reversal. Titrate.', max: null }, // Updated dose
+    { name: 'Flumazenil', cat: 'Emergency', dose: '10 mcg/kg', note: 'Benzo Reversal. Max 0.2mg/dose.', max: 200 }, // Updated max single dose
     { name: 'Potassium Chloride', cat: 'Emergency', dose: '0.5-1 mEq/kg', note: 'Hypokalemia. Slow over 1-2h', max: 40 },
+    { name: 'Dextrose', cat: 'Emergency', dose: '0.5-1 g/kg', note: 'D10: 5-10 mL/kg, D25: 2-4 mL/kg', max: 25 }, // Added Dextrose
+    { name: 'Diphenhydramine', cat: 'Emergency', dose: '1-2 mg/kg', note: 'Anaphylaxis/Allergy. Max 50mg.', max: 50 }, // Added
+    { name: 'Hydrocortisone', cat: 'Emergency', dose: '2 mg/kg', note: 'Asthma / Anaphylaxis', max: 100 }, // Added
+    { name: 'Albuterol (Neb)', cat: 'Emergency', dose: '0.15 mg/kg', note: 'Min 2.5mg. Asthma.', max: 5 }, // Added
+    { name: 'Lorazepam', cat: 'Emergency', dose: '0.1 mg/kg', note: 'Max 4mg. Seizure.', max: 4 }, // Added
+    { name: 'Midazolam (IM/IN)', cat: 'Emergency', dose: '0.2 mg/kg', note: 'Seizure / Pre-med', max: 10 }, // Added
+
 
     // === SEDATION / INDUCTION ===
     { name: 'Propofol (Induction)', cat: 'Sedation', dose: '2-5 mg/kg', note: 'Induction Bolus. Pain on injection.', max: null },

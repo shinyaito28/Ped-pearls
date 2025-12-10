@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Activity, Zap, AlertTriangle, Calculator } from 'lucide-react';
+import { Activity, Zap, AlertTriangle, Calculator, Ruler } from 'lucide-react';
 import { useCorrectionCalc } from '../hooks/useCorrectionCalc';
 import { usePatient } from '../context/PatientContext';
 import { fmt } from '../utils/calc';
+import { getVitals } from '../data/vitals';
 
 const CorrectionsCard = () => {
-    const { weight } = usePatient();
+    const { weight, ageYears, isNeonate, idealWeight } = usePatient();
     const w = parseFloat(weight);
     const [baseDeficit, setBaseDeficit] = useState(5); // Positive number representing deficit
 
@@ -14,8 +15,41 @@ const CorrectionsCard = () => {
         hyperKCalc, hyperKBicarb, hyperKInsulin, hyperKGluc
     } = useCorrectionCalc(-baseDeficit); // Pass as negative BE
 
+    const v = getVitals(ageYears, isNeonate);
+
+    // Derived values
+    const currentWeight = parseFloat(weight);
+    const idealW = idealWeight ? idealWeight.toFixed(1) : '-';
+    // const leanW = ... (Placeholder for future)
+
     return (
         <div className="space-y-4">
+            {/* Patient Stats: IBW / Vitals */}
+            <div className="bg-white border border-slate-200 p-4 rounded shadow-sm">
+                <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2"><Ruler size={18} /> Patient Physiology</h3>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                    <div className="bg-slate-50 p-2 rounded text-center border border-slate-100">
+                        <div className="text-[10px] text-slate-400 font-bold uppercase">Ideal Wt</div>
+                        <div className="text-xl font-bold text-slate-700">{idealW} <span className="text-xs text-slate-400">kg</span></div>
+                        <div className="text-[9px] text-teal-600 font-medium">50th %ile</div>
+                    </div>
+                    <div className="bg-slate-50 p-2 rounded text-center border border-slate-100">
+                        <div className="text-[10px] text-slate-400 font-bold uppercase">HR</div>
+                        <div className="text-lg font-bold text-slate-700">{v.hr}</div>
+                        <div className="text-[9px] text-slate-400">bpm</div>
+                    </div>
+                    <div className="bg-slate-50 p-2 rounded text-center border border-slate-100">
+                        <div className="text-[10px] text-slate-400 font-bold uppercase">RR</div>
+                        <div className="text-lg font-bold text-slate-700">{v.rr}</div>
+                        <div className="text-[9px] text-slate-400">/min</div>
+                    </div>
+                    <div className="bg-slate-50 p-2 rounded text-center border border-slate-100">
+                        <div className="text-[10px] text-slate-400 font-bold uppercase">SBP (Hypo)</div>
+                        <div className="text-lg font-bold text-rose-600">{v.sbp}</div>
+                        <div className="text-[9px] text-slate-400">Hypotension Limit</div>
+                    </div>
+                </div>
+            </div>
             {/* Hypoglycemia */}
             <div className="bg-white border border-slate-200 p-4 rounded shadow-sm">
                 <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2"><Zap size={18} /> Hypoglycemia</h3>
