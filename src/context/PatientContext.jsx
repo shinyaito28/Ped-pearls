@@ -152,6 +152,33 @@ export const PatientProvider = ({ children }) => {
         setWeight(calculateStandardWeight(age, ageUnit));
     };
 
+    // --- Profile Management ---
+    const saveProfile = (extraData = {}) => {
+        const newProfile = {
+            id: Date.now(),
+            name: `${gender === 'male' ? 'M' : 'F'} / ${weight}kg / ${age}${ageUnit} ${isPreemie ? '(Preemie)' : ''}`,
+            data: { weight, age, ageUnit, gender, isPreemie, ...extraData }
+        };
+        setSavedProfiles(prev => [...prev, newProfile]);
+    };
+
+    const loadProfile = (profile) => {
+        const d = profile.data;
+        if (d.weight) {
+            setWeight(d.weight);
+            setIsManualWeight(true);
+        }
+        if (d.age) setAge(d.age);
+        if (d.ageUnit) setAgeUnit(d.ageUnit);
+        if (d.gender) setGender(d.gender);
+        if (d.isPreemie !== undefined) setIsPreemie(d.isPreemie);
+        return d;
+    };
+
+    const deleteProfile = (id) => {
+        setSavedProfiles(prev => prev.filter(p => p.id !== id));
+    };
+
     // --- State: Height & Derived ---
     const [height, setHeight] = useState(''); // cm
     const [manualHeight, setManualHeight] = useState(false);
@@ -211,7 +238,7 @@ export const PatientProvider = ({ children }) => {
             height, setHeight: handleHeightChange,
             idealWeight,
             isPreemie, setIsPreemie,
-            savedProfiles, saveProfile, loadProfile,
+            savedProfiles, saveProfile, loadProfile, deleteProfile,
             ageMonths, ageYears, isNeonate, isTeen
         }}>
             {children}
