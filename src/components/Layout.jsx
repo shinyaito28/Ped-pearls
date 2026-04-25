@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     Baby, Save, Droplet, Stethoscope, Brain, Anchor, Calculator, Syringe,
-    ClipboardList, AlertTriangle, Search, RotateCcw
+    ClipboardList, AlertTriangle, Search, RotateCcw, HeartPulse
 } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import ProfileModal from './ProfileModal';
@@ -16,6 +16,7 @@ import CorrectionsCard from './CorrectionsCard';
 import AllDrugsCard from './AllDrugsCard';
 import ReferenceCard from './ReferenceCard';
 import EmergencyCard from './EmergencyCard';
+import CardiacRotemCard from './CardiacRotemCard';
 
 const tabs = [
     { id: 'emergency',   label: 'Crisis',   icon: AlertTriangle, accent: 'red' },
@@ -24,6 +25,7 @@ const tabs = [
     { id: 'sedation',    label: 'Sedation', icon: Brain,         accent: 'indigo' },
     { id: 'regional',    label: 'Regional', icon: Anchor,        accent: 'purple' },
     { id: 'corrections', label: 'Physio',   icon: Calculator,    accent: 'amber' },
+    { id: 'cardiac',     label: 'Cardiac',  icon: HeartPulse,    accent: 'rose' },
     { id: 'all_drugs',   label: 'Drugs',    icon: Syringe,       accent: 'teal' },
     { id: 'reference',   label: 'Workflow', icon: ClipboardList, accent: 'slate' },
 ];
@@ -59,6 +61,7 @@ const Layout = () => {
             case 'sedation': return <SedationCard />;
             case 'regional': return <RegionalCard />;
             case 'corrections': return <CorrectionsCard />;
+            case 'cardiac': return <CardiacRotemCard />;
             case 'all_drugs': return <AllDrugsCard />;
             case 'reference': return <ReferenceCard />;
             default: return <FluidCard />;

@@ -11,6 +11,13 @@ Source of truth for drug data is `original_pictures/IMG_0061-0068.HEIC` (Nationw
 
 Ideas / TODOs for the next release. Move them to a numbered version when shipped.
 
+### Cardiac section roadmap (Phase 5+)
+- **Heparin / Protamine calculator** — ACT goals, heparin loading dose by weight + ACT response curve, protamine reversal at 1 mg per 100 U heparin, tracking of CPB ACTs over time.
+- **Intraoperative antifibrinolytic dosing** — TXA & EACA loading + maintenance schemas specific to pediatric cardiac surgery (high-dose).
+- **ECMO basics** — VA / VV cannula sizing by weight, initial settings, ACT/anticoagulation targets, weaning checklist.
+- **Pulmonary HTN / TET spell crisis card** — phenylephrine, knee-chest position, 100% FiO₂, NaHCO₃, deepen anesthesia, fentanyl bolus algorithm.
+
+### General app roadmap
 - PWA icon set: produce 192/512/1024 maskable PNGs and an iOS splash image (currently only one `icon.png` is shipped).
 - Real-time vital-sign input on the Physio tab + range-violation background colour.
 - Branch protection rule on `main` that requires the `CI (PR build + test)` workflow to pass before merging.
@@ -18,6 +25,27 @@ Ideas / TODOs for the next release. Move them to a numbered version when shipped
 - `Read mode` toggle (large-font, all-cards-expanded view) for accessibility.
 - More unit tests: `useCorrectionCalc`, `useAirwayCalc` ETT/blade/depth, `usePatient` CDC interpolation edge cases (preemie 0.5 kg, teen 80 kg).
 - Optional offline cache audit — make sure `original_pictures` are *not* in the SW precache (they're 1 MB each).
+
+---
+
+## [0.4.0] - 2026-04-25 — Phase 5: Cardiac anesthesia (kickoff) — ROTEM decision tree
+
+First entry in a new **Cardiac** tab, scaffolding the section for upcoming cardiac-anesthesia content (Heparin/Protamine, antifibrinolytics, ECMO, pulmonary HTN — see [Unreleased]).
+
+### Added
+- **New `Cardiac` tab** (rose accent, `<HeartPulse>` icon, 7th tab) — placed between Physio and Drugs.
+- **`CardiacRotemCard`** ([src/components/CardiacRotemCard.jsx](src/components/CardiacRotemCard.jsx)) — ROTEM-guided post-bypass blood product management for neonatal cardiac surgery, sourced from a user-provided institutional protocol.
+  - Two phases (CPB / Post-CPB) toggled with a pill UI.
+  - **Threshold sliders** for HEPTEM CT/CFT/MCF, FIBTEM MCF, EXTEM CT, A10 EXTEM, A10 FIBTEM. Slider track turns rose past the clinical threshold.
+  - Real-time recommendation cards for **Kcentra (4F-PCC) 20 U/kg, Platelets 20–40 mL/kg, Cryoprecipitate 1–3 units, FFP/Kcentra**.
+  - **Live SVG decision tree** — CPB phase shows a 3-row deficit ladder; Post-CPB phase shows the goal-met / platelets / cryo branching tree from the institutional guide. The active path highlights teal with a glow; inactive branches fade to dashed slate.
+  - Patient-weight-aware (uses `usePatient`) — totals are calculated as mL or units automatically.
+  - Copy-to-clipboard handoff summary.
+  - Preparation panel (PRBCs 2 units, FFP 2 × 20 mL/kg) with weight-converted volumes.
+- **`RotemDecisionTree`** ([src/components/RotemDecisionTree.jsx](src/components/RotemDecisionTree.jsx)) — pure SVG, no canvas/D3 dependency. Exports `<CpbDecisionLadder>` and `<PostCpbDecisionTree>`.
+- **`useRotemCalc`** hook + pure resolver functions in [src/data/rotem_protocol.js](src/data/rotem_protocol.js).
+- **24 new unit tests** ([tests/useRotemCalc.test.js](tests/useRotemCalc.test.js)) — every clinical threshold and dose tier is locked as a contract; total test count now 58.
+- GlobalSearch index extended with cardiac keywords (`rotem`, `heptem`, `fibtem`, `extem`, `cpb`, `bypass`, `kcentra`, `cryo`, `a10`, `mcf`, `cft`, `cardiopulmonary`).
 
 ---
 

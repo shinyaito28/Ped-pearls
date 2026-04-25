@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, X, Pill, Anchor, Stethoscope, ShieldAlert, Beaker, Pin } from 'lucide-react';
+import { Search, X, Pill, Anchor, Stethoscope, ShieldAlert, Beaker, Pin, HeartPulse } from 'lucide-react';
 import { useDrugList } from '../hooks/useDrugList';
 import { drugList } from '../data/drugs';
 import { sedationList } from '../data/sedation';
@@ -18,6 +18,7 @@ const SECTIONS = [
     { id: 'sedation',    tab: 'sedation',    icon: Pill,         label: 'Sedation / Adjuncts',        keywords: ['ketamine', 'midaz', 'dexmed', 'pentobarbital', 'ketazolam', 'pre-med'] },
     { id: 'infusion',    tab: 'all_drugs',   icon: Pill,         label: 'Infusion calculator (mcg/kg/min ↔ mL/hr)', keywords: ['infusion', 'pump', 'syringe', 'mcg/kg/min', 'mL/hr', 'rate', 'concentration'] },
     { id: 'physio',      tab: 'corrections', icon: Beaker,       label: 'Physio (electrolytes, acidosis, vitals)', keywords: ['k', 'potassium', 'bicarb', 'glucose', 'hyperkalemia', 'vitals', 'hr', 'rr', 'sbp'] },
+    { id: 'cardiac',     tab: 'cardiac',     icon: HeartPulse,   label: 'Cardiac — ROTEM post-bypass blood products', keywords: ['cardiac', 'rotem', 'heptem', 'fibtem', 'extem', 'cpb', 'bypass', 'kcentra', 'cryo', 'cryoprecipitate', 'platelet', 'ffp', 'cardiopulmonary', 'a10', 'mcf', 'cft', 'neonate cardiac'] },
     { id: 'npo',         tab: 'reference',   icon: Pin,          label: 'NPO calculator',             keywords: ['npo', 'fasting', 'fast', 'clear liquid', 'breast milk', 'formula'] },
     { id: 'preop',       tab: 'reference',   icon: Pin,          label: 'Pre-op assessment (ASA-PS, POVOC, CL)', keywords: ['asa', 'asa-ps', 'apfel', 'povoc', 'cormack', 'lehane', 'preop'] },
     { id: 'reference',   tab: 'reference',   icon: Pin,          label: 'Reference (IE Ppx, Standard Cart, links)', keywords: ['ie', 'endocarditis', 'prophylaxis', 'cart', 'antibiotic', 'amoxicillin'] },
