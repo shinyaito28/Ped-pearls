@@ -36,8 +36,8 @@ jobs:
             - name: Run unit tests
               run: npm test --if-present
 
-            - name: Build production bundle
-              run: npm run build
+            - name: Build production bundle (GitHub Pages sub-path)
+              run: npm run build -- --base=/Ped-pearls/
 
             - name: Configure Pages
               uses: actions/configure-pages@v5

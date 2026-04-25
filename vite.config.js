@@ -2,9 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vitejs.dev/config/
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/Ped-pearls/' : '/',
+// `base` defaults to '/' so Vercel root deploys work out of the box.
+// GitHub Actions overrides it via `vite build --base=/Ped-pearls/` for the
+// GitHub Pages sub-path deploy. See .github/workflows/deploy.yml.
+export default defineConfig({
   plugins: [
     react(),
     VitePWA({
@@ -28,4 +29,4 @@ export default defineConfig(({ command }) => ({
       }
     })
   ],
-}))
+})
