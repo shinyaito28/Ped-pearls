@@ -197,16 +197,51 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'ortho_selms_pointer',
-        title: 'SELMS Patient Protocol (Dr Whitaker)',
-        shortDescription: 'PDF extracted but content needs medical review for distillation.',
-        tags: ['selms', 'spinal', 'whitaker'],
+        id: 'ortho_semls_protocol',
+        title: 'SEMLS — Single-Event Multilevel Surgery Pain Plan',
+        shortDescription: 'CP / multilevel ortho: gabapentin start pre-op, epidural 3-7 d, scheduled APAP/ketorolac alternating, ileus prevention.',
+        tags: ['semls', 'selms', 'single event multilevel', 'cerebral palsy', 'multilevel orthopedic', 'gabapentin', 'neurontin', 'epidural ortho', 'valium muscle spasm', 'methylnaltrexone', 'naloxone drip', 'ileus prevention', 'miralax', 'senna'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs medical review',
+                heading: 'Day of surgery — pre-op',
+                emphasis: 'info',
+                body: '**Neurontin (gabapentin)** as a one-time pre-op dose:\n- **≥ 50 kg: 600 mg PO** (one-time)\n- **< 50 kg: 7.5 mg/kg PO** (one-time)',
+            },
+            {
+                heading: 'Intra-op',
+                emphasis: 'plain',
+                body: '- First dose of **Toradol (ketorolac)**\n- First dose of **Valium (diazepam)**',
+            },
+            {
+                heading: 'Post-op (immediate)',
                 emphasis: 'warn',
-                body: 'The "SELMS Patients Dr Whitaker.pdf" extracted text but content is procedure-specific and benefits from clinical curation before exposure here. Open the original under `original_pictures/Sharepoint/Othopedics/Orthopedics Intraoperative Protocols & Guidelines/` and structure the protocol into sections.',
+                body: '- **Epidural**\n- **IV acetaminophen + ketorolac SCHEDULED, ALTERNATING dosing**\n- **Valium scheduled for first 24 hr → then PRN**\n- **Neurontin (continued)**:\n  - **≥ 50 kg**: 600 mg pre-op was given → **continue 300 mg TID while admitted, up to 5 days**\n  - **< 50 kg**: 7.5 mg/kg pre-op was given → **continue 5 mg/kg TID while admitted**\n- **Opioid IV PRN**\n- **Education**: discuss with family that **epidural anticipated 3-4 days minimum**; total hospital stay typically **5-7 days post-op**, then rest of post-op pain management plan',
+            },
+            {
+                heading: 'POD #1',
+                emphasis: 'plain',
+                body: '- IV/PO acetaminophen + ketorolac scheduled alternating\n- Transition to **oral analgesics** (oxycodone OR Norco):\n  - **Hydrocodone/APAP 0.1-0.2 mg/kg** (5-10 mg max) **q4h PRN** for patients who can swallow pills\n  - **Hydrocodone/APAP elixir 0.1-0.2 mg/kg [10 mg max] q4h PRN** for patients who cannot swallow pills\n  - **Oxycodone 0.1 mg/kg**\n- **Consults**: massage therapy + hypnosis if appropriate; OT/PT; child life; psychology if recommended pre-op or as needed',
+            },
+            {
+                heading: 'POD #2',
+                emphasis: 'plain',
+                body: 'Valium → **PRN if not already changed**',
+            },
+            {
+                heading: 'POD #3-5',
+                emphasis: 'plain',
+                body: '- Make adjustments to PO dosing if necessary\n- **Primary service assumes pain management** when patient doing well + epidural removed\n- **Orthopedic team writes home-going medications**\n- **Valium script for home > 3 days**',
+            },
+            {
+                heading: 'Post-op constipation / ileus prevention',
+                emphasis: 'warn',
+                body: '**When starting clears**:\n- **Miralax**: < 50 kg → **0.8 g/kg/day**; > 50 kg → **17 g/day**, OR\n- **Senna**: 6-12 yr → **8.6 mg BID** (max 17.2 mg BID); ≥ 12 yr → **8.6 mg BID** (max 34.4 mg BID)\n\n**Consider naloxone drip**: **0.25-1 mcg/kg/hr** (opioid-induced ileus mitigation while preserving analgesia)\n\n**If patient remains NPO + has deviated from protocol → methylnaltrexone**:\n- Administer **every other day, max once every 24 hr**\n- **< 38 kg**: 0.15 mg/kg (round dose up to nearest 0.1 mL)\n- **38 to < 62 kg**: 8 mg flat\n- **62-114 kg**: 12 mg flat\n- **> 114 kg**: 0.15 mg/kg (round dose up to nearest 0.1 mL)',
+            },
+            {
+                heading: 'About SEMLS',
+                emphasis: 'info',
+                body: '**SEMLS (Single-Event Multilevel Surgery)** = a CP / pediatric orthopedic strategy of doing all needed musculoskeletal corrections in a single anesthetic to minimize repeat surgeries. Common procedures: bony osteotomies (femoral, tibial), tendon lengthenings/transfers, joint releases. Long ORs, large fluid shifts, postoperatively significant pain + spasm. *Note: NCH source title spells "SEMLS" (per the document) — file misnomer "SELMS" sometimes appears.*',
             },
         ],
     },
