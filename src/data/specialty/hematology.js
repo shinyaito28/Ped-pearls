@@ -184,14 +184,59 @@ export const entries = [
         ...COMMON,
         id: 'heme_hereditary_angioedema',
         title: 'Hereditary Angioedema (HAE) Emergency',
-        shortDescription: 'Source is .pptx — needs manual transcription. Stub for awareness.',
-        tags: ['hae', 'hereditary angioedema', 'c1 esterase inhibitor', 'icatibant', 'ecallantide', 'airway'],
+        shortDescription: 'Bradykinin-mediated — antihistamines/epi don\'t work. Berinert (NCH formulary) or icatibant.',
+        tags: ['hae', 'hereditary angioedema', 'c1 esterase inhibitor', 'c1-inh', 'icatibant', 'firazyr', 'ecallantide', 'kalbitor', 'berinert', 'cinryze', 'ruconest', 'lanadelumab', 'berotralstat', 'bradykinin', 'kallikrein', 'airway', 'tongue swelling'],
         emergency: true,
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'Recognition (NOT anaphylaxis)',
+                emphasis: 'critical',
+                body: '- Self-limiting episodes of edema involving skin, GI tract, larynx\n- **Bradykinin-mediated** (NOT histamine, NOT mast-cell)\n- Skin: face, extremities, genitals; abdominal: severe pain, vomiting, diarrhea\n- **Laryngeal/tongue edema is life-threatening**\n- Symptoms wax/wane over hours-days — anticipate need for **emergent re-intubation**\n- C1-INH deficiency: low C4 (C1 normally cleaves C4 in classical complement pathway)\n- Triggers: stress/anxiety, trauma, infection (H. pylori, bacteriuria), ACE-I, estrogens, dental procedures',
+            },
+            {
+                heading: 'What does NOT work',
+                emphasis: 'critical',
+                body: '- **Antihistamines**: little effect (not histamine-mediated)\n- **Steroids**: limited acute response; may use 60 mg ×5 d if persistent\n- **Epinephrine**: minimally responsive (vs anaphylaxis where it is first-line)\n- → Don\'t delay specific HAE therapy waiting for these to work',
+            },
+            {
+                heading: 'Initial bedside treatment',
+                emphasis: 'critical',
+                body: '- Call **difficult airway team early**; ENT + anesthesia present\n- Empiric **IM epinephrine 0.5 mg + IV methylprednisolone 60 mg** while ruling out anaphylactoid mimic — but proceed to specific therapy below\n- **Emergent OR for intubation** — flexible transnasal fiberoptic (decongest with oxymetazoline, anesthetize with lidocaine)\n- Plan for **PICU disposition** with risk of self-extubation + recurrent swelling',
+            },
+            {
+                heading: 'C1-INH [Human] — Berinert (NCH formulary, consignment fridge)',
                 emphasis: 'warn',
-                body: 'The NCH Hereditary Angioedema Emergency .pptx did not auto-extract. Principles: anticipate airway swelling, avoid ACE-I, secure airway early in attacks, give C1 esterase inhibitor concentrate (Berinert/Cinryze) or icatibant or ecallantide for acute attacks. Open the .pptx in `original_pictures/Sharepoint/Hematology & Oncology/` for full NCH dosing.',
+                body: '- **MOA**: C1-INH concentrate from human plasma (Blood Product)\n- **Dose: IV 20 units/kg** (≥5 yr)\n- Onset: **15 min** (fastest of all options)\n- Cinryze: IV 1,000 units (≥6 yr); Cinryze + Haegarda also for prophylaxis\n- AE: hypersensitivity (rash, pruritus), thrombotic events\n- Cost: ~$3,403 per 500-unit kit',
+            },
+            {
+                heading: 'Icatibant — Firazyr (NCH formulary, H2 Pyxis)',
+                emphasis: 'warn',
+                body: '- **MOA**: Synthetic bradykinin B2-receptor antagonist\n- **Hazardous drug**\n- **Dose (≥2 yr): SubQ 0.4 mg/kg (max 30 mg/dose)**, may repeat q6h (max 90 mg/d)\n- Onset: **2 hr**\n- AE: CNS depression, ↑ transaminases\n- Allergy team\'s typical recommendation: 30 mg subQ; redose at 6 hr if partial/incomplete response',
+            },
+            {
+                heading: 'Ecallantide — Kalbitor (NOT on NCH formulary)',
+                emphasis: 'plain',
+                body: '- **MOA**: Kallikrein inhibitor\n- **Dose (≥8 yr): SubQ 30 mg** (10 mg/1 mL ×3); may repeat once in 24 hr\n- Onset: 30 min – 4 hr\n- AE: hypersensitivity, immunogenicity',
+            },
+            {
+                heading: 'C1-INH Recombinant — Ruconest (NOT on NCH formulary)',
+                emphasis: 'plain',
+                body: '- **Dose (≥5 yr): IV 50 units/kg (max 4,200 units/dose)**, no more than 2 doses in 24 hr\n- Onset: 90 min\n- Same dose twice weekly as prophylaxis ≥13 yr',
+            },
+            {
+                heading: 'Diagnostic labs (during attack)',
+                emphasis: 'info',
+                body: '- **C4** (low in Type I/II)\n- **C1-INH level** (mg/dL)\n- **C1-INH function** (%)\n- **Tryptase** — to rule out mast-cell process (normal in HAE: ≤10.9 µg/L)\n- HAE Type III: normal C1-INH/C4; suspect if response to icatibant + clinical picture',
+            },
+            {
+                heading: 'Long-term prophylaxis (Allergy outpatient)',
+                emphasis: 'plain',
+                body: '- **Lanadelumab (Takhyzro)**: kallikrein inhibitor mAb, SubQ 300 mg q2wk (≥12 yr); space to q4wk if controlled\n- **Berotralstat (Orladeyo)**: kallikrein inhibitor PO 150 mg qday (≥12 yr); ↓ to 110 mg if GI or hepatic dysfunction\n- Cinryze and Haegarda (C1-INH) also for prophylaxis\n- Neither lanadelumab nor berotralstat on NCH formulary',
+            },
+            {
+                heading: 'Discharge meds (after ruling out histamine-mediated)',
+                emphasis: 'info',
+                body: '- Epinephrine **0.3 mg IM PRN** auto-injector\n- Famotidine 20 mg PO BID\n- Cetirizine 10 mg PO BID (may ↑ to 40 mg/d)\n- Allergy follow-up',
             },
         ],
     },
