@@ -233,16 +233,66 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'proc_spinal_caudal_pointer',
-        title: 'Spinal / Caudal Anesthesia Pearls',
-        shortDescription: 'Source .docx + .pdf available — needs structured transcription.',
-        tags: ['spinal anesthesia', 'caudal', 'awake spinal', 'neonatal spinal', 'pediatric regional'],
+        id: 'proc_spinal_caudal',
+        title: 'Spinal + Spinal-Caudal Combined Anesthesia',
+        shortDescription: 'Spinal agent doses + NCH spinal-caudal technique (chloroprocaine infusion + Precedex).',
+        tags: ['spinal anesthesia', 'caudal', 'spinal-caudal combined', 'awake spinal', 'neonatal spinal', 'pediatric regional', 'bupivacaine spinal', 'tetracaine', 'ropivacaine spinal', 'chloroprocaine', 'cpc infusion', 'precedex spinal', 'clonidine spinal'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs medical review',
+                heading: 'Spinal anesthesia agents — dose + duration',
+                emphasis: 'info',
+                body: '**0.5% Bupivacaine** — 0.1-0.2 mL/kg (0.5-1 mg/kg) — duration 30-180 min (mean 80) — **usual max 1 mL for kids < 12 mo**\n\n**0.5% Hyperbaric Tetracaine** — 0.06-0.12 mL/kg (0.3-0.6 mg/kg) — duration 34-210 min (mean 96) — *not currently available*\n\n**0.5% Ropivacaine** — 0.1-0.2 mL/kg (0.5-1 mg/kg) — duration 35-240 min (mean 90)',
+            },
+            {
+                heading: 'Spinal additives',
+                emphasis: 'info',
+                body: '**Epinephrine** 2-3 mcg/kg OR epi wash → **↑ block duration 30-40%**\n\n**Clonidine** 1 mcg/kg → ↑ block duration **30%** + ↑ analgesia by **several hours**\n\n**Fentanyl** 1 mcg/kg → ↑ block duration **20%**, lowers pain scores, ↑ analgesia duration',
+            },
+            {
+                heading: 'NCH "Spinal-Caudal" combined technique — overview',
+                emphasis: 'success',
+                body: 'A combined awake/sedated technique used at NCH for children **>12 months** to extend a spinal block beyond its native ~80 min duration via a caudal catheter chloroprocaine (CPC) infusion. Useful when single-shot spinal duration would be insufficient but GA is undesirable (e.g. ex-premie, prior airway difficulty, family preference).',
+            },
+            {
+                heading: 'Spinal-Caudal — pre-op + setup',
+                emphasis: 'plain',
+                body: '- Children **>12 months**: pre-medicate with **midazolam 0.8 mg/kg PO** (high dose to prevent movement during spinal placement)\n- **LMX on back** near spinal + caudal site **≥30 min prior**\n- **2 infusion pumps in room**: one for **3% Chloroprocaine (CPC)**, one for **Precedex**\n- Spinal kit + caudal catheter kit ready',
+            },
+            {
+                heading: 'Spinal-Caudal — placement sequence',
                 emphasis: 'warn',
-                body: 'Two sources cover spinal/caudal pearls:\n- `Spinal- caudal protocol.docx`\n- `Spinal Anesthesia Pearls.pdf`\n\nBoth under `original_pictures/Sharepoint/Acute & Regional Pain Medicine/Spinal Anesthesia/`. Distill into one entry covering: agent + dose by weight, expected duration, awake spinal for ex-premies, caudal volumes by spread target, complication watch.',
+                body: '1. **Place spinal** with bupivacaine/epi at standard weight dose **+ clonidine 1 mcg/kg** (use spinal kit)\n2. Place **BP cuff + pulse ox on lower extremities, EKG leads** while placing IV\n3. **Turn supine + place IV** (preferably in lower extremity)\n4. **Immediately start Precedex 1 mcg/kg/hr infusion** (consider 0.5 mcg/kg bolus if child fussy/agitated)\n   - Place infusion **as proximal to IV hub as possible**; verify IV free-flowing to maintain infusion\n5. **Turn patient on side** for caudal\n6. **Place caudal catheter** (use caudal catheter kit)\n7. Give **standard test dose** through caudal (lidocaine/epi)\n8. **Tape caudal to back with Tegaderm** — speed > aesthetics (maximize spinal time); label catheter\n9. Connect to **CPC infusion to start 1 HOUR after spinal placed**\n10. Place surgical bar barrier with patient\'s arms within draping',
+            },
+            {
+                heading: 'Spinal-Caudal — intra-op management',
+                emphasis: 'warn',
+                body: '- **Start CPC 3% infusion at 1 mL/kg/hr — exactly 1 HOUR after spinal placement** (regardless of remaining surgical time)\n- At **1.5 hr after spinal placement** (when spinal will start wearing off): consider ↑ **Precedex** infusion OR give **0.5 mcg/kg bolus**\n- **Blow-by O2 occasionally needed** with Precedex — usually mask sufficient, NC also OK\n- Continuous lower-extremity monitoring (BP/SpO2/EKG)',
+            },
+            {
+                heading: 'Spinal-Caudal — end of case',
+                emphasis: 'plain',
+                body: '- Consider **bolus through caudal catheter at end of case** with **Ropivacaine 0.2% 0.5-1 mL/kg** before removing (depending on case length — discuss with pain team)\n- **Discontinue caudal catheter at end of case** — remove BEFORE going to PACU',
+            },
+            {
+                heading: 'Positioning for spinal placement',
+                emphasis: 'info',
+                body: '**Sitting "cat-back" held by an assistant** at the side of the OR table:\n- Hips + knees flexed maximally toward the chest\n- Spine flexed forward (kyphotic / "C"-shape) to open up interlaminar spaces\n- Assistant stabilizes by wrapping both arms around the patient — one arm secures the head/upper trunk against their body, the other supports under the buttocks/thighs\n- Anesthetist works from behind; landmarks at L4-L5 or L5-S1 (intercristal line — note higher relative position of conus in infants vs adults)\n- Keep the head supported and airway monitored (nasal cannula CO2 if available); avoid neck flexion that compromises the airway',
+            },
+            {
+                heading: 'Intra-op positioning + restraint (awake under Precedex)',
+                emphasis: 'info',
+                body: '- **Supine** after spinal sets up\n- **Arms tucked at the sides** under blankets / soft restraints\n- **Surgical bar / drape barrier** between anesthesia (head end) and surgical field — gives anesthesia direct view of face/airway, keeps the child from seeing the surgeon\n- Pulse ox, BP cuff, ECG **on the lower extremities** (preserves upper body for Precedex IV + free hands)\n- IV preferably in a **lower extremity** so the upper body stays free for caress/distraction\n- Precedex titrated to keep the child still + comfortable but rousable; mask or NC O2 supplementation as needed',
+            },
+            {
+                heading: 'Source images (visual reference, gitignored)',
+                emphasis: 'plain',
+                body: 'NCH "Spinal Anesthesia Pearls" PDF (revised 9/2015) includes two photographs illustrating the placement position (sitting, assistant-held) and intra-op restraint (supine with surgical bar barrier). Not reproduced here due to patient-identifiability; technical principles transcribed above. Original at `original_pictures/Sharepoint/Acute & Regional Pain Medicine/Spinal Anesthesia/Spinal Anesthesia Pearls.pdf`.',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'info',
+                body: '- NCH "Spinal Anesthesia Pearls" PDF (revised 9/2015) — agent + additive dose tables\n- NCH "Spinal-Caudal Protocol" .docx — combined technique workflow',
             },
         ],
     },
