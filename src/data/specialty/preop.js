@@ -167,16 +167,46 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'preop_emend_pointer',
+        id: 'preop_emend_aprepitant',
         title: 'Emend (Aprepitant) Periop Guidelines',
-        shortDescription: 'Source files (.docx + .pdf) extracted but content needs structured curation.',
-        tags: ['emend', 'aprepitant', 'ponv', 'ponv prophylaxis', 'antiemetic'],
+        shortDescription: '40 mg PO 3hr pre-op for high-risk PONV; ≥30 kg only; capsule 5x cheaper than liquid.',
+        tags: ['emend', 'aprepitant', 'ponv', 'ponv prophylaxis', 'antiemetic', 'substance p', 'nk1 receptor', 'long qt', 'strabismus', 'middle ear', 'posterior fossa'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs structured curation',
+                heading: 'What it is + dosing',
+                emphasis: 'info',
+                body: '- **Substance P / NK-1 receptor antagonist**\n- FDA approved for chemo-induced N/V + adult pre-op PONV prophylaxis\n- **Pediatric PONV dosing not officially available** — these guidelines are NCH institutional consensus\n- **Adult dose: 40 mg PO 3 hours prior to anesthesia**',
+            },
+            {
+                heading: 'NCH clinical guidelines',
                 emphasis: 'warn',
-                body: 'Aprepitant dosing already appears throughout the catalog (ERAS, Spinal Fusion, Sarcoma, Bariatric, etc.) at **40 mg PO if ≥ 40 kg, 1 mg/kg if <40 kg, single dose pre-op**. The full Emend Periop Guideline source (under `original_pictures/Sharepoint/PAT_Pre-Op/Preoperative Medications/`) details indications by case type, repeat dosing rules, and interactions — distill into a single dedicated entry on next pass.',
+                body: '- **Adult dose: 40 mg PO**\n- **Do NOT use in patients < 30 kg** (no validated PONV dose)\n- **Use capsule if possible**:\n  - 40 mg **capsule: $60/dose**\n  - Oral **liquid: $320/dose** (5× more expensive)\n- **Prophylactic use only — NOT for rescue**; must be given pre-operatively',
+            },
+            {
+                heading: 'Indications — when to consider',
+                emphasis: 'warn',
+                body: '- **History of severe PONV** despite prophylaxis with ondansetron + dexamethasone ± scopolamine — requiring **hospital admission or prolonged PACU stay**\n- **Contraindication to standard antiemetics**:\n  - **Long QT syndrome** → can\'t use ondansetron\n  - Dexamethasone contraindicated\n  - Scopolamine patch contraindicated\n- **High-risk PONV surgery**:\n  - **Posterior fossa exploration / occipital craniectomy**\n  - **Strabismus surgery**\n  - **Middle ear surgery**',
+            },
+            {
+                heading: 'How to administer',
+                emphasis: 'plain',
+                body: '- Give **pre-operatively in the Surgical Unit** with sip of water\n- **Capsule can be opened** and added to:\n  - Other premedications (acetaminophen or midazolam elixir)\n  - 5 mL of water, apple juice, or Sprite\n- Available from the pharmacy in the **main OR**',
+            },
+            {
+                heading: 'Patient education',
+                emphasis: 'warn',
+                body: '- As indicated, patients should receive **EPIC information sheet** regarding need for **alternative method of birth control for 28 days** (aprepitant CYP3A4 induction reduces hormonal contraceptive efficacy)',
+            },
+            {
+                heading: 'EPIC ordering note',
+                emphasis: 'plain',
+                body: '- **For patients < 30 kg: Emend does NOT appear as an option** in EPIC PONV dosing guidelines\n- **For patients ≥ 30 kg**: standard ordering pathway available',
+            },
+            {
+                heading: 'How this differs from catalog usage',
+                emphasis: 'info',
+                body: 'Aprepitant 1 mg/kg PO appears throughout other catalog protocols (ERAS, Spinal Fusion, Sarcoma, Bariatric, Pectus, Orthognathic, Thyroid Lobectomy) as a routine pre-op PONV adjunct **including for patients < 40 kg**. Those uses derive dosing from chemo-induced N/V data, not the periop PONV guideline. **The 40 mg PO / ≥30 kg restriction here is the institutional PONV-only guideline** — verify with attending preference if pediatric dose discrepancy is encountered.',
             },
         ],
     },
