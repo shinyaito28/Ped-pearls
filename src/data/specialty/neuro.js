@@ -155,20 +155,40 @@ export const entries = [
     {
         ...COMMON,
         id: 'neuro_afm_microsurgery',
-        title: 'AFM / Brachial Plexus / Microsurgery',
-        shortDescription: 'Acute flaccid myelitis nerve transfer cases — bundled stub.',
-        tags: ['afm', 'acute flaccid myelitis', 'brachial plexus', 'microsurgery', 'nerve transfer', 'long case'],
+        title: 'AFM / Brachial Plexus / Microsurgery — 3 Protocols',
+        shortDescription: 'Common: NO NMB, remi/sufentanil. AFM=TIVA. Microsurg flap=NO vasopressors + IV heparin per surgeon.',
+        tags: ['afm', 'acute flaccid myelitis', 'brachial plexus', 'microsurgery', 'muscle flap', 'nerve transfer', 'free flap', 'no nmb', 'tiva', 'remifentanil', 'sufentanil', 'heparin flap'],
         emergency: false,
         sections: [
             {
-                heading: 'Source files in folder',
-                emphasis: 'warn',
-                body: '- AFM Protocol.pdf\n- Brachial plexus protocol.pdf\n- Microsurgery.6.2021.pdf\n\nAll three live under `original_pictures/Sharepoint/Neuro & Craniofacial/Neuro Intraoperative Protocols & Guidelines/Acute Flaccid Myelitis Microsurgery/`. Manually transcribe key dosing/positioning details into separate sections here on next pass.',
+                heading: 'Common to all three (universal preamble)',
+                emphasis: 'info',
+                body: '- Standard premedication as needed\n- Inhalation or IV induction\n- Antibiotics per surgical team\n- **Pre-operative huddle to discuss invasive lines + IV access options**\n- **No neuromuscular blocking agents during the case** (preserve nerve stimulation for surgical identification)\n- **Dexmedetomidine boluses 0.25-0.5 mcg/kg** (or up to 5 mcg/kg in AFM) prn\n- **PONV ppx**: Dexamethasone **0.2 mg/kg (max 10 mg)** + Ondansetron **0.15 mg/kg (max 4 mg)**\n- **Post-op analgesia**: Acetaminophen **15 mg/kg (max 1000 mg)** + Hydromorphone titrated to RR\n- Recovery: PACU → inpatient ward; post-op plan per anesthesia + surgical team discussion',
             },
             {
-                heading: 'Common-sense intra-op themes (general anesthesia for nerve transfers)',
+                heading: 'AFM (Acute Flaccid Myelitis) — TIVA-based',
+                emphasis: 'warn',
+                body: '**Maintenance**:\n- **TIVA**: Propofol infusion **titrated to BIS 45-60** + Remifentanil OR Sufentanil infusion\n- **Lidocaine infusion 1 mg/kg/hr**\n- *Optional*: **Ketamine infusion 0.25 mg/kg/hr**\n- **Dexmedetomidine boluses 0.25-5 mcg/kg** prn',
+            },
+            {
+                heading: 'Brachial Plexus — Inhalational + opioid infusion',
+                emphasis: 'warn',
+                body: '**Maintenance**:\n- **Inhalational anesthetic** titrated to clinical need\n- **Remifentanil OR Sufentanil infusion**\n- *Optional*:\n  - **Ketamine infusion 0.25 mg/kg/hr**\n  - **Lidocaine infusion 1 mg/kg/hr**\n- **Dexmedetomidine boluses 0.25-0.5 mcg/kg** prn',
+            },
+            {
+                heading: 'Microsurgery (Muscle Flap) — flap-perfusion priorities',
+                emphasis: 'critical',
+                body: '**Maintenance**:\n- **Inhalational anesthetic** titrated to clinical need\n- **Remifentanil OR Sufentanil infusion**\n- *Optional*: Ketamine 0.25 mg/kg/hr, Lidocaine 1 mg/kg/hr\n- **Dexmedetomidine boluses 0.25-0.5 mcg/kg** prn\n\n**Flap-specific rules**:\n- **NO use of any vasoactive agents** — vasopressors compromise flap perfusion. **If pressors needed, discuss with surgeon FIRST**\n- **IV Heparin** to be administered by anesthesia team **after discussion with surgeon for dose + timing** (anti-coagulation for flap thrombosis prevention)\n\n**Post-op analgesia (in addition to common):**\n- **Muscle or nerve catheter placement by surgical team** OR consult **acute pain service** for catheter infusion management',
+            },
+            {
+                heading: 'Why all three avoid NMB',
                 emphasis: 'plain',
-                body: '- Long cases — pad pressure points, normothermia, DVT ppx if appropriate age\n- **Avoid neuromuscular blockade after intubation** so the surgeon can confirm nerve identity by stimulation\n- TIVA (propofol + remifentanil) often preferred to keep MAC low for stimulation accuracy\n- Multimodal analgesia (acetaminophen + ketorolac); consider regional block if site allows',
+                body: 'These are nerve / nerve-transfer / flap procedures. Surgeon needs **intra-op nerve stimulation** to confirm motor unit identity (esp. AFM nerve transfers + brachial plexus reconstruction). NMB would mask responses → wrong nerve sacrificed. Use TIVA / volatile alone with opioid infusion to maintain depth instead.',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'plain',
+                body: 'NCH Neuro Intraoperative Protocols / Acute Flaccid Myelitis Microsurgery / 3 PDFs (June 2021): AFM Protocol.pdf, Brachial plexus protocol.pdf, Microsurgery.6.2021.pdf.',
             },
         ],
     },
