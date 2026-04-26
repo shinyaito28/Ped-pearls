@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Info, BookOpen, ExternalLink, ShieldAlert, ClipboardCheck, Clock, Pill, Heart } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import IEProphylaxisCard from './IEProphylaxisCard';
 import StandardCartCard from './StandardCartCard';
 import NPOGuidelineCard from './NPOGuidelineCard';
@@ -16,24 +17,25 @@ const externalRefs = [
     { name: 'ASA Standards & Practice Parameters',  url: 'https://www.asahq.org/standards-and-guidelines' }
 ];
 
-const sections = [
-    { id: 'npo',     label: 'NPO',    icon: Clock },
-    { id: 'preop',   label: 'Pre-op', icon: ClipboardCheck },
-    { id: 'ieppx',   label: 'IE Ppx', icon: Heart },
-    { id: 'cart',    label: 'Cart',   icon: Pill },
-    { id: 'links',   label: 'Links',  icon: ExternalLink },
-];
-
 const ReferenceCard = () => {
+    const { t } = useLanguage();
     const [active, setActive] = useState('npo');
+
+    const sections = [
+        { id: 'npo',     label: 'NPO',                              icon: Clock },
+        { id: 'preop',   label: t('Pre-op', '術前'),                icon: ClipboardCheck },
+        { id: 'ieppx',   label: t('IE Ppx', 'IE 予防'),             icon: Heart },
+        { id: 'cart',    label: t('Cart', 'カート'),                icon: Pill },
+        { id: 'links',   label: t('Links', 'リンク'),               icon: ExternalLink },
+    ];
 
     return (
         <div className="space-y-4">
             <div className="bg-slate-800 text-white p-4 rounded-2xl shadow flex items-center gap-3">
                 <BookOpen size={26} className="text-teal-300" />
                 <div>
-                    <h2 className="text-lg font-black">Workflow & Reference</h2>
-                    <p className="text-slate-300 text-xs">NPO • Pre-op • IE prophylaxis • Standard cart • External links</p>
+                    <h2 className="text-lg font-black">{t('Workflow & Reference', 'ワークフロー + 参考')}</h2>
+                    <p className="text-slate-300 text-xs">{t('NPO • Pre-op • IE prophylaxis • Standard cart • External links', 'NPO • 術前 • IE 予防 • 標準カート • 外部リンク')}</p>
                 </div>
             </div>
 
@@ -61,7 +63,7 @@ const ReferenceCard = () => {
             {active === 'links' && (
                 <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
                     <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-200 pb-2 mb-3">
-                        <ShieldAlert size={18} className="text-teal-600" /> External Resources
+                        <ShieldAlert size={18} className="text-teal-600" /> {t('External Resources', '外部リソース')}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {externalRefs.map(ref => (
@@ -79,7 +81,7 @@ const ReferenceCard = () => {
                     </div>
                     <div className="text-[10px] text-slate-500 italic flex items-start gap-2 mt-4 pt-3 border-t border-slate-200">
                         <Info size={12} className="flex-shrink-0 mt-0.5" />
-                        Based on Nationwide Children's Pediatric Anesthesia Pearls (2021). This card is a guide; always use clinical judgment and verify dosing.
+                        {t("Based on Nationwide Children's Pediatric Anesthesia Pearls (2021). This card is a guide; always use clinical judgment and verify dosing.", "Nationwide Children's 小児麻酔パール 2021 ベース。本カードはガイド;常に臨床判断 + 用量確認を行うこと。")}
                     </div>
                 </div>
             )}
