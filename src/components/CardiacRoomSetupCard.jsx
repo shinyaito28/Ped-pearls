@@ -20,7 +20,7 @@ const CardiacRoomSetupCard = () => {
             return v ? JSON.parse(v) : {};
         } catch { return {}; }
     });
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     useEffect(() => {
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch { /* noop */ }

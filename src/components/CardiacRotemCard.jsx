@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { HeartPulse, Activity, Droplet, Copy, Check, AlertTriangle, Info } from 'lucide-react';
+import { HeartPulse, Activity, Droplet, Copy, Check, AlertTriangle, Info, ChevronDown, ChevronRight } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import { useRotemCpb, useRotemPostCpb } from '../hooks/useRotemCalc';
 import { preparation, cpbInputs, postCpbInputs } from '../data/rotem_protocol';
@@ -224,6 +224,7 @@ const CardiacRotemCard = () => {
     const { weight } = usePatient();
     const w = parseFloat(weight) || 0;
 
+    const [collapsed, setCollapsed] = useState(true);
     const [phase, setPhase] = useState('cpb'); // 'cpb' | 'postcpb'
     const [copied, setCopied] = useState(false);
 
@@ -267,135 +268,153 @@ const CardiacRotemCard = () => {
     const valuesForPhase = phase === 'cpb' ? cpb : postcpb;
     const setForPhase    = phase === 'cpb' ? setCpb : setPostcpb;
 
-    return (
-        <div className="space-y-4 pb-8">
-            {/* Header */}
-            <div className="bg-rose-600 text-white p-4 rounded-2xl shadow-lg flex items-center gap-3">
-                <HeartPulse size={32} />
-                <div className="flex-1">
-                    <h2 className="text-lg font-black">Post-Bypass ROTEM Guidance</h2>
-                    <p className="text-rose-100 text-xs">Neonatal cardiac surgery — institutional protocol</p>
-                </div>
-            </div>
+    const triggerCount = recs.length;
 
-            {/* Preparation panel */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
-                <h3 className="font-bold text-rose-800 flex items-center gap-2 border-b border-slate-200 pb-2 mb-3">
-                    <Droplet size={18} /> Preparation (before bypass)
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    {preparation.map((p, i) => (
-                        <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-                            <div className="font-bold text-slate-800">{p.item}</div>
-                            <div className="text-xs text-slate-600">{p.detail}</div>
-                            {p.item === 'FFP' && w > 0 && (
-                                <div className="mt-1 text-[11px] text-rose-700 font-mono">
-                                    @ {fmt(w)} kg → {fmt(ffpVolPerOrder)} mL × 2 orders ={' '}
-                                    <b>{fmt(ffpVolTotal)} mL</b> total
+    return (
+        <div className="bg-surface border border-line rounded-2xl shadow-sm">
+            {/* Collapsible header — matches the other Cardiac cards */}
+            <button
+                onClick={() => setCollapsed(c => !c)}
+                className="w-full flex items-center gap-3 p-4 border-b border-line hover:bg-surface-2/40"
+                aria-expanded={!collapsed}
+            >
+                <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-lg">
+                    <HeartPulse size={18} />
+                </div>
+                <div className="flex-1 text-left">
+                    <h3 className="font-bold text-fg">Post-Bypass ROTEM Guidance</h3>
+                    <p className="text-[11px] text-fg-muted">Threshold sliders + decision tree for neonatal blood products.</p>
+                </div>
+                {triggerCount > 0 && collapsed && (
+                    <span className="text-[10px] uppercase font-bold tracking-wide bg-rose-500/15 text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded">
+                        {triggerCount} active
+                    </span>
+                )}
+                {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
+            </button>
+
+            {!collapsed && (
+                <div className="p-4 space-y-4">
+                    {/* Preparation panel */}
+                    <div className="bg-surface-2/60 border border-line rounded-xl p-3">
+                        <h4 className="font-bold text-rose-700 dark:text-rose-300 flex items-center gap-2 text-sm mb-2">
+                            <Droplet size={14} /> Preparation (before bypass)
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                            {preparation.map((p, i) => (
+                                <div key={i} className="bg-surface border border-line rounded-lg p-2">
+                                    <div className="font-bold text-fg text-sm">{p.item}</div>
+                                    <div className="text-[11px] text-fg-muted">{p.detail}</div>
+                                    {p.item === 'FFP' && w > 0 && (
+                                        <div className="mt-1 text-[11px] text-rose-700 dark:text-rose-300 font-mono">
+                                            @ {fmt(w)} kg → {fmt(ffpVolPerOrder)} mL × 2 ={' '}
+                                            <b>{fmt(ffpVolTotal)} mL</b>
+                                        </div>
+                                    )}
                                 </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Phase toggle */}
+                    <div className="flex bg-surface-2/60 rounded-xl p-1 border border-line">
+                        {[
+                            { id: 'cpb',     label: 'CPB ROTEM',      sub: 'rewarm + after 2nd FFP',          icon: Activity },
+                            { id: 'postcpb', label: 'Post-CPB ROTEM', sub: 'after protamine + products + ANH', icon: HeartPulse }
+                        ].map(p => {
+                            const Icon = p.icon;
+                            const isActive = phase === p.id;
+                            return (
+                                <button
+                                    key={p.id}
+                                    onClick={() => setPhase(p.id)}
+                                    className={`flex-1 py-2 px-3 rounded-lg transition-all ${isActive ? 'bg-surface shadow-sm ring-2 ring-rose-500' : 'hover:bg-surface'}`}
+                                >
+                                    <div className={`flex items-center justify-center gap-2 ${isActive ? 'text-rose-700 dark:text-rose-300' : 'text-fg-soft'}`}>
+                                        <Icon size={14} />
+                                        <span className="text-sm font-bold">{p.label}</span>
+                                    </div>
+                                    <div className="text-[10px] text-fg-muted mt-0.5">{p.sub}</div>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Inputs */}
+                    <div>
+                        <h4 className="font-bold text-fg-soft text-[11px] uppercase tracking-wide flex items-center gap-1 mb-3">
+                            <Activity size={12} /> ROTEM values — {phase === 'cpb' ? 'HEPTEM + FIBTEM' : 'EXTEM + FIBTEM'}
+                        </h4>
+                        <div className="space-y-5">
+                            {inputsForPhase.map(spec => (
+                                <ThresholdSlider
+                                    key={spec.id}
+                                    spec={spec}
+                                    value={valuesForPhase[spec.id]}
+                                    allValues={valuesForPhase}
+                                    onChange={(v) => setForPhase(prev => ({ ...prev, [spec.id]: v }))}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Recommendations */}
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-bold text-rose-700 dark:text-rose-300 text-[11px] uppercase tracking-wide flex items-center gap-1">
+                                <AlertTriangle size={12} /> Recommended products
+                            </h4>
+                            <button
+                                onClick={copySummary}
+                                className="text-xs bg-surface-2/60 border border-line rounded-md px-2 py-1 hover:border-teal-400 flex items-center gap-1"
+                            >
+                                {copied ? <Check size={12} /> : <Copy size={12} />}
+                                {copied ? 'Copied' : 'Copy summary'}
+                            </button>
+                        </div>
+
+                        {recs.length === 0 ? (
+                            <div className="bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-300 dark:border-emerald-800 rounded-xl p-3 flex items-center gap-3">
+                                <Check size={24} className="text-emerald-600 flex-shrink-0" />
+                                <div>
+                                    <div className="font-bold text-emerald-800 dark:text-emerald-300">All values within goal</div>
+                                    <div className="text-xs text-emerald-700 dark:text-emerald-400">No products required at this time.</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {recs.map((r, i) => (
+                                    <RecBlock key={i} rec={r} weight={w} />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Decision tree */}
+                    <div>
+                        <h4 className="font-bold text-fg-soft text-[11px] uppercase tracking-wide flex items-center gap-1 mb-2">
+                            <HeartPulse size={12} className="text-rose-600" /> Decision tree
+                        </h4>
+                        <div className="bg-surface-2/40 border border-line rounded-lg p-2 overflow-x-auto">
+                            {phase === 'cpb' ? (
+                                <CpbDecisionLadder {...cpb} />
+                            ) : (
+                                <PostCpbDecisionTree a10extem={postcpb.a10extem} a10fibtem={postcpb.a10fibtem} />
                             )}
                         </div>
-                    ))}
-                </div>
-            </div>
+                    </div>
 
-            {/* Phase toggle */}
-            <div className="flex bg-slate-100 rounded-xl p-1">
-                {[
-                    { id: 'cpb',     label: 'CPB ROTEM',      sub: 'rewarm + after 2nd FFP',          icon: Activity },
-                    { id: 'postcpb', label: 'Post-CPB ROTEM', sub: 'after protamine + products + ANH', icon: HeartPulse }
-                ].map(p => {
-                    const Icon = p.icon;
-                    const isActive = phase === p.id;
-                    return (
-                        <button
-                            key={p.id}
-                            onClick={() => setPhase(p.id)}
-                            className={`flex-1 py-2.5 px-3 rounded-lg transition-all ${isActive ? 'bg-white shadow-sm ring-2 ring-rose-500' : 'hover:bg-slate-50'}`}
-                        >
-                            <div className={`flex items-center justify-center gap-2 ${isActive ? 'text-rose-700' : 'text-slate-500'}`}>
-                                <Icon size={16} />
-                                <span className="text-sm font-bold">{p.label}</span>
-                            </div>
-                            <div className="text-[10px] text-slate-500 mt-0.5">{p.sub}</div>
-                        </button>
-                    );
-                })}
-            </div>
-
-            {/* Inputs */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
-                <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-200 pb-2 mb-3">
-                    <Activity size={18} /> ROTEM values — {phase === 'cpb' ? 'HEPTEM + FIBTEM' : 'EXTEM + FIBTEM'}
-                </h3>
-                <div className="space-y-5">
-                    {inputsForPhase.map(spec => (
-                        <ThresholdSlider
-                            key={spec.id}
-                            spec={spec}
-                            value={valuesForPhase[spec.id]}
-                            allValues={valuesForPhase}
-                            onChange={(v) => setForPhase(prev => ({ ...prev, [spec.id]: v }))}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            {/* Recommendations */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
-                    <h3 className="font-bold text-rose-800 flex items-center gap-2">
-                        <AlertTriangle size={18} /> Recommended products
-                    </h3>
-                    <button
-                        onClick={copySummary}
-                        className="text-xs bg-slate-50 border border-slate-200 rounded-md px-2 py-1 hover:border-teal-400 flex items-center gap-1"
-                    >
-                        {copied ? <Check size={12} /> : <Copy size={12} />}
-                        {copied ? 'Copied' : 'Copy summary'}
-                    </button>
-                </div>
-
-                {recs.length === 0 ? (
-                    <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 flex items-center gap-3">
-                        <Check size={28} className="text-emerald-600 flex-shrink-0" />
+                    {/* Footnote */}
+                    <div className="bg-surface-2/60 border border-line rounded-lg p-2.5 flex items-start gap-2 text-[11px] text-fg-muted">
+                        <Info size={12} className="flex-shrink-0 mt-0.5" />
                         <div>
-                            <div className="font-bold text-emerald-800">All values within goal</div>
-                            <div className="text-xs text-emerald-700">No products required at this time.</div>
+                            Source: institutional <i>Anesthesia Guide to Blood Product Management for Post-Bypass Bleeding in Neonates</i>.
+                            The Post-CPB tree treats <b>A10 EXTEM ≥ 38 mm as the goal</b> — values below this trigger the platelet vs cryoprecipitate branch
+                            based on A10 FIBTEM. Always verify with current institutional protocol and clinical judgement.
                         </div>
                     </div>
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {recs.map((r, i) => (
-                            <RecBlock key={i} rec={r} weight={w} />
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Decision tree */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
-                <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-200 pb-2 mb-3">
-                    <HeartPulse size={18} className="text-rose-600" /> Decision tree
-                </h3>
-                <div className="overflow-x-auto">
-                    {phase === 'cpb' ? (
-                        <CpbDecisionLadder {...cpb} />
-                    ) : (
-                        <PostCpbDecisionTree a10extem={postcpb.a10extem} a10fibtem={postcpb.a10fibtem} />
-                    )}
                 </div>
-            </div>
-
-            {/* Footnote */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-start gap-2 text-[11px] text-slate-600">
-                <Info size={14} className="flex-shrink-0 mt-0.5 text-slate-400" />
-                <div>
-                    Source: institutional <i>Anesthesia Guide to Blood Product Management for Post-Bypass Bleeding in Neonates</i>.
-                    The Post-CPB tree treats <b>A10 EXTEM ≥ 38 mm as the goal</b> — values below this trigger the platelet vs cryoprecipitate branch
-                    based on A10 FIBTEM. Always verify with current institutional protocol and clinical judgement.
-                </div>
-            </div>
+            )}
         </div>
     );
 };

@@ -81,7 +81,7 @@ const TravelChecklistWidget = () => {
 // ---------------------------------------------------------------------------
 
 const CardiacWorkflowCard = () => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const [done, setDone] = useState(() => {
         try { return JSON.parse(localStorage.getItem(STORAGE_TIMELINE)) || {}; }
         catch { return {}; }

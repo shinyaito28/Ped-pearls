@@ -25,13 +25,22 @@ import HeparinProtamineCard from './HeparinProtamineCard';
 import TransfusionProtocolCard from './TransfusionProtocolCard';
 import CardiacWorkflowCard from './CardiacWorkflowCard';
 
+// Cardiac tab — cards arranged by clinical workflow chronology so that the
+// natural order top→bottom mirrors what the operator does during a case:
+//   1. Timeline + TRAVEL          (whole-case orientation)
+//   2. Pre-induction Room Setup   (very first thing)
+//   3. Heparin / Protamine        (cannulation through end)
+//   4. Transfusion Protocol       (TXA early; products post-CPB)
+//   5. ROTEM Guidance             (post-CPB decision tool)
+// Every card defaults to collapsed so opening the tab presents a calm overview;
+// tap any header to expand the section you need.
 const CardiacTabContent = () => (
     <>
-        <CardiacRotemCard />
+        <CardiacWorkflowCard />
         <CardiacRoomSetupCard />
         <HeparinProtamineCard />
         <TransfusionProtocolCard />
-        <CardiacWorkflowCard />
+        <CardiacRotemCard />
     </>
 );
 

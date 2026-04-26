@@ -47,7 +47,7 @@ const HeparinProtamineCard = () => {
     const { weight, ageYears } = usePatient();
     const w = parseFloat(weight) || 0;
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const [protocol, setProtocol] = useState('UOFM');  // 'NCH' | 'UOFM'
     const [hmsCombinedDose, setHmsCombinedDose] = useState(null);
     const [hpt, setHpt] = useState(null);

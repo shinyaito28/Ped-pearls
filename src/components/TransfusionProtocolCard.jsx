@@ -17,7 +17,7 @@ const TransfusionProtocolCard = () => {
     const { weight } = usePatient();
     const w = parseFloat(weight) || 0;
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const [caseTypeId, setCaseTypeId] = useState('neonate');
 
     const plan = useMemo(
