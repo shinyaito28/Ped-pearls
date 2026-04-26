@@ -20,6 +20,20 @@ import AllDrugsCard from './AllDrugsCard';
 import ReferenceCard from './ReferenceCard';
 import EmergencyCard from './EmergencyCard';
 import CardiacRotemCard from './CardiacRotemCard';
+import CardiacRoomSetupCard from './CardiacRoomSetupCard';
+import HeparinProtamineCard from './HeparinProtamineCard';
+import TransfusionProtocolCard from './TransfusionProtocolCard';
+import CardiacWorkflowCard from './CardiacWorkflowCard';
+
+const CardiacTabContent = () => (
+    <>
+        <CardiacRotemCard />
+        <CardiacRoomSetupCard />
+        <HeparinProtamineCard />
+        <TransfusionProtocolCard />
+        <CardiacWorkflowCard />
+    </>
+);
 
 const tabs = [
     { id: 'emergency',   label: 'Crisis',   icon: AlertTriangle, accent: 'red' },
@@ -66,7 +80,7 @@ const Layout = () => {
             case 'sedation': return <SedationCard />;
             case 'regional': return <RegionalCard />;
             case 'corrections': return <CorrectionsCard />;
-            case 'cardiac': return <CardiacRotemCard />;
+            case 'cardiac': return <CardiacTabContent />;
             case 'all_drugs': return <AllDrugsCard />;
             case 'reference': return <ReferenceCard />;
             default: return <FluidCard />;
