@@ -90,16 +90,51 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'entpulm_thyroid_lobectomy_pointer',
-        title: 'Thyroid Lobectomy (TCU)',
-        shortDescription: 'Source PDF available — needs medical-review distillation.',
-        tags: ['thyroid', 'lobectomy', 'tcu', 'nerve monitoring'],
+        id: 'entpulm_thyroid_lobectomy_tcu',
+        title: 'Thyroid Lobectomy — TCU Pathway',
+        shortDescription: '≥11 yr, healthy, NIM ETT for RLN, deep extubation, Celebrex × 10 d, TCU min 4 hr.',
+        tags: ['thyroid', 'lobectomy', 'tcu', 'transitional care unit', 'nim ett', 'recurrent laryngeal nerve', 'rln', 'celecoxib', 'deep extubation', 'eras'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs medical review',
+                heading: 'Patient eligibility (PAT review)',
                 emphasis: 'warn',
-                body: 'The "Thyroid lobectomy TCU Nov 2022.pdf" extracted text but content is procedure-specific and benefits from clinical curation before exposure. Open the original under `original_pictures/Sharepoint/ENT_Pulmonary/ENT_Pulm_OMFS Intraoperative Protocol & Guidelines/` and structure into sections. Common themes: NIM ETT for recurrent laryngeal nerve monitoring (no NMB after intubation), positioning for neck access, TCU candidate criteria.',
+                body: '- Patient **≥ 11 years of age**\n- **Thyroid LOBECTOMY only** (NOT total thyroidectomy)\n- PAT review sent to Director (healthy, limited co-morbid conditions)',
+            },
+            {
+                heading: 'Pre-op Celebrex prescribing (in surgery clinic)',
+                emphasis: 'info',
+                body: 'Patient given Celebrex Rx in clinic; advised to take **first dose evening before surgery, second dose early AM of surgery**:\n- **10-25 kg**: 50 mg BID\n- **25-40 kg**: 100 mg BID\n- **>40 kg**: 200 mg BID',
+            },
+            {
+                heading: 'Day of surgery — pre-op meds',
+                emphasis: 'plain',
+                body: '- **No new or acute illness; no clinical findings of concern**\n- **PO midazolam** as needed: 0.3-0.5 mg/kg (max 15 mg)\n- **PO acetaminophen**: 10-15 mg/kg (max 1000 mg)\n- **PO celecoxib (Celebrex)** — same weight tier:\n  - 10-25 kg → 50 mg BID; 25-40 kg → 100 mg BID; >40 kg → 200 mg BID\n- **Transdermal scopolamine 1.5 mg patch** — placed **behind contralateral ear** from operative side\n- **Aprepitant (Emend) PO**: ≥ 40 kg → 40 mg; < 40 kg → 1 mg/kg',
+            },
+            {
+                heading: 'Intra-op — induction + airway',
+                emphasis: 'critical',
+                body: '- Inhalation or IV induction\n- Consider **LTA with lidocaine 1 mg/kg** prior to intubation\n- **1-2 PIVs** (consider 2 if tucking arms or running opioid infusion)\n- **NIM ETT for recurrent laryngeal nerve (RLN) monitoring** — sized + provided by OR/monitoring team. ENT places monitoring leads in patients too small for NIM tube\n- **NO neuromuscular blockade/paralytics during RLN monitoring**\n- Consider **remifentanil or sufentanil infusion** to supplement inhaled anesthetic',
+            },
+            {
+                heading: 'Intra-op — analgesia, PONV, local',
+                emphasis: 'warn',
+                body: '- **Analgesia** at anesthesia team\'s discretion:\n  - Fentanyl 1-3 mcg/kg, OR\n  - Morphine 0.05-0.1 mg/kg, OR\n  - Hydromorphone 0.005-0.01 mg/kg\n- **PONV ppx**:\n  - Dexamethasone **0.15 mg/kg (max 8 mg)**\n  - Ondansetron **0.15 mg/kg (max 4 mg)**\n  - Consider **TIVA for high PONV risk**\n- **Local infiltration at surgical site at maximal dose**: up to **2 mg/kg 0.5% bupivacaine (0.4 mL/kg) with epi 1:200,000**',
+            },
+            {
+                heading: 'Emergence — deep extubation',
+                emphasis: 'critical',
+                body: '- **Emergence and DEEP tracheal extubation in the OR**\n- **AVOID coughing or bucking** during emergence + extubation (protects neck dissection field, ↓ hematoma risk)',
+            },
+            {
+                heading: 'PACU + TCU disposition',
+                emphasis: 'info',
+                body: '- **PACU Phase 1: minimum 1 hour**\n- IVF at **0.5 × maintenance rate per weight**\n- **No prolonged O2 requirement or respiratory events** beyond extubation\n- Opioid rescue at anesthesiologist discretion; **notify surgery team if not satisfactory after 3 rescue doses**\n- Communication anesthesia ↔ attending surgeon for any discharge concerns\n- Anesthesia sign-out PACU → TCU\n- **TCU monitoring minimum 4 hours**, able to drink PO, pain controlled\n- Pain meds in SU; surgical team handles discharge instructions + evaluation; **surgeon of record responsible for TCU discharge home**',
+            },
+            {
+                heading: 'Post-op (home)',
+                emphasis: 'plain',
+                body: '- **Celebrex 200 mg BID × 10 days**\n- **Acetaminophen 10 mg/kg q6h** — patient should receive APAP or Celebrex **at 3-hour intervals × 48 hr**\n- **Oxycodone 0.1 mg/kg (max 5 mg) q4h PRN severe pain** — **5 tablets prescribed** (limited supply)\n- Surgical clinic nurse phone follow-up POD #1\n- 1-month clinic visit with surgeon\n- Bring pain medication tracking form',
             },
         ],
     },
