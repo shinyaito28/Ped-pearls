@@ -205,17 +205,42 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'entpulm_osa_screening_pointer',
-        title: 'Pre-op OSA Screening',
-        shortDescription: 'Source PDFs available — see also OSA PAT Flowsheet (interactive).',
-        tags: ['osa', 'preop screening', 'polysomnography', 'sleep disordered breathing', 'flowsheet'],
+        id: 'entpulm_osa_screening_evidence',
+        title: 'OSA Screening — Evidence + SASM Recommendations',
+        shortDescription: 'For NCH operational pathway: see OSA PAT Flowsheet. SASM 2016 reference key points below.',
+        tags: ['osa', 'preop screening', 'polysomnography', 'sleep disordered breathing', 'sasm guideline', 'stop-bang', 'cpap', 'undiagnosed osa', 'periop osa'],
         emergency: false,
         related: ['flow_osa_pat'],
         sections: [
             {
-                heading: 'Source available — interactive flowsheet shipped',
+                heading: 'For NCH bedside use → OSA PAT Flowsheet',
+                emphasis: 'success',
+                body: 'The **NCH OSA PAT Flowsheet** (interactive, in Pre-op hub) is the operational triage tool: age band + BMI + 6 OSA questions → live disposition (ASC OK / Earlier in day / Anesthesia review / Move to MOR). **Use that for actual case scheduling.**\n\nThis entry is the **evidence-and-guideline reference** — supports decisions when OSA PAT Flowsheet recommends "Anesthesia review" or there\'s a borderline case.',
+            },
+            {
+                heading: 'OSA epidemiology + relevance',
                 emphasis: 'info',
-                body: 'The interactive **OSA PAT Flowsheet** is shipped under the Pre-op hub. Two related source PDFs ("Preop Screening Pts with OSA.pdf" + "Screening and polysom to predict sleep disordered breathing.pdf") cover the screening rationale and the polysomnography evidence base — both are reference reading rather than bedside protocols.',
+                body: '- **Prevalence in surgical patients**: 9-26% general; up to **70% in bariatric** patients\n- **Up to 90% of moderate-to-severe OSA remains undiagnosed**\n- **Most surgical patients with OSA arrive at the OR undiagnosed**\n- OSA severity (AHI) **may worsen post-op** → contributes to ↑ post-op complication risk',
+            },
+            {
+                heading: 'Screening tools — STOP-Bang etc.',
+                emphasis: 'plain',
+                body: '- **STOP-Bang** (8 yes/no items: Snoring, Tired, Observed apnea, BP elevated, BMI >35, Age >50, Neck >40 cm, Gender male)\n  - Score ≥3 → high risk\n  - Score ≥5 → moderate-to-severe OSA likely\n- **Berlin questionnaire** + **ASA checklist** also validated\n- **No single screening tool has perfect sensitivity/specificity** — trade-off vs cost\n- **Higher threshold** in low-prevalence populations',
+            },
+            {
+                heading: 'SASM 2016 — key recommendations',
+                emphasis: 'warn',
+                body: '- **Insufficient evidence to cancel/delay surgery for additional sleep testing** in patients identified as high-risk for OSA, **UNLESS** there is evidence of:\n  - **Hypoventilation**\n  - **Severe pulmonary hypertension**\n  - **Resting hypoxemia** without other diagnosed cardiopulmonary disease\n- Screen-positive patients with high threshold values **assumed to have moderate-to-severe OSA** in absence of polysomnography\n- **Primary care + surgeon should share responsibility** for early identification at initial surgical visit (gives more time for optimization)\n- Consider **adding pre-op serum bicarbonate** — improves predictive accuracy\n- Note exception: polysomnography IS standard pre-op for **bariatric, tonsillectomy, or upper-airway surgery for OSA**',
+            },
+            {
+                heading: 'CPAP perioperative use — current evidence',
+                emphasis: 'info',
+                body: '- **<20% of OSA patients** receive CPAP in actual clinical practice\n- Studies (mostly low-to-moderate quality) suggest CPAP applied preoperatively + postoperatively **may reduce post-op complications**\n- Recent meta-analysis: **trend toward 0.4-day shorter LOS** with CPAP (P=.05)\n- Significant reduction in postoperative AHI when CPAP used\n- **If patient already on CPAP at home: continue intra-op (under sedation) + post-op when feasible**',
+            },
+            {
+                heading: 'Source files',
+                emphasis: 'plain',
+                body: '- **SASM 2016 Guidelines** on Preop Screening + Assessment of Adult Patients with OSA (Anesth Analg 2016;123:452-73) — `Preop Screening Pts with OSA.pdf`\n- "Screening and polysomnography to predict sleep disordered breathing" — `Screening and polysom to predict sleep disordered breathing.pdf`\n\nBoth under `original_pictures/Sharepoint/ENT_Pulmonary/ENT_Pulm_OMFS Periop Considerations/`. **Adult guidelines** — pediatric extrapolation per attending judgement (the OSA PAT Flowsheet uses NCH peds-specific age/BMI cutoffs).',
             },
         ],
     },
