@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ClipboardCheck, Check, Tag, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
-import { setupChecklist, groupLabels } from '../data/cardiac_room_setup';
+import { useLanguage } from '../context/LanguageContext';
+import { setupChecklist, groupLabels, groupLabelsJa } from '../data/cardiac_room_setup';
 
 const STORAGE_KEY = 'ped_pearls_cardiac_setup_state';
 
@@ -14,6 +15,7 @@ const groupAccents = {
 
 const CardiacRoomSetupCard = () => {
     const { weight } = usePatient();
+    const { lang, t } = useLanguage();
     const [checked, setChecked] = useState(() => {
         try {
             const v = localStorage.getItem(STORAGE_KEY);
@@ -32,9 +34,10 @@ const CardiacRoomSetupCard = () => {
     const completedCount = Object.values(checked).filter(Boolean).length;
     const total = setupChecklist.length;
 
+    const labels = lang === 'ja' ? groupLabelsJa : groupLabels;
     const groups = ['rescue', 'maintenance', 'monitors', 'other'].map(g => ({
         id: g,
-        label: groupLabels[g],
+        label: labels[g],
         items: setupChecklist.filter(i => i.group === g)
     }));
 
@@ -50,12 +53,12 @@ const CardiacRoomSetupCard = () => {
                     <ClipboardCheck size={18} />
                 </div>
                 <div className="flex-1 text-left">
-                    <h3 className="font-bold text-fg">Pre-induction Room Setup</h3>
-                    <p className="text-[11px] text-fg-muted">Same drugs, same place, every time. NCH cardiac OR.</p>
+                    <h3 className="font-bold text-fg">{t('Pre-induction Room Setup', '導入前ルームセットアップ')}</h3>
+                    <p className="text-[11px] text-fg-muted">{t('Same drugs, same place, every time. NCH cardiac OR.', '同じ薬剤を毎回同じ場所に。NCH 心臓 OR。')}</p>
                 </div>
                 <div className="text-right">
                     <div className="text-xs font-bold text-fg-soft">{completedCount}/{total}</div>
-                    <div className="text-[10px] text-fg-muted">checked</div>
+                    <div className="text-[10px] text-fg-muted">{t('checked', 'チェック済')}</div>
                 </div>
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
             </button>
@@ -73,6 +76,9 @@ const CardiacRoomSetupCard = () => {
                                     {g.items.map(item => {
                                         const done = !!checked[item.key];
                                         const computed = item.compute ? item.compute(weight) : null;
+                                        const itemLabel = lang === 'ja' && item.labelJa ? item.labelJa : item.label;
+                                        const itemNote = lang === 'ja' && item.noteJa ? item.noteJa : item.note;
+                                        const computedNotes = computed ? (lang === 'ja' && computed.notesJa ? computed.notesJa : computed.notes) : null;
                                         return (
                                             <li key={item.key}>
                                                 <button
@@ -92,7 +98,7 @@ const CardiacRoomSetupCard = () => {
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                                                             <span className={`font-bold text-sm ${done ? 'text-fg' : 'text-fg-soft'}`}>
-                                                                {item.label}
+                                                                {itemLabel}
                                                             </span>
                                                             {item.conc && (
                                                                 <span className="text-[11px] font-mono text-fg-muted">
@@ -100,14 +106,14 @@ const CardiacRoomSetupCard = () => {
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        {item.note && (
-                                                            <div className="text-[11px] text-fg-muted mt-0.5">{item.note}</div>
+                                                        {itemNote && (
+                                                            <div className="text-[11px] text-fg-muted mt-0.5">{itemNote}</div>
                                                         )}
                                                         {computed && (
                                                             <div className={`text-[11px] font-bold mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded ${accent.bg} ${accent.text}`}>
                                                                 <Tag size={10} />
                                                                 {computed.syringe || computed.dilute}
-                                                                {computed.notes && <span className="font-normal text-fg-muted ml-1">— {computed.notes}</span>}
+                                                                {computedNotes && <span className="font-normal text-fg-muted ml-1">— {computedNotes}</span>}
                                                             </div>
                                                         )}
                                                     </div>
@@ -125,14 +131,14 @@ const CardiacRoomSetupCard = () => {
                             onClick={resetAll}
                             className="text-xs text-fg-muted hover:text-rose-600 underline mt-2"
                         >
-                            Reset all checkboxes
+                            {t('Reset all checkboxes', 'すべてのチェックをリセット')}
                         </button>
                     )}
 
                     <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-[11px] p-2.5 rounded-lg flex items-start gap-2">
                         <AlertCircle size={12} className="flex-shrink-0 mt-0.5" />
                         <div>
-                            <b>Closed-loop communication:</b> always read-back drug name + dose + volume before administration. In the cath lab, headset on with talk button on.
+                            <b>{t('Closed-loop communication:', 'クローズドループコミュニケーション:')}</b> {t('always read-back drug name + dose + volume before administration. In the cath lab, headset on with talk button on.', '投与前に必ず薬剤名 + 用量 + 容量を復唱。カテ室ではヘッドセット着用、トークボタン on。')}
                         </div>
                     </div>
                 </div>

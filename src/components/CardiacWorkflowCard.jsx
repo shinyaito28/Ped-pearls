@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ListChecks, ChevronDown, ChevronRight, Plane, Check, Copy } from 'lucide-react';
 import { timelinePhases, travelChecklist } from '../data/cardiac_timeline';
+import { useLanguage } from '../context/LanguageContext';
 
 const STORAGE_TIMELINE = 'ped_pearls_cardiac_timeline_state';
 const STORAGE_TRAVEL   = 'ped_pearls_cardiac_travel_state';
@@ -10,6 +11,7 @@ const STORAGE_TRAVEL   = 'ped_pearls_cardiac_travel_state';
 // ---------------------------------------------------------------------------
 
 const TravelChecklistWidget = () => {
+    const { lang, t } = useLanguage();
     const [checks, setChecks] = useState(() => {
         try { return JSON.parse(localStorage.getItem(STORAGE_TRAVEL)) || {}; }
         catch { return {}; }
@@ -30,7 +32,7 @@ const TravelChecklistWidget = () => {
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                     <Plane size={16} className="text-amber-700 dark:text-amber-300" />
-                    <div className="font-bold text-amber-800 dark:text-amber-200 text-sm">TRAVEL — separate-from-bypass checklist</div>
+                    <div className="font-bold text-amber-800 dark:text-amber-200 text-sm">{t('TRAVEL — separate-from-bypass checklist', 'TRAVEL — バイパス離脱前チェックリスト')}</div>
                 </div>
                 <div className="text-xs font-bold text-amber-800 dark:text-amber-200">{completed}/6</div>
             </div>
@@ -49,18 +51,18 @@ const TravelChecklistWidget = () => {
                                     {done ? <Check size={14} /> : item.letter}
                                 </div>
                                 <div className="flex-1">
-                                    <div className={`font-bold text-sm ${done ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-900 dark:text-amber-200'}`}>{item.title}</div>
+                                    <div className={`font-bold text-sm ${done ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-900 dark:text-amber-200'}`}>{lang === 'ja' && item.titleJa ? item.titleJa : item.title}</div>
                                 </div>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); setExpanded(isExpanded ? null : item.key); }}
                                     className="text-[10px] text-amber-700 dark:text-amber-300 underline"
                                 >
-                                    {isExpanded ? 'Hide' : 'Why'}
+                                    {isExpanded ? t('Hide', '隠す') : t('Why', '理由')}
                                 </button>
                             </button>
                             {isExpanded && (
                                 <div className="px-2 pb-2 text-[11px] text-amber-900 dark:text-amber-100">
-                                    {item.detail}
+                                    {lang === 'ja' && item.detailJa ? item.detailJa : item.detail}
                                 </div>
                             )}
                         </li>
@@ -69,7 +71,7 @@ const TravelChecklistWidget = () => {
             </ul>
             {completed > 0 && (
                 <button onClick={reset} className="text-[11px] text-amber-700 dark:text-amber-300 underline mt-2">
-                    Reset TRAVEL
+                    {t('Reset TRAVEL', 'TRAVEL をリセット')}
                 </button>
             )}
         </div>
@@ -81,6 +83,7 @@ const TravelChecklistWidget = () => {
 // ---------------------------------------------------------------------------
 
 const CardiacWorkflowCard = () => {
+    const { lang, t } = useLanguage();
     const [collapsed, setCollapsed] = useState(true);
     const [done, setDone] = useState(() => {
         try { return JSON.parse(localStorage.getItem(STORAGE_TIMELINE)) || {}; }
@@ -100,15 +103,17 @@ const CardiacWorkflowCard = () => {
     const totalSteps = timelinePhases.reduce((acc, p) => acc + p.steps.length, 0);
 
     const copySummary = () => {
-        const lines = ['Cardiac OR timeline — handoff summary:'];
+        const header = t('Cardiac OR timeline — handoff summary:', '心臓 OR タイムライン — ハンドオフサマリー:');
+        const noStepsMsg = t('  (no steps marked complete)', '  (完了マークされたステップなし)');
+        const lines = [header];
         timelinePhases.forEach(phase => {
             const completed = phase.steps.filter(s => done[s.key]);
             if (completed.length > 0) {
-                lines.push(`  ${phase.title}:`);
-                completed.forEach(s => lines.push(`    ✓ ${s.label}`));
+                lines.push(`  ${lang === 'ja' && phase.titleJa ? phase.titleJa : phase.title}:`);
+                completed.forEach(s => lines.push(`    ✓ ${lang === 'ja' && s.labelJa ? s.labelJa : s.label}`));
             }
         });
-        if (lines.length === 1) lines.push('  (no steps marked complete)');
+        if (lines.length === 1) lines.push(noStepsMsg);
         navigator.clipboard?.writeText(lines.join('\n')).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
@@ -126,12 +131,12 @@ const CardiacWorkflowCard = () => {
                     <ListChecks size={18} />
                 </div>
                 <div className="flex-1 text-left">
-                    <h3 className="font-bold text-fg">Cardiac OR Timeline + TRAVEL</h3>
-                    <p className="text-[11px] text-fg-muted">6 phase checklist with separation-from-bypass mnemonic.</p>
+                    <h3 className="font-bold text-fg">{t('Cardiac OR Timeline + TRAVEL', '心臓 OR タイムライン + TRAVEL')}</h3>
+                    <p className="text-[11px] text-fg-muted">{t('6 phase checklist with separation-from-bypass mnemonic.', '6 フェーズチェックリスト + バイパス離脱ニーモニック')}</p>
                 </div>
                 <div className="text-right">
                     <div className="text-xs font-bold text-fg-soft">{totalDone}/{totalSteps}</div>
-                    <div className="text-[10px] text-fg-muted">steps</div>
+                    <div className="text-[10px] text-fg-muted">{t('steps', 'ステップ')}</div>
                 </div>
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
             </button>
@@ -156,7 +161,7 @@ const CardiacWorkflowCard = () => {
                                             {isComplete ? <Check size={12} /> : idx + 1}
                                         </div>
                                         <div className="flex-1">
-                                            <div className={`font-bold text-sm ${isComplete ? 'text-emerald-800 dark:text-emerald-300' : 'text-fg'}`}>{phase.title}</div>
+                                            <div className={`font-bold text-sm ${isComplete ? 'text-emerald-800 dark:text-emerald-300' : 'text-fg'}`}>{lang === 'ja' && phase.titleJa ? phase.titleJa : phase.title}</div>
                                         </div>
                                         <div className="text-[10px] text-fg-muted">{phaseDone}/{phase.steps.length}</div>
                                         {isOpen ? <ChevronDown size={14} className="text-fg-muted" /> : <ChevronRight size={14} className="text-fg-muted" />}
@@ -175,7 +180,7 @@ const CardiacWorkflowCard = () => {
                                                             <div className={`flex-shrink-0 mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center ${stepDone ? 'bg-emerald-500 border-emerald-500' : 'border-fg-muted'}`}>
                                                                 {stepDone && <Check size={10} className="text-white" />}
                                                             </div>
-                                                            <span className={`text-sm flex-1 ${stepDone ? 'text-fg-muted line-through' : 'text-fg'}`}>{step.label}</span>
+                                                            <span className={`text-sm flex-1 ${stepDone ? 'text-fg-muted line-through' : 'text-fg'}`}>{lang === 'ja' && step.labelJa ? step.labelJa : step.label}</span>
                                                         </button>
                                                     </li>
                                                 );
@@ -193,14 +198,14 @@ const CardiacWorkflowCard = () => {
                             className="flex-1 text-xs bg-surface-2/60 border border-line rounded-md px-3 py-2 hover:border-teal-400 flex items-center justify-center gap-1.5"
                         >
                             {copied ? <Check size={14} /> : <Copy size={14} />}
-                            {copied ? 'Copied' : 'Copy handoff summary'}
+                            {copied ? t('Copied', 'コピー済み') : t('Copy handoff summary', 'ハンドオフサマリーをコピー')}
                         </button>
                         {totalDone > 0 && (
                             <button
                                 onClick={resetAll}
                                 className="text-xs text-fg-muted hover:text-rose-600 underline px-2"
                             >
-                                Reset all
+                                {t('Reset all', 'すべてリセット')}
                             </button>
                         )}
                     </div>

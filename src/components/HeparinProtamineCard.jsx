@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Beaker, AlertTriangle, Copy, Check, Info, ChevronDown, ChevronRight, Activity } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useAnticoag } from '../hooks/useAnticoag';
 import { fmt } from '../utils/calc';
 
@@ -45,6 +46,7 @@ const ResultRow = ({ label, value, sub, accent = 'slate' }) => {
 
 const HeparinProtamineCard = () => {
     const { weight, ageYears } = usePatient();
+    const { lang, t } = useLanguage();
     const w = parseFloat(weight) || 0;
 
     const [collapsed, setCollapsed] = useState(true);
@@ -68,14 +70,21 @@ const HeparinProtamineCard = () => {
         includeHemobag
     });
 
+    const loadingMethod = lang === 'ja' && loading.methodJa ? loading.methodJa : loading.method;
+    const loadingNotes = lang === 'ja' && loading.notesJa ? loading.notesJa : loading.notes;
+    const redoseReasons = lang === 'ja' && redose.reasonsJa ? redose.reasonsJa : redose.reasons;
+    const protamineBasis = lang === 'ja' && protamine.basisJa ? protamine.basisJa : protamine.basis;
+    const protamineNotes = lang === 'ja' && protamine.notesJa ? protamine.notesJa : protamine.notes;
+
     const copySummary = () => {
+        const protoLabel = protocol === 'NCH' ? 'NCH Investigational' : 'U of M';
         const lines = [
-            `Anticoagulation summary (${fmt(w)} kg, ${fmt(ageYears, 1)} yr) — protocol: ${protocol === 'NCH' ? 'NCH Investigational' : 'U of M'}`,
-            `• Loading: ${loading.doseUnits ? `${fmt(loading.doseUnits)} U` : '— (enter HMS combined dose)'}  [${loading.method}]`,
-            redose.trigger ? `• REDOSE: ${redose.doseUnits} U  [${redose.reasons.join('; ')}]` : '• Redose: not triggered',
-            `• Cath lab heparin: ${cathLab.doseUnits} U (100 U/kg)`,
-            `• Protamine: ${protamine.mg} mg${protamine.capApplied ? '  ⚠ capped at 5 mg/kg' : ''}${protamine.allowOverCap ? ' (NCH neonate exception)' : ''}`,
-            `  basis: ${protamine.basis}`,
+            `${t('Anticoagulation summary', '抗凝固サマリー')} (${fmt(w)} kg, ${fmt(ageYears, 1)} ${t('yr', '歳')}) — ${t('protocol:', 'プロトコール:')} ${protoLabel}`,
+            `• ${t('Loading:', 'ローディング:')} ${loading.doseUnits ? `${fmt(loading.doseUnits)} U` : t('— (enter HMS combined dose)', '— (HMS combined 量を入力)')}  [${loadingMethod}]`,
+            redose.trigger ? `• ${t('REDOSE:', '追加投与:')} ${redose.doseUnits} U  [${redoseReasons.join('; ')}]` : `• ${t('Redose: not triggered', '追加投与: 該当せず')}`,
+            `• ${t('Cath lab heparin:', 'カテ室ヘパリン:')} ${cathLab.doseUnits} U (100 U/kg)`,
+            `• ${t('Protamine:', 'プロタミン:')} ${protamine.mg} mg${protamine.capApplied ? `  ⚠ ${t('capped at 5 mg/kg', '5 mg/kg に上限化')}` : ''}${protamine.allowOverCap ? ` (${t('NCH neonate exception', 'NCH 新生児例外')})` : ''}`,
+            `  ${t('basis:', '根拠:')} ${protamineBasis}`,
         ];
         navigator.clipboard?.writeText(lines.join('\n')).then(() => {
             setCopied(true);
@@ -94,8 +103,8 @@ const HeparinProtamineCard = () => {
                     <Beaker size={18} />
                 </div>
                 <div className="flex-1 text-left">
-                    <h3 className="font-bold text-fg">Heparin / Protamine Calculator</h3>
-                    <p className="text-[11px] text-fg-muted">NCH Investigational + U of M Technique. Always read-back dose.</p>
+                    <h3 className="font-bold text-fg">{t('Heparin / Protamine Calculator', 'ヘパリン / プロタミン計算機')}</h3>
+                    <p className="text-[11px] text-fg-muted">{t('NCH Investigational + U of M Technique. Always read-back dose.', 'NCH Investigational + U of M Technique。常に用量復唱。')}</p>
                 </div>
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
             </button>
@@ -105,8 +114,8 @@ const HeparinProtamineCard = () => {
                     {/* Protocol toggle */}
                     <div className="flex bg-surface-2/60 rounded-xl p-1 border border-line">
                         {[
-                            { id: 'UOFM', label: 'U of M Technique', sub: 'Slope < 80 or > 120' },
-                            { id: 'NCH',  label: 'NCH Investigational', sub: 'HDR slope 80-120' }
+                            { id: 'UOFM', label: t('U of M Technique', 'U of M テクニック'), sub: t('Slope < 80 or > 120', 'Slope < 80 または > 120') },
+                            { id: 'NCH',  label: 'NCH Investigational', sub: t('HDR slope 80-120', 'HDR slope 80-120') }
                         ].map(p => {
                             const active = protocol === p.id;
                             return (
@@ -125,22 +134,22 @@ const HeparinProtamineCard = () => {
                     {/* Loading dose section */}
                     <div className="space-y-2">
                         <div className="text-[11px] uppercase font-bold text-fg-muted tracking-wide flex items-center gap-1">
-                            <Activity size={12} /> Heparin loading dose
+                            <Activity size={12} /> {t('Heparin loading dose', 'ヘパリンローディング量')}
                         </div>
                         {protocol === 'NCH' && (
                             <NumInput
-                                label="HMS COMBINED dose (patient + pump)"
+                                label={t('HMS COMBINED dose (patient + pump)', 'HMS COMBINED 量(患者 + ポンプ)')}
                                 value={hmsCombinedDose}
                                 onChange={setHmsCombinedDose}
                                 unit="U"
-                                placeholder="e.g. 4200"
+                                placeholder={t('e.g. 4200', '例: 4200')}
                                 step={100}
                             />
                         )}
                         <ResultRow
-                            label="Loading dose"
+                            label={t('Loading dose', 'ローディング量')}
                             value={loading.doseUnits ? `${fmt(loading.doseUnits)} U` : '—'}
-                            sub={loading.notes}
+                            sub={loadingNotes}
                             accent="rose"
                         />
                     </div>
@@ -148,16 +157,16 @@ const HeparinProtamineCard = () => {
                     {/* Redose section */}
                     <div className="space-y-2">
                         <div className="text-[11px] uppercase font-bold text-fg-muted tracking-wide flex items-center gap-1">
-                            <Activity size={12} /> Re-dose check
+                            <Activity size={12} /> {t('Re-dose check', '追加投与チェック')}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <NumInput label="HPT" value={hpt} onChange={setHpt} unit="IU/mL" placeholder="e.g. 1.8" step={0.1} />
-                            <NumInput label="ACT" value={act} onChange={setAct} unit="sec" placeholder="e.g. 450" step={10} />
+                            <NumInput label="HPT" value={hpt} onChange={setHpt} unit="IU/mL" placeholder={t('e.g. 1.8', '例: 1.8')} step={0.1} />
+                            <NumInput label="ACT" value={act} onChange={setAct} unit={t('sec', '秒')} placeholder={t('e.g. 450', '例: 450')} step={10} />
                         </div>
                         <ResultRow
-                            label="Redose"
-                            value={redose.trigger ? `${fmt(redose.doseUnits)} U` : 'Not triggered'}
-                            sub={redose.trigger ? redose.reasons.join('; ') : 'HPT ≥ 2.0 IU/mL AND ACT ≥ 480 sec'}
+                            label={t('Redose', '追加投与')}
+                            value={redose.trigger ? `${fmt(redose.doseUnits)} U` : t('Not triggered', '該当せず')}
+                            sub={redose.trigger ? redoseReasons.join('; ') : t('HPT ≥ 2.0 IU/mL AND ACT ≥ 480 sec', 'HPT ≥ 2.0 IU/mL かつ ACT ≥ 480 秒')}
                             accent={redose.trigger ? 'amber' : 'emerald'}
                         />
                     </div>
@@ -166,18 +175,18 @@ const HeparinProtamineCard = () => {
                     <div className="bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200 text-[12px] p-2.5 rounded-lg flex items-start gap-2">
                         <Info size={12} className="flex-shrink-0 mt-0.5" />
                         <div>
-                            <b>Cath lab:</b> heparin <b>100 U/kg</b> = <b>{fmt(cathLab.doseUnits)} U</b>. Closed-loop comm: announce dose in U + mL through headset, wait for monitor person to acknowledge, surgeon reads back.
+                            <b>{t('Cath lab:', 'カテ室:')}</b> {t('heparin', 'ヘパリン')} <b>100 U/kg</b> = <b>{fmt(cathLab.doseUnits)} U</b>. {t('Closed-loop comm: announce dose in U + mL through headset, wait for monitor person to acknowledge, surgeon reads back.', 'クローズドループ: 用量を U + mL でヘッドセットから伝達、モニター係の確認を待ち、外科医が復唱。')}
                         </div>
                     </div>
 
                     {/* Protamine section */}
                     <div className="space-y-2 pt-2 border-t border-line">
                         <div className="text-[11px] uppercase font-bold text-fg-muted tracking-wide flex items-center gap-1">
-                            <Activity size={12} /> Protamine reversal
+                            <Activity size={12} /> {t('Protamine reversal', 'プロタミン拮抗')}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <NumInput label="Total heparin given" value={totalUnits} onChange={setTotalUnits} unit="U" placeholder="cumulative" step={100} />
-                            <NumInput label="Pump prime heparin (NCH)" value={pumpUnits} onChange={setPumpUnits} unit="U" placeholder="circuit" step={100} />
+                            <NumInput label={t('Total heparin given', '投与ヘパリン総量')} value={totalUnits} onChange={setTotalUnits} unit="U" placeholder={t('cumulative', '累積')} step={100} />
+                            <NumInput label={t('Pump prime heparin (NCH)', 'ポンププライムヘパリン (NCH)')} value={pumpUnits} onChange={setPumpUnits} unit="U" placeholder={t('circuit', '回路')} step={100} />
                         </div>
                         <label className="flex items-center gap-2 text-xs text-fg-soft cursor-pointer">
                             <input
@@ -186,20 +195,20 @@ const HeparinProtamineCard = () => {
                                 onChange={e => setIncludeHemobag(e.target.checked)}
                                 className="w-3.5 h-3.5 accent-rose-500"
                             />
-                            Hemobag administered (teen+) — adds 50 mg
+                            {t('Hemobag administered (teen+) — adds 50 mg', 'Hemobag 投与済(思春期以上) — 50 mg 追加')}
                         </label>
 
                         <ResultRow
-                            label="Protamine"
+                            label={t('Protamine', 'プロタミン')}
                             value={`${protamine.mg} mg`}
-                            sub={protamine.basis + (protamine.capApplied ? ` • CAPPED at 5 mg/kg = ${protamine.cap} mg` : '') + (protamine.allowOverCap && protamine.rawMg > protamine.cap ? ' • NCH neonate exception (cap not applied)' : '')}
+                            sub={protamineBasis + (protamine.capApplied ? ` • ${t('CAPPED at 5 mg/kg =', '5 mg/kg に上限化 =')} ${protamine.cap} mg` : '') + (protamine.allowOverCap && protamine.rawMg > protamine.cap ? ` • ${t('NCH neonate exception (cap not applied)', 'NCH 新生児例外(上限不適用)')}` : '')}
                             accent={protamine.capApplied ? 'amber' : 'rose'}
                         />
 
                         <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-[11px] p-2.5 rounded-lg space-y-1">
-                            <div className="font-bold flex items-center gap-1"><AlertTriangle size={12} /> Administration</div>
+                            <div className="font-bold flex items-center gap-1"><AlertTriangle size={12} /> {t('Administration', '投与方法')}</div>
                             <ul className="list-disc list-inside space-y-0.5 pl-2">
-                                {protamine.notes.map((n, i) => <li key={i}>{n}</li>)}
+                                {protamineNotes.map((n, i) => <li key={i}>{n}</li>)}
                             </ul>
                         </div>
                     </div>
@@ -209,7 +218,7 @@ const HeparinProtamineCard = () => {
                         className="w-full text-xs bg-surface-2/60 border border-line rounded-md px-3 py-2 hover:border-teal-400 flex items-center justify-center gap-1.5"
                     >
                         {copied ? <Check size={14} /> : <Copy size={14} />}
-                        {copied ? 'Copied' : 'Copy anticoag summary'}
+                        {copied ? t('Copied', 'コピー済み') : t('Copy anticoag summary', '抗凝固サマリーをコピー')}
                     </button>
                 </div>
             )}

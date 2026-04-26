@@ -14,11 +14,16 @@ export const PROTOCOLS = {
 // HMS HDR slope decision: 80-120 → NCH; otherwise → ATIII trial → U of M.
 export const slopeDecision = (slope) => {
     if (slope >= 80 && slope <= 120) {
-        return { protocol: 'NCH', reason: `HDR slope ${slope} (80-120) — NCH Investigational` };
+        return {
+            protocol: 'NCH',
+            reason: `HDR slope ${slope} (80-120) — NCH Investigational`,
+            reasonJa: `HDR slope ${slope} (80-120) — NCH Investigational`,
+        };
     }
     return {
         protocol: 'UOFM-or-ATIII',
-        reason: `HDR slope ${slope} out of 80-120. If ATIII <100% → replace 1 vial → repeat HDR. If still out of range → U of M.`
+        reason: `HDR slope ${slope} out of 80-120. If ATIII <100% → replace 1 vial → repeat HDR. If still out of range → U of M.`,
+        reasonJa: `HDR slope ${slope} は 80-120 の範囲外。ATIII <100% なら 1 バイアル補充 → HDR 再検。それでも範囲外なら U of M。`,
     };
 };
 
@@ -34,13 +39,17 @@ export const heparinLoading = ({ protocol, weight, ageYears, hmsCombinedDose }) 
             return {
                 doseUnits: null,
                 method: 'NCH (HMS-driven)',
-                notes: 'Enter HMS-recommended COMBINED dose (patient + pump)'
+                methodJa: 'NCH (HMS ベース)',
+                notes: 'Enter HMS-recommended COMBINED dose (patient + pump)',
+                notesJa: 'HMS 推奨の COMBINED 量(患者 + ポンプ)を入力'
             };
         }
         return {
             doseUnits: Math.round(hmsCombinedDose),
             method: 'NCH (HMS-driven, COMBINED)',
-            notes: 'Patient + pump combined per HMS recommendation'
+            methodJa: 'NCH (HMS ベース、COMBINED)',
+            notes: 'Patient + pump combined per HMS recommendation',
+            notesJa: 'HMS 推奨に従って患者 + ポンプ合算'
         };
     }
     // U of M simple formula
@@ -51,16 +60,20 @@ export const heparinLoading = ({ protocol, weight, ageYears, hmsCombinedDose }) 
     return {
         doseUnits: Math.round(w * perKg),
         method: `U of M (${perKg} U/kg)`,
+        methodJa: `U of M (${perKg} U/kg)`,
         notes: ageYears < 1
             ? '<1 yr → 600 U/kg'
-            : ageYears <= 5 ? '1-5 yr → 500 U/kg' : '>5 yr → 450 U/kg'
+            : ageYears <= 5 ? '1-5 yr → 500 U/kg' : '>5 yr → 450 U/kg',
+        notesJa: ageYears < 1
+            ? '1 歳未満 → 600 U/kg'
+            : ageYears <= 5 ? '1-5 歳 → 500 U/kg' : '>5 歳 → 450 U/kg'
     };
 };
 
 // Cath-lab heparin: flat 100 U/kg.
 export const heparinCathLab = ({ weight }) => {
     const w = parseFloat(weight) || 0;
-    return { doseUnits: Math.round(w * 100), perKg: 100, label: 'Cath lab: 100 U/kg' };
+    return { doseUnits: Math.round(w * 100), perKg: 100, label: 'Cath lab: 100 U/kg', labelJa: 'カテ室: 100 U/kg' };
 };
 
 // Re-dose criterion: HPT <2.0 IU/mL OR ACT <480 sec → 100 U/kg.
@@ -74,6 +87,10 @@ export const heparinRedose = ({ hpt, act, weight }) => {
         reasons: [
             hptLow ? `HPT ${hpt} < 2.0 IU/mL` : null,
             actLow ? `ACT ${act} < 480 sec` : null
+        ].filter(Boolean),
+        reasonsJa: [
+            hptLow ? `HPT ${hpt} < 2.0 IU/mL` : null,
+            actLow ? `ACT ${act} < 480 秒` : null
         ].filter(Boolean),
         doseUnits: trigger ? Math.round(w * 100) : 0,
         perKg: 100
@@ -96,19 +113,23 @@ export const protamineReversal = ({
 
     let mg = 0;
     let basis = '';
+    let basisJa = '';
     if (protocol === 'NCH') {
         // Combined patient + pump 1:1
         const combined = (totalUnits || loadingUnits) + pumpUnits;
         mg = combined / 100;
         basis = `1:1 of COMBINED ${combined} U (patient + pump)`;
+        basisJa = `COMBINED ${combined} U (患者 + ポンプ) に対し 1:1`;
     } else {
         // U of M: neonate uses loading dose only; >30d uses total cumulative.
         if (isNeonate) {
             mg = loadingUnits / 100;
             basis = `1:1 of loading dose ${loadingUnits} U (neonate)`;
+            basisJa = `ローディング量 ${loadingUnits} U に対し 1:1(新生児)`;
         } else {
             mg = totalUnits / 100;
             basis = `1:1 of total heparin ${totalUnits} U`;
+            basisJa = `ヘパリン総量 ${totalUnits} U に対し 1:1`;
         }
     }
 
@@ -132,11 +153,18 @@ export const protamineReversal = ({
         allowOverCap,
         hemobagAdded: includeHemobag ? 50 : 0,
         basis,
+        basisJa,
         notes: [
             'Run through peripheral IV (NOT central line)',
             'Carrier 20 mL/hr',
             '1:1 dilution with NS (especially neonates/infants)',
             'Watch tidal volume + peak pressure → epi 1-2 mcg if reaction'
+        ],
+        notesJa: [
+            '末梢 IV から投与(中心静脈ラインは使わない)',
+            'キャリア 20 mL/hr',
+            'NS で 1:1 希釈(特に新生児/乳児)',
+            'TV + ピーク圧を観察 → 反応あればエピ 1-2 mcg'
         ]
     };
 };
