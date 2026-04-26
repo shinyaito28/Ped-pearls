@@ -2,11 +2,13 @@ import React from 'react';
 import { ChevronLeft, Inbox } from 'lucide-react';
 import { findHub, entriesByHub } from '../../data/specialty';
 import { flowchartComponents } from './flowchartRegistry';
+import { useSwipeBack } from '../../hooks/useSwipeBack';
 import ManualCard from './ManualCard';
 
 const SpecialtyHubCard = ({ hubId, onBack }) => {
     const hub = findHub(hubId);
     const entries = entriesByHub(hubId);
+    const swipeRef = useSwipeBack({ onBack });
 
     if (!hub) {
         return (
@@ -17,13 +19,14 @@ const SpecialtyHubCard = ({ hubId, onBack }) => {
     }
 
     return (
-        <div className="space-y-4">
+        <div ref={swipeRef} className="space-y-4">
             <button
                 onClick={onBack}
                 className="flex items-center gap-1.5 text-sm text-fg-soft hover:text-fg tap-target px-2 -ml-2"
             >
                 <ChevronLeft size={16} />
                 <span className="font-medium">All specialties</span>
+                <span className="ml-2 text-[10px] text-fg-muted hidden sm:inline">(or swipe right from edge ⤳)</span>
             </button>
 
             <div className={`bg-${hub.accent}-500/10 border border-${hub.accent}-200 dark:border-${hub.accent}-800 rounded-2xl p-4`}>
