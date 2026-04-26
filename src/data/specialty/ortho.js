@@ -183,15 +183,46 @@ export const entries = [
     {
         ...COMMON,
         id: 'ortho_limb_lengthening_regional',
-        title: 'Limb Lengthening — Regional Anesthesia (Iobst Protocol)',
-        shortDescription: 'Catheter-based regional for limb lengthening procedures (.docx — needs richer transcription).',
-        tags: ['limb lengthening', 'iobst', 'regional anesthesia', 'catheter', 'continuous block', 'distractor'],
+        title: 'Limb Lengthening — Regional Anesthesia (PNC)',
+        shortDescription: 'PNC by procedure: femoral=fascia iliaca / tibial=sciatic+saphenous / combined=both. Sciatic NOT >0.05% (foot drop).',
+        tags: ['limb lengthening', 'osteoplasty', 'femoral osteoplasty', 'tibial osteoplasty', 'fibular osteoplasty', 'pnc', 'peripheral nerve catheter', 'fascia iliaca', 'sciatic catheter', 'saphenous', 'adductor canal', 'ropivacaine', 'tuohy', 'dermabond', 'mastisol', 'tegaderm chg', 'foot drop'],
         emergency: false,
+        related: ['ortho_semls_protocol'],
         sections: [
             {
-                heading: 'Source available — needs richer transcription',
+                heading: 'Catheter type by procedure',
+                emphasis: 'info',
+                body: '| Procedure | Catheters placed |\n|---|---|\n| **Femoral osteoplasty** | Suprainguinal **fascia iliaca** catheter |\n| **Tibial + fibular osteoplasty** | **Sciatic + Saphenous** (adductor canal) catheters |\n| **Combined femoral + tibial + fibular** (femoral IM nail + tibial/fibular osteotomy) | **Suprainguinal fascia iliaca + Sciatic** catheters |\n\nAll catheters placed **at the END of the case** (or beginning of tibial/fibular if discussed with surgical team — beware tourniquet + surgical-field extent).',
+            },
+            {
+                heading: 'Suprainguinal fascia iliaca catheter — placement (Hebbard technique)',
+                emphasis: 'plain',
+                body: '- US-guided, **Tuohy needle** (Contiplex® continuous nerve block set)\n- Skin prep: **2% chlorhexidine + 70% IPA (ChloraPrep®)** + sterile towels\n- Sterile US transducer cover\n- **Identify Iliacus muscle + fascia iliaca** under US\n- Advance transducer **cephalad** until **deep circumflex iliac artery** identified\n- Tuohy needle pierces fascia iliaca → tip lies between fascial layer + iliacus muscle\n- **Confirm spread**: inject 1 mL preservative-free 0.9% NaCl under US\n- Once confirmed: inject **5 mL NaCl to open the space**\n- Advance needle cephalad **below the artery**\n- **Thread catheter 5 cm past** this point\n- **Test dose**: epi 0.5 mcg/mL in 0.9% NaCl, **1 mL/kg, max 3 mL** (NO local anesthetic at this stage)\n- Withdraw Tuohy, secure catheter:\n  - **Dermabond™** at insertion site\n  - **2-3 mL Mastisol®** liquid adhesive on surrounding area\n  - **Tegaderm™ CHG** dressing',
+            },
+            {
+                heading: 'Pre-infusion — neuro check (mandatory)',
+                emphasis: 'critical',
+                body: '**BEFORE any LA dose through the PNC**:\n- **Surgical team must perform a neuro exam** when patient emerges from anesthesia\n- Confirm intact **motor + sensory function** in the surgical extremity\n- **Surgical team gives anesthesia approval** to start the PNC infusion\n- This rules out direct surgical nerve injury before LA can mask it',
+            },
+            {
+                heading: 'Provider hand-push bolus (in PACU, before infusion)',
                 emphasis: 'warn',
-                body: 'Two source files cover this:\n- `Iobst Patient Protocol for Regional Anesthesia for Limb Lengthening Procedures 01_11_23.docx`\n- `Regional Anesthesia Protocol for limb lengthening procedures.docx`\n\nBoth extracted to `scratch/sharepoint_drafts/Othopedics/Orthopedics Intraoperative Protocols & Guidelines/`. Common themes (verify against source): perineural catheter placement (often femoral + sciatic), dilute local anesthetic infusion, multi-day pain coverage during distraction, catheter checklist coordination with the existing Catheter card, escalation if breakthrough pain.',
+                body: '**Ropivacaine 0.2%** by provider hand-push:\n- **Femoral osteoplasty (fascia iliaca alone)**: **0.1 mL/kg**\n- **Tibial+fibular (sciatic + saphenous)**: **0.05 mL/kg** per catheter\n- **Combined (fascia iliaca + sciatic)**: **0.05 mL/kg** per catheter',
+            },
+            {
+                heading: 'PNC infusion rates by catheter',
+                emphasis: 'critical',
+                body: '| Catheter | Concentration | Rate | Max |\n|---|---|---|---|\n| **Suprainguinal fascia iliaca** (alone) | **Ropi 0.1%** | **0.1 mL/kg/hr** | **10 mL/hr** |\n| **Suprainguinal fascia iliaca** (combined case) | Ropi 0.1% | 0.1 mL/kg/hr | **5 mL/hr** |\n| **Sciatic** | **Ropi 0.05%** ⚠ DO NOT exceed | **0.05 mL/kg/hr** | **5 mL/hr** |\n| **Saphenous (adductor canal)** | Ropi 0.1% | 0.1 mL/kg/hr | 5 mL/hr |\n\n⚠ **Sciatic = NEVER exceed 0.05% concentration** — high incidence of **foot drop on POD#1** if higher concentration used.',
+            },
+            {
+                heading: 'Toxic threshold + ongoing assessment',
+                emphasis: 'warn',
+                body: '- **Stay below total LA toxic threshold: 0.4 mg/kg/hr** (sum across all catheters if multiple)\n- Pain scores + motor function reassessed **q2h**\n- Adjust rates up or down per scores **WHILE PRESERVING MOTOR FUNCTION**\n- **Goal: preserved motor function so patient can engage in PT POD#1** (the entire reason for limb lengthening — restored mobility)',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'plain',
+                body: 'Two NCH sources (latest 2023): "Patient Protocol for Regional Anesthesia for Limb Lengthening Procedures" + "Regional Anesthesia Protocol for limb lengthening procedures." Updated version chosen for procedure-specific dosing detail. Author names removed per no-attending-names rule.',
             },
         ],
     },
