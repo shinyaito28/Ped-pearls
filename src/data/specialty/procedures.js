@@ -155,14 +155,34 @@ export const entries = [
         ...COMMON,
         id: 'proc_pyeloplasty_psh',
         title: 'Laparoscopic Pyeloplasty PSH Pathway',
-        shortDescription: 'Source PDF available — needs medical-review distillation.',
-        tags: ['pyeloplasty', 'urology', 'psh', 'perioperative surgical home', 'laparoscopic'],
+        shortDescription: 'Caudal-based regional + multimodal IV; floor disposition with Valium prn spasm.',
+        tags: ['pyeloplasty', 'urology', 'psh', 'perioperative surgical home', 'laparoscopic', 'caudal pyeloplasty', 'rocuronium', 'hydromorphone', 'ureteral spasm'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs medical review',
+                heading: 'Pre-op',
+                emphasis: 'info',
+                body: '- **Oral acetaminophen 10 mg/kg**\n- **Oral midazolam 0.25-0.5 mg/kg PRN**',
+            },
+            {
+                heading: 'Induction + airway',
+                emphasis: 'plain',
+                body: '- Standard inhalation induction via nitrous IV or mask induction\n- After IV: **rocuronium up to 0.6 mg/kg IV** (additional dosing per attending discretion; consider RSI dose if NPO concerns)\n- Standard ETT placement + securement',
+            },
+            {
+                heading: 'Caudal block',
                 emphasis: 'warn',
-                body: 'The "PSH Urology Laparoscopic Pyeloplasty Pathway.2.pdf" extracted text but content is procedure-specific. Open the original under `original_pictures/Sharepoint/Acute & Regional Pain Medicine/Procedure-based Pain Protocols/` and structure into sections (pre-op meds, regional plan, intra-op fluid management, drain removal, discharge criteria).',
+                body: '- **Bupivacaine 0.25% OR ropivacaine 0.2% with epi 1:200,000**\n- Volume: **1 mL/kg up to 20 mL max**',
+            },
+            {
+                heading: 'Intra-op systemic analgesia + adjuncts',
+                emphasis: 'warn',
+                body: '- **Fentanyl 1-2 mcg/kg IV** with induction\n- **Hydromorphone 2-5 mcg/kg IV** — titrate for **20% ↑ in HR/BP from baseline** (intra-op breakthrough)\n- **Ketorolac 0.5 mg/kg (max 30 mg) IV at closing** — confirm with surgeon\n- **Ondansetron 0.2 mg/kg IV** (may repeat ×1 to max 8 mg)\n- **Dexamethasone 0.1 mg/kg IV**\n- **Local infiltration at trocar sites by surgeon** (consider especially if no caudal placed)',
+            },
+            {
+                heading: 'PACU + post-op',
+                emphasis: 'plain',
+                body: '- **Hydromorphone 2-3 mcg/kg IV for pain score > 4**, may repeat ×2 as needed\n- **Discharge to inpatient floor per routine criteria**\n- **Valium PRN ureteral / bladder spasm** (commonly needed post-pyeloplasty due to stent + edema)',
             },
         ],
     },
