@@ -212,17 +212,37 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'preop_adult_admission_pointer',
-        title: 'Approval for Admission of Adult Patients',
-        shortDescription: 'NCH criteria for patients over 21 — sources available.',
-        tags: ['adult', 'over 21', 'admission criteria', 'transition', 'osu'],
+        id: 'preop_adult_admission',
+        title: 'Adult Patient (>21 yo) Admission to NCH',
+        shortDescription: 'Case-by-case PAT Director review; H&P <1 yr; age-tier labs (CBC/Chem 7 ± EKG/CXR/Hb1ac).',
+        tags: ['adult', 'over 21', 'admission criteria', 'transition', 'osu', 'pat director', 'occ-789', 'cbc chem 7', 'ekg htn'],
         emergency: false,
         related: ['outofor_osu_coverage'],
         sections: [
             {
-                heading: 'Source available — needs structured curation',
+                heading: 'Workflow + approval form',
+                emphasis: 'info',
+                body: '- **Reviewed case-by-case** for patients external to NCH system **> 21 years old**\n- **Send to PAT Director review**\n- **Hospital admission requires the OCC-789 form** "Approval for Admission of Adult Patient" with **3 signature paths** (any of these; verbal approval also acceptable):\n  - **Chief Medical Officer** + Date/Time\n  - **Surgeon-in-Chief** + Date/Time\n  - **Director of Pediatric Dentistry** + Date/Time\n- **Verbal approval workflow**: document "Received from / Received by / Date / Time"\n- These guidelines are **NOT absolute** — clinical judgement applies',
+            },
+            {
+                heading: 'Required documentation — all > 21 yo',
                 emphasis: 'warn',
-                body: 'Two sources cover the over-21 admission policy:\n- `Approval for admission of Adult Pt.pdf`\n- `NCH criteria for patients over age 21 years old.docx` + `.pdf`\n\nAll under `original_pictures/Sharepoint/PAT_Pre-Op/`. Distill into structured entry: who needs joint approval, approval workflow, exclusions for OPB/ASC, OSU coverage routing (cross-link to outofor_osu_coverage). Until then, refer to source.',
+                body: '- **History & Physical < 1 year old**\n- Send to **PAT Director review** before scheduling',
+            },
+            {
+                heading: 'Pre-op labs (preliminary — more if comorbid)',
+                emphasis: 'plain',
+                body: '**For patients > 50 yo**:\n- **CBC + Chem 7** on all (recent within last month)\n- **EKG** on anyone on HTN meds OR > 50 yo (recent within last 6 months, no change in symptoms)\n- **CXR** on anyone with respiratory issues\n- **Hb1ac** on all diabetics (Type 1 + Type 2)\n\n*These are preliminary. More information may be required based on patient history + co-morbid conditions.*',
+            },
+            {
+                heading: 'Cross-references',
+                emphasis: 'success',
+                body: '- For pediatric coverage at OSUWMC instead: see **outofor_osu_coverage** (OSU coverage rules — NCH peds anesthesia covers patients ≤12 yr only at OSU)\n- The 21-and-older patient at NCH is the inverse situation: an adult presenting to a pediatric facility, requiring formal approval workflow',
+            },
+            {
+                heading: 'Source files',
+                emphasis: 'plain',
+                body: '- **OCC-789 form** "Approval for Admission of Adult Patient" (revised 6/26/12) — `Approval for admission of Adult Pt.pdf`\n- "NCH criteria for patients over age 21 years old" (.docx + .pdf) — screening parameters\n\nBoth under `original_pictures/Sharepoint/PAT_Pre-Op/`.',
             },
         ],
     },
