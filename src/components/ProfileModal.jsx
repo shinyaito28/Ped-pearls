@@ -1,9 +1,11 @@
 import React from 'react';
 import { FolderOpen, Trash2, Save } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const ProfileModal = ({ onClose }) => {
     const { savedProfiles, loadProfile, deleteProfile, saveProfile } = usePatient();
+    const { t } = useLanguage();
 
     const handleLoad = (p) => {
         loadProfile(p);
@@ -18,9 +20,9 @@ const ProfileModal = ({ onClose }) => {
     return (
         <div className="absolute top-14 right-4 z-50 bg-white shadow-xl border border-slate-200 rounded-lg p-4 w-64">
             <h4 className="font-bold text-slate-700 mb-2 text-sm flex items-center gap-2">
-                <FolderOpen size={16} /> Saved Profiles
+                <FolderOpen size={16} /> {t('Saved Profiles', '保存済みプロファイル')}
             </h4>
-            {savedProfiles.length === 0 && <div className="text-xs text-slate-400 italic">No saved profiles.</div>}
+            {savedProfiles.length === 0 && <div className="text-xs text-slate-400 italic">{t('No saved profiles.', '保存済みプロファイルなし。')}</div>}
             <ul className="space-y-2 max-h-48 overflow-y-auto">
                 {savedProfiles.map(p => (
                     <li key={p.id} className="flex justify-between items-center bg-slate-50 p-2 rounded hover:bg-slate-100">
@@ -34,7 +36,7 @@ const ProfileModal = ({ onClose }) => {
                 ))}
             </ul>
             <button onClick={handleSave} className="mt-3 w-full bg-teal-600 text-white text-xs font-bold py-2 rounded flex items-center justify-center gap-2 hover:bg-teal-700">
-                <Save size={14} /> Save Current
+                <Save size={14} /> {t('Save Current', '現在を保存')}
             </button>
         </div>
     );

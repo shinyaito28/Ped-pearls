@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Pencil, Settings2, Lock, Clock } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
+import { useLanguage } from '../context/LanguageContext';
 
 // Compact 1-row summary that replaces the full patient input bar after
 // auto-collapse. Click anywhere on the chip to expand back to the form.
@@ -8,6 +9,7 @@ import { usePatient } from '../context/PatientContext';
 // Right-side cog opens a small popover for the auto-collapse preference.
 const PatientChip = ({ onExpand, pref, setPref }) => {
     const { age, ageUnit, gender, weight, height, isPreemie } = usePatient();
+    const { t } = useLanguage();
     const [showSettings, setShowSettings] = useState(false);
     const settingsRef = useRef(null);
 
@@ -23,7 +25,8 @@ const PatientChip = ({ onExpand, pref, setPref }) => {
         }
     }, [showSettings]);
 
-    const ageLabel = `${age}${ageUnit === 'days' ? 'd' : ageUnit === 'months' ? 'mo' : 'y'}`;
+    const ageUnitShort = ageUnit === 'days' ? t('d', '日') : ageUnit === 'months' ? t('mo', 'ヶ月') : t('y', '歳');
+    const ageLabel = `${age}${ageUnitShort}`;
     const sexGlyph = gender === 'female' ? '♀' : '♂';
     const sexAccent = gender === 'female' ? 'text-rose-500' : 'text-sky-500';
 
@@ -49,11 +52,11 @@ const PatientChip = ({ onExpand, pref, setPref }) => {
                     )}
                     {isPreemie && (
                         <span className="ml-1 text-[9px] uppercase font-bold text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700">
-                            Preemie
+                            {t('Preemie', '早産児')}
                         </span>
                     )}
                 </div>
-                <span className="ml-auto hidden sm:inline text-[10px] text-fg-muted uppercase tracking-wide">tap to edit</span>
+                <span className="ml-auto hidden sm:inline text-[10px] text-fg-muted uppercase tracking-wide">{t('tap to edit', 'タップで編集')}</span>
             </button>
 
             {/* Settings popover */}
@@ -73,8 +76,8 @@ const PatientChip = ({ onExpand, pref, setPref }) => {
                         >
                             <Clock size={14} />
                             <div className="flex-1">
-                                <div>Auto-collapse</div>
-                                <div className="text-[10px] text-fg-muted font-normal">Hide after 5 s of inactivity</div>
+                                <div>{t('Auto-collapse', '自動折りたたみ')}</div>
+                                <div className="text-[10px] text-fg-muted font-normal">{t('Hide after 5 s of inactivity', '5 秒非操作で非表示')}</div>
                             </div>
                         </button>
                         <button
@@ -83,8 +86,8 @@ const PatientChip = ({ onExpand, pref, setPref }) => {
                         >
                             <Lock size={14} />
                             <div className="flex-1">
-                                <div>Always show</div>
-                                <div className="text-[10px] text-fg-muted font-normal">Keep the full input bar visible</div>
+                                <div>{t('Always show', '常時表示')}</div>
+                                <div className="text-[10px] text-fg-muted font-normal">{t('Keep the full input bar visible', '入力バーを常に表示')}</div>
                             </div>
                         </button>
                     </div>
