@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     Baby, Save, Droplet, Stethoscope, Brain, Anchor, Calculator, Syringe,
-    ClipboardList, AlertTriangle, Search, RotateCcw, HeartPulse
+    ClipboardList, AlertTriangle, Search, HeartPulse
 } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import ProfileModal from './ProfileModal';
 import ThemeToggle from './ThemeToggle';
 import GlobalSearch from './GlobalSearch';
+import PatientBar from './PatientBar';
+import PatientChip from './PatientChip';
+import { useCollapsibleBar } from '../hooks/useCollapsibleBar';
 
 import FluidCard from './FluidCard';
 import AirwayCard from './AirwayCard';
@@ -31,15 +34,17 @@ const tabs = [
 ];
 
 const Layout = () => {
-    const {
-        weight, setWeight, age, setAge, ageUnit, setAgeUnit, gender, setGender,
-        height, setHeight,
-        isPreemie, setIsPreemie, isManualWeight, resetToAutoWeight
-    } = usePatient();
+    const { weight } = usePatient();
 
     const [showProfiles, setShowProfiles] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [activeTab, setActiveTab] = useState('fluids');
+
+    const w = parseFloat(weight);
+    const isWeightValid = !isNaN(w) && w > 0;
+
+    const { mode, pref, expand, collapse, bumpInteraction, setPref } =
+        useCollapsibleBar({ canCollapse: isWeightValid });
 
     // Cmd / Ctrl + K opens global search.
     useEffect(() => {
@@ -68,8 +73,12 @@ const Layout = () => {
         }
     }, [activeTab]);
 
-    const w = parseFloat(weight);
-    const isWeightValid = !isNaN(w) && w > 0;
+    // The tab strip's sticky offset shifts with the header height. Approximate
+    // measurements: collapsed ≈ 88 px, expanded ≈ 154 px, plus a small buffer
+    // when the warning banner appears.
+    const headerHeight =
+        mode === 'collapsed' ? 92 :
+        isWeightValid        ? 154 : 196;
 
     return (
         <div
@@ -125,101 +134,20 @@ const Layout = () => {
                         </div>
                     </div>
 
-                    {/* Patient bar */}
-                    <div className="bg-surface-2/60 border border-line rounded-xl p-2 flex flex-wrap items-end gap-2">
-                        {/* Age */}
-                        <div className="flex-1 min-w-[140px]">
-                            <label className="text-[10px] text-fg-muted uppercase font-bold mb-0.5 block">Age</label>
-                            <div className="flex items-stretch gap-1">
-                                <input
-                                    type="number"
-                                    value={age}
-                                    onChange={e => setAge(Math.max(0, e.target.value))}
-                                    className="w-16 bg-surface text-fg font-bold text-lg px-2 py-1 rounded-lg outline-none border border-line focus:border-teal-500 text-center"
-                                    placeholder="0"
-                                    aria-label="age value"
-                                />
-                                <div className="flex bg-surface rounded-lg border border-line overflow-hidden">
-                                    {['days', 'months', 'years'].map(u => (
-                                        <button
-                                            key={u}
-                                            onClick={() => setAgeUnit(u)}
-                                            className={`text-[10px] font-bold px-2 transition-colors ${ageUnit === u ? 'bg-teal-500 text-white' : 'text-fg-soft hover:bg-surface-2'}`}
-                                            aria-label={`age unit ${u}`}
-                                        >
-                                            {u === 'days' ? 'D' : u === 'months' ? 'M' : 'Y'}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                    {/* Patient bar — collapses to a chip after 5 s of inactivity */}
+                    {mode === 'expanded' ? (
+                        <PatientBar
+                            bumpInteraction={bumpInteraction}
+                            onCollapse={collapse}
+                            pref={pref}
+                            setPref={setPref}
+                        />
+                    ) : (
+                        <PatientChip onExpand={expand} pref={pref} setPref={setPref} />
+                    )}
 
-                        {/* Height */}
-                        <div className="flex-1 min-w-[90px]">
-                            <label className="text-[10px] text-fg-muted uppercase font-bold mb-0.5 block">Height (cm)</label>
-                            <input
-                                type="number"
-                                value={height}
-                                onChange={e => setHeight(Math.max(0, e.target.value))}
-                                className="w-full bg-surface text-fg font-bold text-lg px-2 py-1 rounded-lg outline-none border border-line focus:border-teal-500 text-center placeholder:text-fg-muted"
-                                placeholder="Est."
-                                aria-label="height in cm"
-                            />
-                        </div>
-
-                        {/* Weight */}
-                        <div className="flex-1 min-w-[110px]">
-                            <label className="text-[10px] text-fg-muted uppercase font-bold mb-0.5 flex justify-between items-center">
-                                <span>Weight (kg)</span>
-                                {isManualWeight && (
-                                    <button
-                                        onClick={resetToAutoWeight}
-                                        className="text-[9px] bg-surface px-1.5 py-0.5 rounded border border-line text-teal-600 dark:text-teal-400 flex items-center gap-1"
-                                        title="Reset to CDC 50th percentile"
-                                    >
-                                        <RotateCcw size={10} /> Auto
-                                    </button>
-                                )}
-                            </label>
-                            <input
-                                type="number"
-                                step="0.1"
-                                value={weight}
-                                onChange={e => setWeight(Math.max(0, e.target.value))}
-                                className={`w-full bg-surface font-bold text-lg px-2 py-1 rounded-lg outline-none border focus:border-teal-500 text-center ${isManualWeight ? 'text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-700' : 'text-fg border-line'}`}
-                                aria-label="weight in kg"
-                            />
-                        </div>
-
-                        {/* Gender + Preemie */}
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[10px] text-fg-muted uppercase font-bold">Sex / status</label>
-                            <div className="flex items-center gap-1.5">
-                                <div className="flex bg-surface rounded-lg border border-line overflow-hidden">
-                                    <button
-                                        onClick={() => setGender('male')}
-                                        className={`text-[11px] font-bold px-2 py-1 transition-colors ${gender === 'male' ? 'bg-sky-500 text-white' : 'text-fg-soft'}`}
-                                        aria-label="male"
-                                    >
-                                        M
-                                    </button>
-                                    <button
-                                        onClick={() => setGender('female')}
-                                        className={`text-[11px] font-bold px-2 py-1 transition-colors ${gender === 'female' ? 'bg-rose-500 text-white' : 'text-fg-soft'}`}
-                                        aria-label="female"
-                                    >
-                                        F
-                                    </button>
-                                </div>
-                                <label className="flex items-center gap-1 cursor-pointer bg-surface px-2 py-1 rounded-lg border border-line hover:border-amber-500 transition-colors">
-                                    <input type="checkbox" checked={isPreemie} onChange={e => setIsPreemie(e.target.checked)} className="w-3 h-3 accent-amber-500" />
-                                    <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">Preemie</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Weight invalid warning */}
+                    {/* Weight invalid warning — only relevant in expanded mode since
+                        canCollapse=false forces expanded anyway. */}
                     {!isWeightValid && (
                         <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs px-3 py-1.5 rounded-lg flex items-center gap-2">
                             <AlertTriangle size={14} />
@@ -232,7 +160,10 @@ const Layout = () => {
             </header>
 
             {/* ==================== TABS ==================== */}
-            <div className="glass sticky top-[154px] z-30 tab-strip border-t-0">
+            <div
+                className="glass sticky z-30 tab-strip border-t-0"
+                style={{ top: `${headerHeight}px` }}
+            >
                 <div className="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar">
                     {tabs.map(tab => {
                         const isActive = activeTab === tab.id;
