@@ -4,6 +4,7 @@ import {
     Replace, Bone, Scissors, Dna, Anchor, Library, HeartPulse, Filter, Donut, Clipboard
 } from 'lucide-react';
 import { hubs, entriesByHub } from '../../data/specialty';
+import { useLanguage } from '../../context/LanguageContext';
 import SpecialtyHubCard from './SpecialtyHubCard';
 
 // String → component mapping for hub icons. Keeps the data layer free of
@@ -15,6 +16,7 @@ const ICONS = {
 
 const SpecialtyLauncher = ({ initialHubId, onConsumeInitialHub }) => {
     const [activeHub, setActiveHub] = useState(initialHubId || null);
+    const { t } = useLanguage();
 
     // Allow the parent (Layout) to deep-link into a specific hub once.
     useEffect(() => {
@@ -37,8 +39,8 @@ const SpecialtyLauncher = ({ initialHubId, onConsumeInitialHub }) => {
                         <Library size={18} />
                     </div>
                     <div>
-                        <h2 className="text-lg font-black text-teal-700 dark:text-teal-300">Specialty</h2>
-                        <p className="text-[11px] text-fg-soft">NCH subspecialty manuals — pick a hub.</p>
+                        <h2 className="text-lg font-black text-teal-700 dark:text-teal-300">{t('Specialty', '専門領域')}</h2>
+                        <p className="text-[11px] text-fg-soft">{t('NCH subspecialty manuals — pick a hub.', 'NCHサブスペシャリティ別マニュアル — ハブを選択')}</p>
                     </div>
                 </div>
             </div>
@@ -62,11 +64,11 @@ const SpecialtyLauncher = ({ initialHubId, onConsumeInitialHub }) => {
                                 <div className={`bg-${hub.accent}-500/10 text-${hub.accent}-600 dark:text-${hub.accent}-400 p-1.5 rounded-lg`}>
                                     <Icon size={16} />
                                 </div>
-                                <div className="font-bold text-sm text-fg flex-1 leading-tight">{hub.label}</div>
+                                <div className="font-bold text-sm text-fg flex-1 leading-tight">{t(hub.label, hub.labelJa)}</div>
                             </div>
-                            <div className="text-[11px] text-fg-muted leading-snug">{hub.description}</div>
+                            <div className="text-[11px] text-fg-muted leading-snug">{t(hub.description, hub.descriptionJa)}</div>
                             <div className="text-[10px] text-fg-muted mt-1.5 font-mono">
-                                {empty ? 'coming soon' : `${count} ${count === 1 ? 'entry' : 'entries'}`}
+                                {empty ? t('coming soon', '準備中') : t(`${count} ${count === 1 ? 'entry' : 'entries'}`, `${count} 項目`)}
                             </div>
                         </button>
                     );

@@ -3,6 +3,7 @@ import { Search, X, Pill, Anchor, Stethoscope, ShieldAlert, Beaker, Pin, HeartPu
 import { useDrugList } from '../hooks/useDrugList';
 import { sedationList } from '../data/sedation';
 import { allEntries as specialtyEntries, findHub } from '../data/specialty';
+import { useLanguage } from '../context/LanguageContext';
 
 // Section catalog — the original 18 hardcoded sections of the app's existing
 // tabs. Specialty entries (NCH manual library) are layered on top via
@@ -69,6 +70,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
     const [query, setQuery] = useState('');
     const [fuse, setFuse] = useState(null);
     const drugs = useDrugList('all');
+    const { t } = useLanguage();
 
     const corpus = useMemo(() => buildCorpus(), []);
 
@@ -163,7 +165,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                         ref={inputRef}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search drugs, sections, specialty manuals…  (Esc to close)"
+                        placeholder={t('Search drugs, sections, specialty manuals…  (Esc to close)', '薬剤・セクション・専門マニュアルを検索…  (Escで閉じる)')}
                         className="flex-1 bg-transparent text-fg placeholder:text-fg-muted outline-none text-base"
                     />
                     <button onClick={onClose} className="p-1 text-fg-muted hover:text-fg" aria-label="close">
@@ -175,7 +177,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                     {/* Sections (legacy hardcoded sections of original tabs) */}
                     {results.sections.length > 0 && (
                         <div>
-                            <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">Sections</div>
+                            <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">{t('Sections', 'セクション')}</div>
                             <ul>
                                 {results.sections.map(s => {
                                     const Icon = s.icon;
@@ -200,7 +202,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                     {results.specialty.length > 0 && (
                         <div>
                             <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">
-                                Specialty manuals ({results.specialty.length})
+                                {t('Specialty manuals', '専門マニュアル')} ({results.specialty.length})
                             </div>
                             <ul>
                                 {results.specialty.map(s => (
@@ -223,7 +225,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                     {results.drugs.length > 0 && (
                         <div>
                             <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">
-                                Drugs ({results.drugs.length})
+                                {t('Drugs', '薬剤')} ({results.drugs.length})
                             </div>
                             <ul>
                                 {results.drugs.map(d => (
@@ -240,7 +242,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                                             <div className="text-right whitespace-nowrap">
                                                 <div className="text-fg font-bold">{d.calc}</div>
                                                 {d.badge === 'contraindicated' && (
-                                                    <div className="text-[9px] uppercase font-bold text-red-600">not for this age</div>
+                                                    <div className="text-[9px] uppercase font-bold text-red-600">{t('not for this age', 'この年齢では禁忌')}</div>
                                                 )}
                                             </div>
                                         </button>
@@ -254,7 +256,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                     {results.sedation.length > 0 && (
                         <div>
                             <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">
-                                Sedation / Adjuncts
+                                {t('Sedation / Adjuncts', '鎮静 / 補助薬')}
                             </div>
                             <ul>
                                 {results.sedation.map((s, i) => (
@@ -277,7 +279,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
 
                     {query && results.sections.length === 0 && results.drugs.length === 0 && results.sedation.length === 0 && results.specialty.length === 0 && (
                         <div className="p-8 text-center text-fg-muted text-sm">
-                            No matches. Try a different keyword (e.g. "epi", "sevoflurane", "MH", "mediastinal").
+                            {t('No matches. Try a different keyword (e.g. "epi", "sevoflurane", "MH", "mediastinal").', '該当なし。別のキーワードをお試しください (例: "epi", "sevoflurane", "MH", "mediastinal")')}
                         </div>
                     )}
                 </div>

@@ -4,6 +4,7 @@ import {
     ClipboardList, AlertTriangle, Search, HeartPulse, Library
 } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
+import { useLanguage } from '../context/LanguageContext';
 import ProfileModal from './ProfileModal';
 import ThemeToggle from './ThemeToggle';
 import GlobalSearch from './GlobalSearch';
@@ -49,20 +50,21 @@ const CardiacTabContent = () => (
 );
 
 const tabs = [
-    { id: 'emergency',   label: 'Crisis',   icon: AlertTriangle, accent: 'red' },
-    { id: 'fluids',      label: 'Fluids',   icon: Droplet,       accent: 'teal' },
-    { id: 'airway',      label: 'Airway',   icon: Stethoscope,   accent: 'sky' },
-    { id: 'sedation',    label: 'Sedation', icon: Brain,         accent: 'indigo' },
-    { id: 'regional',    label: 'Regional', icon: Anchor,        accent: 'purple' },
-    { id: 'corrections', label: 'Physio',   icon: Calculator,    accent: 'amber' },
-    { id: 'cardiac',     label: 'Cardiac',  icon: HeartPulse,    accent: 'rose' },
-    { id: 'all_drugs',   label: 'Drugs',    icon: Syringe,       accent: 'teal' },
-    { id: 'reference',   label: 'Workflow', icon: ClipboardList, accent: 'slate' },
-    { id: 'specialty',   label: 'Specialty', icon: Library,      accent: 'teal' },
+    { id: 'emergency',   label: 'Crisis',   labelJa: '救急',     icon: AlertTriangle, accent: 'red' },
+    { id: 'fluids',      label: 'Fluids',   labelJa: '輸液',     icon: Droplet,       accent: 'teal' },
+    { id: 'airway',      label: 'Airway',   labelJa: '気道',     icon: Stethoscope,   accent: 'sky' },
+    { id: 'sedation',    label: 'Sedation', labelJa: '鎮静',     icon: Brain,         accent: 'indigo' },
+    { id: 'regional',    label: 'Regional', labelJa: '区域',     icon: Anchor,        accent: 'purple' },
+    { id: 'corrections', label: 'Physio',   labelJa: '生理',     icon: Calculator,    accent: 'amber' },
+    { id: 'cardiac',     label: 'Cardiac',  labelJa: '心臓',     icon: HeartPulse,    accent: 'rose' },
+    { id: 'all_drugs',   label: 'Drugs',    labelJa: '薬剤',     icon: Syringe,       accent: 'teal' },
+    { id: 'reference',   label: 'Workflow', labelJa: '基本',     icon: ClipboardList, accent: 'slate' },
+    { id: 'specialty',   label: 'Specialty', labelJa: '専門',    icon: Library,       accent: 'teal' },
 ];
 
 const Layout = () => {
     const { weight } = usePatient();
+    const { lang, toggleLang, t } = useLanguage();
 
     const [showProfiles, setShowProfiles] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
@@ -70,6 +72,24 @@ const Layout = () => {
     // Deep-link target for the Specialty tab — set when a cross-link from
     // another tab (e.g. Crisis) jumps directly into a specific hub.
     const [specialtyDeepLink, setSpecialtyDeepLink] = useState(null);
+
+    // Triple-tap on the brand logo flips the language. Hidden by design —
+    // shareable in English, but the user can switch to JA for personal use.
+    const tapTracker = React.useRef({ count: 0, lastAt: 0 });
+    const handleBrandTap = useCallback(() => {
+        const now = Date.now();
+        const dt = now - tapTracker.current.lastAt;
+        if (dt > 600) {
+            tapTracker.current.count = 1;
+        } else {
+            tapTracker.current.count += 1;
+        }
+        tapTracker.current.lastAt = now;
+        if (tapTracker.current.count >= 3) {
+            toggleLang();
+            tapTracker.current.count = 0;
+        }
+    }, [toggleLang]);
 
     const navigateToSpecialty = useCallback((hubId) => {
         setSpecialtyDeepLink(hubId);
@@ -106,7 +126,7 @@ const Layout = () => {
             case 'all_drugs': return <AllDrugsCard />;
             case 'reference': return <ReferenceCard />;
             case 'specialty': return (
-                <Suspense fallback={<div className="p-8 text-center text-fg-muted text-sm">Loading specialty hub…</div>}>
+                <Suspense fallback={<div className="p-8 text-center text-fg-muted text-sm">{t('Loading specialty hub…', '専門ハブを読み込み中…')}</div>}>
                     <SpecialtyLauncher
                         initialHubId={specialtyDeepLink}
                         onConsumeInitialHub={() => setSpecialtyDeepLink(null)}
@@ -134,15 +154,22 @@ const Layout = () => {
                 <div className="max-w-5xl mx-auto px-3 py-3 flex flex-col gap-3">
                     {/* Top row: brand + utility buttons */}
                     <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
+                        <div
+                            className="flex items-center gap-2 cursor-pointer select-none"
+                            onClick={handleBrandTap}
+                            title={t('Triple-tap to toggle language', '三段階タップで言語切替')}
+                        >
                             <div className="bg-teal-500/10 text-teal-600 dark:text-teal-400 p-1.5 rounded-lg">
                                 <Baby size={20} />
                             </div>
                             <div className="leading-tight">
                                 <h1 className="text-sm font-extrabold tracking-tight">
-                                    Pediatric <span className="text-teal-600 dark:text-teal-400 font-light">Anesthesia Pearls</span>
+                                    {t('Pediatric', '小児')} <span className="text-teal-600 dark:text-teal-400 font-light">{t('Anesthesia Pearls', '麻酔パール')}</span>
                                 </h1>
-                                <p className="text-[10px] text-fg-muted">Nationwide Children's 2021</p>
+                                <p className="text-[10px] text-fg-muted">
+                                    Nationwide Children's 2021
+                                    {lang === 'ja' && <span className="ml-2 px-1 rounded bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold">JA</span>}
+                                </p>
                             </div>
                         </div>
 
@@ -150,11 +177,11 @@ const Layout = () => {
                             <button
                                 onClick={() => setShowSearch(true)}
                                 aria-label="search"
-                                title="Search (⌘K / Ctrl+K)"
+                                title={t('Search (⌘K / Ctrl+K)', '検索 (⌘K / Ctrl+K)')}
                                 className="hidden sm:flex items-center gap-1.5 bg-surface-2 px-2.5 py-1.5 rounded-lg border border-line text-fg-soft hover:border-teal-500 transition-colors text-xs font-medium tap-target"
                             >
                                 <Search size={14} />
-                                <span className="hidden md:inline">Search</span>
+                                <span className="hidden md:inline">{t('Search', '検索')}</span>
                                 <kbd className="ml-1 text-[10px] font-mono bg-surface px-1 py-0.5 rounded border border-line text-fg-muted">⌘K</kbd>
                             </button>
                             <button
@@ -195,7 +222,7 @@ const Layout = () => {
                     {!isWeightValid && (
                         <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs px-3 py-1.5 rounded-lg flex items-center gap-2">
                             <AlertTriangle size={14} />
-                            Enter a positive weight to enable calculations.
+                            {t('Enter a positive weight to enable calculations.', '体重を入力してください（計算に必要）')}
                         </div>
                     )}
                 </div>
@@ -224,7 +251,7 @@ const Layout = () => {
                                 }`}
                             >
                                 <Icon size={18} className={isActive && tab.id === 'emergency' ? 'animate-pulse-soft' : ''} />
-                                {tab.label}
+                                {t(tab.label, tab.labelJa)}
                             </button>
                         );
                     })}
@@ -236,8 +263,8 @@ const Layout = () => {
                 {renderContent()}
 
                 <footer className="text-center pt-10 text-[10px] text-fg-muted">
-                    Based on Nationwide Children's Pediatric Anesthesia Pearls (2021)<br />
-                    Always verify doses clinically. <span className="font-mono">v0.2-redesign</span>
+                    {t("Based on Nationwide Children's Pediatric Anesthesia Pearls (2021)", "Nationwide Children's 小児麻酔パール 2021 ベース")}<br />
+                    {t('Always verify doses clinically.', '用量は必ず臨床的に確認してください。')} <span className="font-mono">v0.2-redesign</span>
                 </footer>
             </main>
 
