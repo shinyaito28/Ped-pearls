@@ -168,15 +168,66 @@ export const entries = [
     {
         ...COMMON,
         id: 'heme_sickle_cell',
-        title: 'Sickle Cell — Pre-op Instructions',
-        shortDescription: 'Source files (.doc) need manual transcription — see SOPs in Sharepoint.',
-        tags: ['sickle cell', 'scd', 'hgb s', 'transfusion', 'preop instructions'],
+        title: 'Sickle Cell — Periop + Acute Complications',
+        shortDescription: 'Pre-op transfuse to Hb 10 (↓ ACS 30%→10%); warm + O2 + hydration intra-op; PCA + ICS post-op.',
+        tags: ['sickle cell', 'scd', 'hgb s', 'hgb ss', 'sbeta thal', 'transfusion', 'acs', 'acute chest syndrome', 'voc', 'vaso-occlusive crisis', 'priapism', 'stroke', 'apheresis', 'codeine', 'ceftriaxone', 'incentive spirometry'],
         emergency: false,
+        related: ['heme_jw_patient'],
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'Pre-op transfusion plan',
+                emphasis: 'critical',
+                body: '- **Goal Hb 10 g/dL (range 9-11)** — Hgb ≥10 reduces post-op ACS risk from **~30% → 10%** (most patients with Hgb SS or S-Beta⁰ Thal need transfusion; Sβ+ Thal often does NOT)\n- **Routine**: CBC + Type & Cross **2-7 days pre-op**; **simple transfusion PRBCs 10-20 mL/kg** to reach goal\n- **Apheresis patients**: schedule surgery **within 1 wk of regularly scheduled apheresis**; ending goal Hb 10\n- **Apheresis to ↓ HgbS%**: reserved for **very high-risk procedures only** (pre-BMT, neurosurgery, major orthopedic)\n- **Develop a written surgery plan** with the sickle cell team — call the **sickle cell nurse clinicians at (614) 722-6349**',
+            },
+            {
+                heading: 'Pre-op hydration + scheduling',
                 emphasis: 'warn',
-                body: 'The NCH Sickle Cell SOPs and Pre-op Instructions are in legacy .doc format that did not auto-extract. Open the originals in `original_pictures/Sharepoint/Hematology & Oncology/` and transcribe them into structured sections here. Until then, principles include: pre-op transfusion to target HbS <30% for major surgery, avoid hypoxia/dehydration/hypothermia/acidosis intra-op, and aggressive O2 + fluid strategy.',
+                body: '- Schedule as **1st or 2nd case** of the day\n- **Pre-operative admission usually NOT necessary**\n- Patient drinks clears until **2 hr pre-op**\n- **Wake child 3-4 hr pre-op + drink 4 hr worth of maintenance fluids** as clears\n- Suggested clear liquid intake (4 hr maintenance):\n  - 5 kg → ≥ 80 mL (3 oz) | 10 kg → ~160 mL (5-6 oz)\n  - 15 kg → ≥ 200 mL (6-7 oz) | 20 kg → ≥ 240 mL (8 oz)\n  - 25 kg → ≥ 260 mL (9 oz) | 30 kg → 9-10 oz | 40 kg → 10-11 oz\n  - 50 kg → 12 oz | 60 kg → 13 oz\n- **On arrival to pre-op area**: place IV, send **repeat H&H + Type & Cross**, start maintenance IVF',
+            },
+            {
+                heading: 'Intra-op priorities',
+                emphasis: 'critical',
+                body: '- **WARM patient — most important intra-op factor** to prevent post-op SCD complications (Bair hugger, warm fluids, room warmth)\n- **Maintain oxygenation** (no permissive hypoxia)\n- **Maintain hydration** (avoid dehydration)\n- Avoid acidosis, hypotension, hypothermia, hypoxia (the classic "sickling pentad" with venous stasis)',
+            },
+            {
+                heading: 'Emergency surgery (no time for pre-op transfusion)',
+                emphasis: 'critical',
+                body: '- **CBC + Type & Cross immediately**\n- **If Hb < 10**: transfuse **PRBCs 15 mL/kg over 2-3 hr**\n- **Call Blood Bank** + inform of SCD → they will use **sickle-negative + minor antigen-matched blood** to ↓ transfusion reaction\n- **No pre-op exchange transfusion if Hgb > 10** (would significantly delay surgery)\n- **Activate MTP** if appropriate\n- **Call hematologist on-call** for any emergency surgery in SCD patient',
+            },
+            {
+                heading: 'Post-op management',
+                emphasis: 'warn',
+                body: '- Preferred unit: **J5** (specialized SCD nursing)\n- **Lap splenectomy → PICU** for careful observation\n- Hematology consult NOT required for most procedures\n- **Hourly incentive spirometry while awake** — only proven prevention of ACS\n- Encourage early ambulation\n- **Maintain SpO2 > 93%** to prevent sickling\n- Pain control scheduled to procedure to prevent VOC',
+            },
+            {
+                heading: 'Post-op pain control (PCA dosing)',
+                emphasis: 'info',
+                body: '- Narcotic-naive: standard doses; many SCD children have prior narcotic experience and require higher doses\n- **Morphine PCA**: continuous **0.03-0.04 mg/kg/hr** + bolus **0.01-0.02 mg/kg q10-15 min**\n- **Dilaudid PCA**: continuous **0.003-0.005 mg/kg/hr** + bolus **0.003 mg/kg q10-15 min**\n- PO (when tolerating + appropriate to procedure): **Hydrocodone/APAP 0.2 mg hydrocodone/kg q6h scheduled (max 10 mg)**\n- **Tylenol with codeine is CONTRAINDICATED** in SCD — codeine metabolism via CYP2D6 highly variable',
+            },
+            {
+                heading: 'Acute Chest Syndrome (ACS) — periop emergency',
+                emphasis: 'critical',
+                body: '**Definition**: New CXR infiltrate + fever, chest pain, hypoxia, or respiratory symptoms (treat empirically if hypoxia + fever even without infiltrate — infiltrate sometimes follows clinical signs).\n\n**Why it matters**: 10% of adults admitted with ACS die during hospitalization; **leading cause of acute death in SCD**; often follows VOC.\n\n**Treatment**:\n- **Admit** — deterioration can be rapid\n- **Antibiotics: Ceftriaxone + Azithromycin** at onset; complete 10-d broad spectrum (Omnicef/Augmentin) + 5-d Azithromycin\n- **Aggressive pulmonary toilet + incentive spirometry**\n- **O2 to keep SpO2 > 93%** (continuous pulse ox)\n- **Albuterol 2.5 mg HHN q4-6h × 48 hr** — assess response, stop at 48 hr if no clinical difference\n- **Transfuse PRBCs to Hb > 10**\n- Severe / baseline Hb > 10 → consider **partial or complete exchange transfusion**\n- Pain control: ibuprofen ± narcotic\n- **Maintenance IVF — do NOT fluid restrict**\n- **Steroids should NOT typically be used** for ACS; if needed for asthma exacerbation → discharge with **6-8 day taper** to prevent rebound VOC',
+            },
+            {
+                heading: 'Fever (T > 101 °F) workup',
+                emphasis: 'warn',
+                body: '- ASAP evaluation: **CBC, retic, blood culture, SpO2** on all patients\n- Consider UA/urine culture, CXR, LP per clinical concern\n- **Ceftriaxone 50 mg/kg (max 2 g) IV** immediately after blood culture\n- Allergy: Clindamycin or Levaquin (must cover Strep pneumo)\n- **Admit** if: history of bacteremia, surgical splenectomy, ACS (CXR infiltrate)\n- Strongly consider admission if: T > 103, WBC > 30k or < 5k, plt < 100k, hydration/transport/compliance issues\n- Outpatient after Ceftriaxone: **Omnicef × 2 days** while cultures pending; message SCD nurse clinician (722-6349)\n- **No specific age criterion for admission** — infants difficult to assess, conservative management recommended',
+            },
+            {
+                heading: 'Vaso-Occlusive Crisis (VOC) — IV regimen if home failed',
+                emphasis: 'warn',
+                body: 'Triggers: cold, dehydration, fever, illness, vigorous exercise, hypoxia, emotional stress, fatigue.\n\n**ER / acute treatment**:\n- Evaluate, CBC, retic, SpO2; FACES or 1-10 pain scale\n- **Toradol 0.5 mg/kg (max 30 mg) IV ×1** — hold ibuprofen if plt < 50k\n- **Initial IV narcotic**:\n  - **Morphine 0.1 mg/kg** (start dose) OR\n  - **Dilaudid 0.015-0.02 mg/kg** (start dose)\n- **PCA "button only"**: divide initial bolus dose by 6, q10min\n- **IVF**: NS bolus 10-20 mL/kg → **1.5× MIVF with D5 ½NS + 20 mEq/L KCl**\n- Heating pad; adjuncts: Colace, Atarax, ondansetron\n- If improved → discharge on scheduled ibuprofen + narcotic × 48 hr\n- **If fails ER → admit + start continuous narcotic**:\n  - Morphine continuous 0.03-0.04 mg/kg/hr + PCA 0.01-0.02 mg/kg q10-15 min\n  - Dilaudid continuous 0.003-0.005 mg/kg/hr + PCA 0.003 mg/kg q10-15 min',
+            },
+            {
+                heading: 'Stroke — EMERGENCY',
+                emphasis: 'critical',
+                body: '- **Page Hematologist on-call to activate Apheresis team** if any stroke concern\n- **Non-contrast CT** to exclude hemorrhagic stroke\n- Labs: CBC, retic, bilirubin, AST/ALT, metabolic panel, Type & Cross\n- **If Hb < 10**: simple transfusion PRBCs 10 mL/kg while awaiting apheresis\n- **Erythrocytapheresis: goal Hb 10 g/dL, HgbS < 15%**\n- **Admit PICU initially → J5**\n- Consults: Neurology, Psychology, SW, PT, OT, Speech, TR\n- **No role for tPA in children with SCD-related stroke** (discuss with hematologist for Sβ+ Thal)\n- Epi: 10% of children with HgbSS have stroke before 20 yr; peak 2-6 yr; ischemic in MCA territory most common',
+            },
+            {
+                heading: 'Priapism',
+                emphasis: 'warn',
+                body: '- **Definition**: unwanted, sustained, painful erection\n- **Home**: oral hydration + ibuprofen 10 mg/kg + oral narcotic; gentle exercise; if > 1-2 hr or first episode → call SCD team + ER\n- **ER**: NS bolus 10-20 mL/kg → 1.5× MIVF; **Toradol 0.5 mg/kg IV ×1**; Morphine 0.1 mg/kg or Dilaudid 0.015-0.02 mg/kg IV ×1\n- **Consult Urology** for local measures (irrigation, drainage)\n- Admit for continued pain + hydration\n- **No role for simple transfusion**\n- Exchange transfusion only if Urologic measures fail (carries risk of "ASPEN-like" neurologic syndrome — acute neurologic events with exchange transfusion for priapism)',
             },
         ],
     },
