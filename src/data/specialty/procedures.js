@@ -168,16 +168,66 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'proc_anticoag_regional_pointer',
-        title: 'Anticoagulation + Regional Summary (ASRA)',
-        shortDescription: 'Source .docx available — needs structured transcription.',
-        tags: ['asra', 'anticoagulation', 'regional', 'epidural', 'lovenox', 'enoxaparin', 'heparin', 'lmwh', 'antiplatelet'],
+        id: 'proc_anticoag_regional',
+        title: 'Anticoagulation + Regional (ASRA 2010)',
+        shortDescription: 'Bedside timing table: agent → wait before placement → catheter removal interval → restart.',
+        tags: ['asra', 'anticoagulation', 'regional', 'epidural', 'spinal', 'neuraxial', 'lovenox', 'enoxaparin', 'heparin', 'lmwh', 'ufh', 'warfarin', 'clopidogrel', 'plavix', 'antiplatelet', 'thrombolytic', 'fondaparinux', 'argatroban', 'bivalirudin', 'epidural hematoma'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs medical review',
+                heading: 'Background + when to worry',
+                emphasis: 'info',
+                body: '- **Epidural hematoma**: rare but catastrophic. Risk ↑ with age, spinal cord/vertebral abnormalities, coagulopathy, difficult needle placement, indwelling catheter + anticoagulation\n- Estimated incidence: <1/150,000 epidural; <1/220,000 spinal — but recent series suggest as high as **1/3,000 in selected populations**\n- These intervals are based on the **ASRA Third Consensus Conference (2010)** — peripheral / plexus blocks: same rules apply (Grade 1C)',
+            },
+            {
+                heading: 'ABSOLUTE — neuraxial NOT to be performed',
+                emphasis: 'critical',
+                body: '- **Thrombolytic therapy (recent or planned)**: avoid neuraxial; if neuraxial done first, avoid thrombolytic for **10 days** (Grade 1A)\n- **Thrombin inhibitors** (desirudin, lepirudin, **bivalirudin, argatroban**): do NOT perform neuraxial (Grade 2C)\n- **Fondaparinux**: avoid neuraxial (insufficient data)\n- LMWH dose given **2 hr pre-op** (peak anticoagulant activity): avoid neuraxial (Grade 1A)',
+            },
+            {
+                heading: 'Unfractionated Heparin (UFH) — SC dosing',
                 emphasis: 'warn',
-                body: 'The "Anticoagulation & Regional Summary.docx" under `original_pictures/Sharepoint/Acute & Regional Pain Medicine/ASRA & Regional Guidelines/` summarizes the ASRA timing intervals between anticoagulant doses and neuraxial/deep regional placement. Transcribe into a structured table (anticoagulant → minimum interval before placement → minimum interval after catheter removal) for bedside reference. Until then, refer to the ASRA pocket card or the source file directly.',
+                body: '- **5000 U BID SC**: NO contraindication to neuraxial. Risk ↓ by delaying heparin until after the block (Grade 1C)\n- **>10,000 U/day OR TID dosing**: safety NOT established — frequent neuro exam if neuraxial performed (Grade 2C)\n- Heparin **>4 days** (HIT risk): platelet count BEFORE neuraxial + before catheter removal',
+            },
+            {
+                heading: 'UFH — IV intra-op (vascular surgery) combined with neuraxial',
+                emphasis: 'warn',
+                body: 'Acceptable **with all** of the following (Grade 1A):\n- Avoid in patients with other coagulopathies\n- **Heparin 1 hr AFTER needle placement**\n- **Catheter removal 2-4 hr after last heparin dose**; **re-heparin 1 hr after catheter removal**\n- Post-op neuro monitoring; avoid local anesthetic via catheter (mask motor block detection)\n- Bloody/difficult tap may ↑ risk but does NOT mandate cancellation — risk-benefit discussion with surgeon\n- **Cardiac surgery full anticoagulation + neuraxial**: insufficient data — avoid local anesthetic, monitor neuro (Grade 2C)',
+            },
+            {
+                heading: 'LMWH — pre-op (BEFORE neuraxial)',
+                emphasis: 'critical',
+                body: '- **Prophylactic dose** (e.g. enoxaparin 30 mg BID or 40 mg daily): **wait ≥ 12 hr** after last dose before needle placement (Grade 1C)\n- **Therapeutic / higher dose** (enoxaparin 1 mg/kg q12h, 1.5 mg/kg daily; dalteparin 120 U/kg q12h or 200 U/kg daily; tinzaparin 175 U/kg daily): **wait ≥ 24 hr** (Grade 1C)\n- **Anti-Xa level NOT predictive** of bleeding — do NOT use to time block (Grade 1A)',
+            },
+            {
+                heading: 'LMWH — post-op (AFTER neuraxial)',
+                emphasis: 'critical',
+                body: 'Patients OK for single-shot or catheter techniques. Management depends on dosing schedule (Grade 1C):\n\n**BID dosing** (↑ risk of spinal hematoma):\n- First post-op LMWH dose: **NO earlier than 24 hr post-op**\n- Indwelling catheter may be left overnight but **MUST be removed BEFORE LMWH initiation**\n- First dose of LMWH: **delay ≥ 2 hr after catheter removal**\n\n**Single-daily dosing**:\n- First post-op LMWH dose: **6-8 hr post-op**\n- 2nd dose: **NO sooner than 24 hr later**\n- Indwelling catheter may be safely maintained — **remove ≥ 10-12 hr after last LMWH dose**\n- Subsequent dose: **≥ 2 hr after catheter removal**\n\n**Either schedule**: avoid concomitant antiplatelets / UFH / dextran (Grade 1A)',
+            },
+            {
+                heading: 'Warfarin',
+                emphasis: 'warn',
+                body: '- **Stop 4-5 days pre-op** + check INR before neuraxial block (Grade 1B)\n- Avoid concomitant aspirin/NSAIDs/ticlopidine/clopidogrel/UFH/LMWH (Grade 1A)\n- Initial pre-op warfarin dose given **>24 hr earlier** OR a 2nd dose given: **check INR** before block (Grade 2C)\n- **Catheter removal target: INR < 1.5** (correlates with clotting factor activity ≥ 40%); continue neuro testing × 24 hr after removal (Grade 2C)\n- **INR 1.5-3 with indwelling catheter**: caution removal, review for other anticoagulants not affecting INR (NSAIDs, clopidogrel, UFH, LMWH); continue neuro checks until INR stabilizes (Grade 1C/2C)\n- **INR > 3 with indwelling catheter**: hold or reduce warfarin (Grade 1A); no definitive recommendation for catheter removal at therapeutic levels',
+            },
+            {
+                heading: 'Antiplatelets',
+                emphasis: 'warn',
+                body: '- **NSAIDs** (alone): NO added bleeding risk for neuraxial; no specific timing concerns for needle/catheter (Grade 1A). But **NSAIDs + oral anticoagulant / UFH / LMWH → avoid neuraxial** (Grade 2C). **COX-2 inhibitors** (minimal platelet effect) preferred if anti-inflammatory needed during anticoagulation\n- **Ticlopidine: hold 14 days** before neuraxial (Grade 1C)\n- **Clopidogrel (Plavix): hold 7 days** before neuraxial. If block needed at 5-7 days → document normalized platelet function (Grade 1C)\n- **GP IIb/IIIa inhibitors** (do NOT perform until platelet function recovered):\n  - **Abciximab (ReoPro)**: 24-48 hr\n  - **Eptifibatide (Integrilin) / Tirofiban (Aggrastat)**: 4-8 hr',
+            },
+            {
+                heading: 'Patient on epidural catheter who unexpectedly received thrombolytic',
+                emphasis: 'critical',
+                body: '- No definitive recommendation on timing of removal\n- **Measure fibrinogen** (one of the last clotting factors to recover) to guide removal timing (Grade 2C)\n- Neuro checks q2h or less while catheter in place\n- Avoid local anesthetic infusion (allows motor block assessment)',
+            },
+            {
+                heading: 'Herbal therapies + parturient + peripheral blocks',
+                emphasis: 'plain',
+                body: '- **Herbal drugs alone** (garlic, ginkgo, ginseng): NO mandatory discontinuation; no contraindication to regional (Grade 1C)\n- **Anticoagulated parturient**: insufficient data — apply ASRA guidelines as for other surgical patients (Grade 2C)\n- **Plexus / peripheral nerve blocks**: apply ASRA neuraxial guidelines (Grade 1C)',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'info',
+                body: 'Horlocker TT, et al. Regional Anesthesia in the Patient Receiving Antithrombotic or Thrombolytic Therapy. ASRA Third Edition. Reg Anesth Pain Med 2010;35:64-101.\n\n*Note: ASRA released a 4th edition (2018) and Anticoagulation in the Pain Patient guidelines (2019) — verify timing intervals against current ASRA guidance for high-stakes cases.*',
             },
         ],
     },
