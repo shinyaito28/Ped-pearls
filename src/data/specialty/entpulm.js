@@ -105,16 +105,41 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'entpulm_jet_vent_pointer',
+        id: 'entpulm_jet_vent',
         title: 'Jet Ventilation Setup',
-        shortDescription: 'Source PDF + PPTX did not auto-extract — needs manual transcription.',
-        tags: ['jet ventilation', 'high frequency', 'laryngeal', 'manujet', 'subglottic'],
+        shortDescription: 'NCH source = photos only of equipment hookup. Operating parameters from general references.',
+        tags: ['jet ventilation', 'high frequency', 'laryngeal', 'manujet', 'subglottic', 'supraglottic', 'shared airway'],
         emergency: false,
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'Source caveat',
                 emphasis: 'warn',
-                body: 'The "Jet Vent Set Up.pdf" extracted empty (image-only) and the .pptx is a binary placeholder. Open the originals under `original_pictures/Sharepoint/ENT_Pulmonary/ENT_Pulm_OMFS Periop Considerations/` for the setup workflow (driving pressures by patient size, T-piece + Manujet handpiece, monitoring chest rise + saturations, barotrauma precautions).',
+                body: 'The NCH "Jet Vent Set Up.pdf" + .pptx contain **photographs of equipment hookup ONLY** — no textual instructions for driving pressure, rate, or patient parameters. Photos show: yellow O2 high-pressure hose connecting from a wall outlet to a small jet-ventilator handpiece (likely Manujet III-style) at the anesthesia machine. **Operating parameters below are general pediatric jet ventilation references; verify against attending preference + ENT/Pulm protocol before each case.**',
+            },
+            {
+                heading: 'Indications',
+                emphasis: 'info',
+                body: '- **Supraglottic / glottic surgery** with shared airway (microlaryngoscopy, vocal cord lesion, suspension laryngoscopy)\n- **Subglottic procedures** (LASER airway, dilation)\n- **CICO emergency**: transtracheal jet ventilation as a temporizing rescue (Pedi airway algorithm)\n- Bronchoscopy / rigid bronch with shared airway',
+            },
+            {
+                heading: 'Equipment hookup (per NCH source photos)',
+                emphasis: 'plain',
+                body: '- **Yellow high-pressure O2 hose** from wall outlet (50 psi) to jet-ventilator handpiece\n- **Manujet handpiece** mounted at anesthesia machine — manual squeeze-trigger controls each insufflation\n- **Pressure gauge + pressure regulator** on handpiece allows set driving pressure adjustment\n- **Catheter/needle** (transtracheal or supraglottic) connects via Luer to handpiece outlet\n- Always verify O2 source pressure + circuit integrity before patient connection',
+            },
+            {
+                heading: 'Suggested driving pressures (general pediatric ranges)',
+                emphasis: 'warn',
+                body: 'These are **textbook ranges**, NOT NCH-specific from the source — adjust to chest rise + SpO2:\n- **Neonate / infant**: 5-15 psi\n- **Small child (~1-5 yr)**: 10-25 psi\n- **Older child (~5-12 yr)**: 20-35 psi\n- **Adolescent / adult-size**: 30-50 psi\n- **Rate**: typically 12-20 breaths/min with manual jetting (let lungs deflate fully between insufflations)\n- Visual confirmation of **chest rise** is the primary tidal volume monitor — start LOW + titrate up',
+            },
+            {
+                heading: 'Monitoring + complications',
+                emphasis: 'critical',
+                body: '- **Continuous SpO2** (no end-tidal CO2 from open jet)\n- **Visual chest rise** = tidal volume surrogate\n- **Barotrauma** is the major risk: if no chest fall between insufflations → **stop, reassess** (tube obstruction? air trapping? pneumothorax?)\n- **Watch for hypercarbia** — jet ventilation can underventilate even with adequate oxygenation\n- **Blood gas** if prolonged jet (>10-15 min)\n- Have **percutaneous needle/cricothyrotomy + standard bag-mask** immediately available as rescue',
+            },
+            {
+                heading: 'Source files',
+                emphasis: 'plain',
+                body: 'NCH source under `original_pictures/Sharepoint/ENT_Pulmonary/ENT_Pulm_OMFS Periop Considerations/`:\n- `Jet Vent Set Up.pdf` (2 pages, photos only)\n- `Jet Vent Set Up.pptx` (2 slides, image-only)\n\nThe NCH photos are bedside reference for *which sockets/cables/handpiece* to use. Operating parameters above are **textbook supplements** — confirm with ENT, Pulm, or attending of the day.',
             },
         ],
     },
