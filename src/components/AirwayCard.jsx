@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stethoscope } from 'lucide-react';
+import { Stethoscope, AlertTriangle } from 'lucide-react';
 import { useAirwayCalc } from '../hooks/useAirwayCalc';
 import CatheterCard from './CatheterCard';
 import DifficultAirwayCard from './DifficultAirwayCard';
@@ -8,11 +8,21 @@ const AirwayCard = () => {
     const {
         ettUncuffed, ettCuffed, ettRule,
         depth, depthRule, blade, lma,
-        airqMaxEtt, olv
+        airqMaxEtt, olv, beyondPediatricRange
     } = useAirwayCalc();
 
     return (
         <div className="space-y-4">
+            {beyondPediatricRange && (
+                <div className="bg-amber-50 border border-amber-300 text-amber-900 text-xs px-3 py-2 rounded-lg flex items-start gap-2">
+                    <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
+                    <div>
+                        Source guide (NCH 2021) covers neonate–pediatric only. For
+                        adolescents/adults, defaulting to adult sizing — verify
+                        with adult airway references.
+                    </div>
+                </div>
+            )}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
                 <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b pb-2 mb-3">
                     <Stethoscope size={18} /> Tube & Laryngoscopy

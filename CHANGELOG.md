@@ -11,6 +11,9 @@ Source of truth for drug data is `original_pictures/IMG_0061-0068.HEIC` (Nationw
 
 Ideas / TODOs for the next release. Move them to a numbered version when shipped.
 
+### Phase 6 progress (in flight)
+- **Phase 6-A** — Airway calculator extended past the NCH source range. Previously, the `(Age/4)+4` branch returned `Mac 2 / Miller 1 / Wis-Hipple 1.5` for **every** ≥2 yr patient, including 16 yr olds. Fixed in [src/hooks/useAirwayCalc.js](src/hooks/useAirwayCalc.js) — blade now tiers through Mac 2 / Miller 2 (6–10 yr), Mac 3 / Miller 2 (10–12 yr), and Mac 3-4 / Miller 2-3 (≥12 yr). ETT for ≥12 yr drops out of the pediatric formula and switches to adult sizing (7.0 mm F / 7.5–8.0 mm M). [`AirwayCard`](src/components/AirwayCard.jsx) shows an amber notice when adult-sizing fallbacks are in effect. 21 new tests in [tests/useAirwayCalc.test.js](tests/useAirwayCalc.test.js) (total 79).
+
 ### Cardiac section roadmap (Phase 5+)
 - **Heparin / Protamine calculator** — ACT goals, heparin loading dose by weight + ACT response curve, protamine reversal at 1 mg per 100 U heparin, tracking of CPB ACTs over time.
 - **Intraoperative antifibrinolytic dosing** — TXA & EACA loading + maintenance schemas specific to pediatric cardiac surgery (high-dose).

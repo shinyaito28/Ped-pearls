@@ -1,11 +1,15 @@
 import { usePatient } from '../context/PatientContext';
 
 // Source: Pediatric Anesthesia Pearls 2021 (image IMG_0061).
+// For ages beyond the source's pediatric range (≥12 yr), values default to
+// adult sizing — flagged in the UI so the operator knows the source guide
+// no longer applies.
 export const useAirwayCalc = () => {
-    const { weight, ageMonths, ageYears, isNeonate, isPreemie, ageUnit } = usePatient();
+    const { weight, ageMonths, ageYears, isNeonate, isPreemie, ageUnit, gender } = usePatient();
     const w = parseFloat(weight);
 
     let ettUncuffed, ettCuffed, ettRule, depth, depthRule, blade, lma;
+    let beyondPediatricRange = false;
 
     // ----- ETT size -----
     if (isPreemie || w < 2.5) {
@@ -21,26 +25,43 @@ export const useAirwayCalc = () => {
         blade = 'Miller 0';
         lma = '1';
     } else {
-        if (ageYears >= 2) {
+        // ----- ETT size -----
+        // The (Age/4)+4 formula and the NCH source guide both stop being useful
+        // around 12 yr; switch to adult sizing past that point.
+        if (ageYears >= 12) {
+            beyondPediatricRange = true;
+            ettUncuffed = gender === 'female' ? '7.0 mm' : '7.5-8.0 mm';
+            ettCuffed   = gender === 'female' ? '6.5-7.0 mm' : '7.0-7.5 mm';
+            ettRule     = '≥12 yr → adult sizing';
+        } else if (ageYears >= 2) {
             const size = (ageYears / 4) + 4;
             ettUncuffed = `${size.toFixed(1)} mm`;
             ettCuffed = `${(size - 0.5).toFixed(1)} mm`;
             ettRule = '(Age / 4) + 4';
-            blade = 'Mac 2 / Miller 1 / Wis-Hipple 1.5';
         } else {
             ettUncuffed = ageMonths < 6 ? '3.5 mm' : (ageMonths < 18 ? '4.0 mm' : '4.5 mm');
             ettCuffed   = ageMonths < 6 ? '3.0 mm' : (ageMonths < 18 ? '3.5 mm' : '4.0 mm');
             ettRule = 'Age-based table';
-            if (ageMonths < 6) blade = 'Miller 1';
-            else if (ageMonths < 12) blade = 'Miller 1 / Wis-Hipple 1.5';
-            else blade = 'Mac 1 / Miller 1 / Wis-Hipple 1.5';
         }
 
+        // ----- Laryngoscope blade -----
+        if (ageMonths < 6) blade = 'Miller 1';
+        else if (ageMonths < 12) blade = 'Miller 1 / Wis-Hipple 1.5';
+        else if (ageYears < 2) blade = 'Mac 1 / Miller 1 / Wis-Hipple 1.5';
+        else if (ageYears < 6) blade = 'Mac 2 / Miller 1 / Wis-Hipple 1.5';
+        else if (ageYears < 10) blade = 'Mac 2 / Miller 2';
+        else if (ageYears < 12) blade = 'Mac 3 / Miller 2';
+        else blade = 'Mac 3-4 / Miller 2-3';
+
+        // Pediatric ETT cap (only meaningful inside the (Age/4)+4 ladder).
         const ETT_MAX_UNCUFFED = 8.0;
         const ETT_MAX_CUFFED = 7.5;
-        if (parseFloat(ettUncuffed) > ETT_MAX_UNCUFFED) { ettUncuffed = `${ETT_MAX_UNCUFFED} mm`; ettRule += ' (capped 8.0)'; }
-        if (parseFloat(ettCuffed) > ETT_MAX_CUFFED) { ettCuffed = `${ETT_MAX_CUFFED} mm`; }
+        if (ageYears < 12) {
+            if (parseFloat(ettUncuffed) > ETT_MAX_UNCUFFED) { ettUncuffed = `${ETT_MAX_UNCUFFED} mm`; ettRule += ' (capped 8.0)'; }
+            if (parseFloat(ettCuffed) > ETT_MAX_CUFFED) { ettCuffed = `${ETT_MAX_CUFFED} mm`; }
+        }
 
+        // ----- LMA -----
         if (w <= 5) lma = '1';
         else if (w <= 10) lma = '1.5';
         else if (w <= 20) lma = '2';
@@ -102,6 +123,7 @@ export const useAirwayCalc = () => {
         depth, depthRule,
         blade, lma,
         airqMaxEtt,
-        olv
+        olv,
+        beyondPediatricRange
     };
 };

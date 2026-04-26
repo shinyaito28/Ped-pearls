@@ -39,3 +39,11 @@ coverage/
 # --- Vite cache ---
 node_modules/.vite/
 node_modules/.cache/
+
+# --- Institutional / copyrighted reference material (kept local only) ---
+# NCH cardiac rotation documents and shared fellow articles — used as
+# off-line reference for developing this app, not redistributed.
+original_pictures/Cardiac Anesthesia Rotation guide*.docx
+original_pictures/Anticoagulation Protocol*.docx
+original_pictures/Transfusion Protocol*.pdf
+original_pictures/articles/
