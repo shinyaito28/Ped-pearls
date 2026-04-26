@@ -142,16 +142,41 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'ortho_iom_amplitude_loss_pointer',
-        title: 'Spine Surgery — Management of IOM Amplitude Loss',
-        shortDescription: 'Source is .doc — needs manual transcription. Critical intraop emergency response.',
-        tags: ['neuromonitoring', 'iom', 'ssep', 'mep', 'amplitude loss', 'spine cord injury', 'wake up test'],
+        id: 'ortho_iom_amplitude_loss',
+        title: 'Spine Surgery — Acute Loss of SSEP / MEP',
+        shortDescription: 'MAP ≥ 90, FiO2 1.0, Hb ≥ 8-10, normocarbia. 15-min rule → wake-up test → spinal injury protocol.',
+        tags: ['neuromonitoring', 'iom', 'ssep', 'mep', 'amplitude loss', 'spinal cord injury', 'wake up test', 'stagnara', 'spinal distraction', 'methylprednisolone', 'scpp'],
         emergency: true,
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'Trigger + cause',
+                emphasis: 'critical',
+                body: 'Acute, complete loss of SSEPs or MEPs during **spinal distraction** = OR-team crisis.\n\nSpinal cord injury can occur from:\n- **Direct injury**\n- **Vascular injury related to implant**\n- **Vascular compromise NOT directly related to implant** (ischemia secondary to hypotension)\n\n→ Urgent need to **restore adequate perfusion to the spinal cord**.',
+            },
+            {
+                heading: 'Step 1 — Raise MAP to ≥ 90 mmHg (↑ spinal cord perfusion pressure)',
+                emphasis: 'critical',
+                body: '- **Reduce anesthetic agent dose**\n- **↑ intravascular volume**: colloid, blood transfusion to ↑ Hct\n- **Vasoconstrictor**: phenylephrine\n- Goal: **Hb ≥ 8-10 g/dL**',
+            },
+            {
+                heading: 'Step 2 — Optimize oxygenation + ventilation',
+                emphasis: 'critical',
+                body: '- **FiO2 → 100%**\n- **Normocarbia** (correct hypocapnia + hypercapnia)\n- ABG to confirm',
+            },
+            {
+                heading: 'Step 3 — Temperature + surgeon evaluation',
                 emphasis: 'warn',
-                body: 'The "Anesthetic management with amplitude loss during spine surgery vtr.doc" is in legacy .doc format and did not auto-extract. Open the original under `original_pictures/Sharepoint/Othopedics/Orthopedics Intraoperative Protocols & Guidelines/`.\n\nGeneral principles to verify against source: rule out anesthetic causes first (deepening, NMBA, hypotension below MAP target), optimize hemodynamics (raise MAP, transfuse if anemic), notify surgeon (may pause and reverse instrumentation), consider Stagnara wake-up test.',
+                body: '- Assess temperature; **aggressively treat** if abnormal\n- **Surgeon evaluates field** for reversible intervention or other direct injury (in parallel with above)',
+            },
+            {
+                heading: 'Step 4 — 15-minute rule',
+                emphasis: 'critical',
+                body: '**If MEPs/SSEPs are NOT restored over 15 minutes**:\n- **Reverse any recent surgical correction**\n- Anesthesiologist prepares patient for **Stagnara wake-up test** to confirm MEP/SSEP findings',
+            },
+            {
+                heading: 'Step 5 — Spinal Injury Protocol (if wake-up confirms loss)',
+                emphasis: 'critical',
+                body: '- **Methylprednisolone 30 mg/kg loading dose IV over 60 minutes**\n- **Then infusion 5.4 mg/kg/hr × 23 hours**\n- MOA: ↓ inflammation + edema, membrane stabilizing, ↓ free-radical-induced lipid oxidation',
             },
         ],
     },
