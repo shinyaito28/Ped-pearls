@@ -8,7 +8,9 @@ export const entry = {
     hub: 'outofor',
     kind: 'flowchart',
     title: 'iMRI Pre-Scanning Checklist',
+    titleJa: 'iMRI スキャン前チェックリスト',
     shortDescription: 'STOP → THINK → ACT — MR-safety sweep before iMRI scan.',
+    shortDescriptionJa: 'STOP → THINK → ACT — iMRI スキャン前の MR 安全性確認。',
     tags: ['imri', 'mri', 'magnet', 'mr safety', 'ferromagnetic', '5 g line', 'pre-scan', 'checklist', 'iMRI OR'],
     emergency: false,
     weightAware: false,
@@ -22,6 +24,12 @@ export const introSteps = [
     'STOP — pause everything before the scan',
     'THINK — focus on completing this checklist',
     'ACT — perform the checklist below',
+];
+
+export const introStepsJa = [
+    'STOP — スキャン前にすべてを止める',
+    'THINK — このチェックリスト完了に集中',
+    'ACT — 以下のチェックリストを実施',
 ];
 
 export const checklist = [
@@ -48,6 +56,31 @@ export const checklist = [
     'CHECK POCKETS!',
 ];
 
+export const checklistJa = [
+    '不要な人員は全員退室を依頼',
+    '麻酔科医にスキャン前準備開始を通知(タイミング/人員が許せば立会い)',
+    '患者の血行動態が安定',
+    '麻酔の針カウントが正確',
+    '患者に補強型 ETT を使用していない',
+    '麻酔器の上面が片付いている(作業トレイ + 機器上面)',
+    '麻酔バックスタンドが片付いていて閉じている',
+    '神経刺激装置とリードが取り外され、閉じたバックスタンドに収納されている',
+    'ABL 機器が室外にある',
+    'Bair hugger が OFF され固定されている',
+    '患者深部体温が 37 °C を超えていない',
+    'Invivo モニターがブーム(黒いコンセント)に接続されている',
+    '輸液加温器が OFF され固定または撤去されている',
+    'Alaris ポンプが室外に撤去されている',
+    '麻酔器のキャスターがロックされている',
+    '麻酔ブームが 5 G 線外にある',
+    '麻酔用コンピュータが固定されている',
+    '緑色 tackle box が 5 G 線外に保管されている',
+    'ウォーキー、Vocera、ポケベル、聴診器、携帯電話、金属バッジホルダーが収納されている',
+    '宝飾品なし — 腕時計、ピアス、ネックレス',
+    'ポケットを確認!',
+];
+
 export const closing = 'List complete — perform a final visual sweep. Anesthesia team is ready for scanning.';
+export const closingJa = 'リスト完了 — 最終視覚確認を実施。麻酔チームはスキャン準備完了。';
 
 export const STORAGE_KEY = 'pp_imri_checklist_v1';

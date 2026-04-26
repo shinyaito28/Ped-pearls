@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, AlertTriangle, ShieldAlert, Info, Check } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Shared collapsible wrapper for flowchart cards. Provides the same header
 // shape as TransfusionProtocolCard so the Specialty hub feels consistent
@@ -16,6 +17,7 @@ export const FlowchartShell = ({
     children,
 }) => {
     const [collapsed, setCollapsed] = useState(defaultCollapsed);
+    const { t } = useLanguage();
 
     return (
         <div className="bg-surface border border-line rounded-2xl shadow-sm">
@@ -39,8 +41,8 @@ export const FlowchartShell = ({
                     {children}
                     {(source || lastReviewed) && (
                         <div className="text-[10px] text-fg-muted flex items-center justify-between pt-2 border-t border-line">
-                            {source && <span>Source: {source}</span>}
-                            {lastReviewed && <span>Reviewed {lastReviewed}</span>}
+                            {source && <span>{t('Source:', '出典:')} {source}</span>}
+                            {lastReviewed && <span>{t('Reviewed', 'レビュー')} {lastReviewed}</span>}
                         </div>
                     )}
                 </div>
@@ -88,12 +90,13 @@ export const KeyValue = ({ k, v, accent = 'fg' }) => (
 
 // Common pattern: "needs a positive weight" guard for weight-aware cards.
 export const RequireWeight = ({ weight, children }) => {
+    const { t } = useLanguage();
     const w = parseFloat(weight) || 0;
     if (w <= 0) {
         return (
             <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs p-2.5 rounded-lg flex items-center gap-2">
                 <AlertTriangle size={14} />
-                Enter a positive weight in the patient bar to compute doses.
+                {t('Enter a positive weight in the patient bar to compute doses.', '用量計算のため患者バーに体重を入力してください。')}
             </div>
         );
     }

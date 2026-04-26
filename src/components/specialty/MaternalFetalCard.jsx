@@ -1,43 +1,63 @@
 import React, { useState } from 'react';
 import { Baby } from 'lucide-react';
 import { FlowchartShell, Section, Bullets } from './FlowchartShell';
+import { useLanguage } from '../../context/LanguageContext';
 import {
-    commonPreop,
+    commonPreop, commonPreopJa,
     maternalHemodynamics,
-    fetalCocktailMidGestation,
-    fetalCocktailExit,
-    fetalEmergencyMidGestation,
-    fetalEmergencyExit,
+    fetalCocktailMidGestation, fetalCocktailMidGestationJa,
+    fetalCocktailExit, fetalCocktailExitJa,
+    fetalEmergencyMidGestation, fetalEmergencyMidGestationJa,
+    fetalEmergencyExit, fetalEmergencyExitJa,
     procedures,
 } from '../../data/specialty/flowcharts/maternal_fetal_flow';
 
-const cocktailMap = {
-    midGestation: { items: fetalCocktailMidGestation, label: 'Fetal IM cocktail (mid-gestation)' },
-    exit:         { items: fetalCocktailExit, label: 'Fetal IM cocktail (EXIT)' },
-};
-const emergencyMap = {
-    midGestation: { items: fetalEmergencyMidGestation, label: 'Fetal emergency drugs (mid-gestation)' },
-    exit:         { items: fetalEmergencyExit, label: 'Fetal emergency drugs (EXIT)' },
-};
-
 const MaternalFetalCard = ({ entry }) => {
+    const { lang, t } = useLanguage();
     const [procId, setProcId] = useState('mifs');
     const proc = procedures.find(p => p.id === procId) || procedures[0];
 
+    const cocktailMap = {
+        midGestation: {
+            items: lang === 'ja' ? fetalCocktailMidGestationJa : fetalCocktailMidGestation,
+            label: t('Fetal IM cocktail (mid-gestation)', '胎児 IM カクテル(中期妊娠)'),
+        },
+        exit: {
+            items: lang === 'ja' ? fetalCocktailExitJa : fetalCocktailExit,
+            label: t('Fetal IM cocktail (EXIT)', '胎児 IM カクテル (EXIT)'),
+        },
+    };
+    const emergencyMap = {
+        midGestation: {
+            items: lang === 'ja' ? fetalEmergencyMidGestationJa : fetalEmergencyMidGestation,
+            label: t('Fetal emergency drugs (mid-gestation)', '胎児緊急薬(中期妊娠)'),
+        },
+        exit: {
+            items: lang === 'ja' ? fetalEmergencyExitJa : fetalEmergencyExit,
+            label: t('Fetal emergency drugs (EXIT)', '胎児緊急薬 (EXIT)'),
+        },
+    };
+
     const cocktail = proc.fetalCocktail ? cocktailMap[proc.fetalCocktail] : null;
     const fetalEmergency = proc.fetalEmergency ? emergencyMap[proc.fetalEmergency] : null;
+    const pre = lang === 'ja' ? commonPreopJa : commonPreop;
+    const procLabel = lang === 'ja' ? proc.labelJa : proc.label;
+    const procAnesthesia = lang === 'ja' ? proc.anesthesiaJa : proc.anesthesia;
+    const procKeyPoints = lang === 'ja' ? proc.keyPointsJa : proc.keyPoints;
+    const procLines = lang === 'ja' ? proc.linesJa : proc.lines;
+    const procFluidLimit = proc.fluidLimit ? (lang === 'ja' ? proc.fluidLimitJa : proc.fluidLimit) : null;
 
     return (
         <FlowchartShell
-            title={entry.title}
-            subtitle={entry.shortDescription}
+            title={t(entry.title, entry.titleJa)}
+            subtitle={t(entry.shortDescription, entry.shortDescriptionJa)}
             icon={Baby}
             accent="pink"
             source={entry.source}
             lastReviewed={entry.lastReviewed}
         >
             <div>
-                <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">Procedure</label>
+                <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">{t('Procedure', '手技')}</label>
                 <select
                     value={procId}
                     onChange={e => setProcId(e.target.value)}
@@ -45,32 +65,32 @@ const MaternalFetalCard = ({ entry }) => {
                 >
                     {procedures.map(p => (
                         <option key={p.id} value={p.id}>
-                            {p.label}{p.emergency ? ' — emergency' : ''}
+                            {lang === 'ja' ? p.labelJa : p.label}{p.emergency ? (lang === 'ja' ? ' — 緊急' : ' — emergency') : ''}
                         </option>
                     ))}
                 </select>
-                <p className="text-[11px] text-fg-muted mt-1">{proc.anesthesia}</p>
+                <p className="text-[11px] text-fg-muted mt-1">{procAnesthesia}</p>
             </div>
 
-            <Section title="Common pre-op (all flows)" emphasis="info">
-                <Bullets items={commonPreop} />
+            <Section title={t('Common pre-op (all flows)', '共通術前(全フロー)')} emphasis="info">
+                <Bullets items={pre} />
             </Section>
 
-            <Section title="Key intra-op steps" emphasis={proc.emergency ? 'critical' : 'plain'}>
-                <Bullets items={proc.keyPoints} />
-                {proc.fluidLimit && (
-                    <div className="mt-2 text-[12px] italic font-bold">⚠ Fluid limit: {proc.fluidLimit}</div>
+            <Section title={t('Key intra-op steps', '主要術中ステップ')} emphasis={proc.emergency ? 'critical' : 'plain'}>
+                <Bullets items={procKeyPoints} />
+                {procFluidLimit && (
+                    <div className="mt-2 text-[12px] italic font-bold">⚠ {t('Fluid limit:', '輸液制限:')} {procFluidLimit}</div>
                 )}
             </Section>
 
-            <Section title="Lines & access" emphasis="plain">
-                <Bullets items={proc.lines} />
+            <Section title={t('Lines & access', 'ライン + アクセス')} emphasis="plain">
+                <Bullets items={procLines} />
             </Section>
 
-            <Section title="Maternal hemodynamic targets" emphasis="info">
-                <div className="font-bold mb-1">{maternalHemodynamics.bp}</div>
-                <Bullets items={maternalHemodynamics.pressors} />
-                <div className="text-[12px] mt-2 italic text-fg-muted">{maternalHemodynamics.fluids}</div>
+            <Section title={t('Maternal hemodynamic targets', '母体血行動態目標')} emphasis="info">
+                <div className="font-bold mb-1">{lang === 'ja' ? maternalHemodynamics.bpJa : maternalHemodynamics.bp}</div>
+                <Bullets items={lang === 'ja' ? maternalHemodynamics.pressorsJa : maternalHemodynamics.pressors} />
+                <div className="text-[12px] mt-2 italic text-fg-muted">{lang === 'ja' ? maternalHemodynamics.fluidsJa : maternalHemodynamics.fluids}</div>
             </Section>
 
             {cocktail && (

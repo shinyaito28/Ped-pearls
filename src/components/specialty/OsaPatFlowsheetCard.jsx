@@ -1,15 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { ClipboardCheck } from 'lucide-react';
 import { FlowchartShell, Section, Bullets } from './FlowchartShell';
+import { useLanguage } from '../../context/LanguageContext';
 import {
-    screeningQuestions,
+    screeningQuestions, screeningQuestionsJa,
     evaluateOlder,
     evaluateYounger,
     dispoLabels,
-    obesityClasses,
+    obesityClasses, obesityClassesJa,
 } from '../../data/specialty/flowcharts/osa_pat_flowsheet';
 
 const OsaPatFlowsheetCard = ({ entry }) => {
+    const { lang, t } = useLanguage();
     const [ageGroup, setAgeGroup] = useState('older'); // 'older' | 'younger'
     const [bmi, setBmi] = useState('');
     const [bmiPercentile, setBmiPercentile] = useState('under99');
@@ -28,6 +30,8 @@ const OsaPatFlowsheetCard = ({ entry }) => {
     }, [ageGroup, bmi, bmiPercentile, positiveCount, hasApnea]);
 
     const dispo = result ? dispoLabels[result.dispo] : null;
+    const questions = lang === 'ja' ? screeningQuestionsJa : screeningQuestions;
+    const obesity = lang === 'ja' ? obesityClassesJa : obesityClasses;
 
     const toggle = (i) => {
         setAnswers(prev => prev.map((v, idx) => idx === i ? !v : v));
@@ -35,19 +39,19 @@ const OsaPatFlowsheetCard = ({ entry }) => {
 
     return (
         <FlowchartShell
-            title={entry.title}
-            subtitle={entry.shortDescription}
+            title={t(entry.title, entry.titleJa)}
+            subtitle={t(entry.shortDescription, entry.shortDescriptionJa)}
             icon={ClipboardCheck}
             accent="slate"
             source={entry.source}
             lastReviewed={entry.lastReviewed}
         >
             <div>
-                <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">Patient age</label>
+                <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">{t('Patient age', '患者年齢')}</label>
                 <div className="flex bg-surface-2/60 rounded-xl p-1 border border-line">
                     {[
-                        { id: 'older', label: '12 years and older' },
-                        { id: 'younger', label: 'Less than 12 years' },
+                        { id: 'older', label: t('12 years and older', '12 歳以上') },
+                        { id: 'younger', label: t('Less than 12 years', '12 歳未満') },
                     ].map(opt => {
                         const active = ageGroup === opt.id;
                         return (
@@ -71,28 +75,28 @@ const OsaPatFlowsheetCard = ({ entry }) => {
                         inputMode="decimal"
                         value={bmi}
                         onChange={e => setBmi(e.target.value)}
-                        placeholder="e.g. 32"
+                        placeholder={t('e.g. 32', '例: 32')}
                         className="w-full bg-surface text-fg font-mono px-3 py-2 rounded-lg border border-line outline-none focus:border-slate-500"
                     />
                 </div>
             ) : (
                 <div>
-                    <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">BMI percentile band</label>
+                    <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">{t('BMI percentile band', 'BMI パーセンタイル帯')}</label>
                     <select
                         value={bmiPercentile}
                         onChange={e => setBmiPercentile(e.target.value)}
                         className="w-full bg-surface text-fg font-bold px-3 py-2 rounded-lg border border-line focus:border-slate-500 outline-none text-sm"
                     >
-                        <option value="under99">Below 99th %ile</option>
-                        <option value="99to140">99th %ile to &lt;140% of 95th %ile</option>
-                        <option value="over140">≥ 140% of 95th %ile</option>
+                        <option value="under99">{t('Below 99th %ile', '99 パーセンタイル未満')}</option>
+                        <option value="99to140">{t('99th %ile to <140% of 95th %ile', '99 パーセンタイル 〜 95 パーセンタイルの 140% 未満')}</option>
+                        <option value="over140">{t('≥ 140% of 95th %ile', '95 パーセンタイルの 140% 以上')}</option>
                     </select>
                 </div>
             )}
 
-            <Section title="OSA screening questions" emphasis="info">
+            <Section title={t('OSA screening questions', 'OSA スクリーニング質問')} emphasis="info">
                 <div className="space-y-1.5">
-                    {screeningQuestions.map((q, i) => (
+                    {questions.map((q, i) => (
                         <label key={i} className="flex items-start gap-2 cursor-pointer">
                             <input
                                 type="checkbox"
@@ -105,18 +109,18 @@ const OsaPatFlowsheetCard = ({ entry }) => {
                     ))}
                 </div>
                 <div className="mt-2 pt-2 border-t border-current/10 text-[12px] font-bold">
-                    {positiveCount} / 6 positive {hasApnea ? '(includes apnea)' : ''}
+                    {positiveCount} / 6 {t('positive', '陽性')} {hasApnea ? t('(includes apnea)', '(無呼吸を含む)') : ''}
                 </div>
             </Section>
 
             {dispo && result && (
-                <Section title={`Disposition: ${dispo.label}`} emphasis={dispo.emphasis}>
-                    <div className="text-sm">{result.reason}</div>
+                <Section title={`${t('Disposition:', '判定:')} ${lang === 'ja' ? dispo.labelJa : dispo.label}`} emphasis={dispo.emphasis}>
+                    <div className="text-sm">{lang === 'ja' ? result.reasonJa : result.reason}</div>
                 </Section>
             )}
 
-            <Section title="Obesity classification reference" emphasis="plain">
-                <Bullets items={obesityClasses} />
+            <Section title={t('Obesity classification reference', '肥満分類参照')} emphasis="plain">
+                <Bullets items={obesity} />
             </Section>
         </FlowchartShell>
     );
