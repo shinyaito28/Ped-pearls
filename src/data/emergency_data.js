@@ -4,8 +4,10 @@ export const emergencyGroups = [
     {
         id: 'code',
         title: 'Cardiac Arrest / Code',
+        titleJa: '心停止 / コード',
         color: 'red',
         description: 'PALS resuscitation core drugs',
+        descriptionJa: 'PALS 蘇生中核薬',
         drugs: [
             'Epinephrine (Cardiac Arrest)',
             'Atropine (IV/IO)',
@@ -23,6 +25,7 @@ export const emergencyGroups = [
     {
         id: 'arrhythmia',
         title: 'Arrhythmia / Low Output',
+        titleJa: '不整脈 / 低心拍出',
         color: 'rose',
         drugs: [
             'Adenosine',
@@ -38,6 +41,7 @@ export const emergencyGroups = [
     {
         id: 'anaphylaxis',
         title: 'Anaphylaxis / Asthma',
+        titleJa: 'アナフィラキシー / 喘息',
         color: 'orange',
         drugs: [
             'Epinephrine (Anaphylaxis)',
@@ -52,6 +56,7 @@ export const emergencyGroups = [
     {
         id: 'seizure',
         title: 'Seizure / Status Epilepticus',
+        titleJa: '痙攣 / てんかん重積',
         color: 'purple',
         drugs: [
             'Midazolam (IV)',
@@ -66,6 +71,7 @@ export const emergencyGroups = [
     {
         id: 'reversal',
         title: 'Reversal',
+        titleJa: '拮抗',
         color: 'teal',
         drugs: [
             'Naloxone',
@@ -78,6 +84,7 @@ export const emergencyGroups = [
     {
         id: 'last',
         title: 'Local Anesthetic Toxicity (LAST)',
+        titleJa: '局所麻酔薬中毒 (LAST)',
         color: 'yellow',
         drugs: [
             'Lipid Emulsion 20%'
@@ -86,6 +93,7 @@ export const emergencyGroups = [
     {
         id: 'hyperK',
         title: 'Hyperkalemia / Acidosis',
+        titleJa: '高 K 血症 / アシドーシス',
         color: 'amber',
         drugs: [
             'Calcium Gluconate',

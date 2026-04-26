@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertTriangle, ExternalLink, Zap, HeartPulse, Activity, Brain, ShieldAlert, Droplet, Flame, Library, ChevronRight } from 'lucide-react';
 import { useDrugList } from '../hooks/useDrugList';
+import { useLanguage } from '../context/LanguageContext';
 import { emergencyGroups, crisisLinks } from '../data/emergency_data';
 import { emergencyEntries } from '../data/specialty';
 import ElectricalShockCard from './ElectricalShockCard';
@@ -25,6 +26,7 @@ const accentText = (color) => `text-${color}-800`;
 
 const EmergencyCard = ({ navigateToSpecialty }) => {
     const allDrugs = useDrugList('all');
+    const { lang, t } = useLanguage();
     const [view, setView] = useState('drugs'); // 'drugs' | 'mh' | 'shock'
 
     const getDrug = (name) => allDrugs.find(d => d.name === name);
@@ -37,8 +39,8 @@ const EmergencyCard = ({ navigateToSpecialty }) => {
                 <div className="flex items-center gap-3">
                     <AlertTriangle size={32} className="text-yellow-300" />
                     <div className="flex-1">
-                        <h2 className="text-2xl font-black uppercase tracking-wider">Emergency</h2>
-                        <p className="text-red-100 text-sm font-medium">Crisis checklists & rapid weight-based dosing</p>
+                        <h2 className="text-2xl font-black uppercase tracking-wider">{t('Emergency', '救急')}</h2>
+                        <p className="text-red-100 text-sm font-medium">{t('Crisis checklists & rapid weight-based dosing', 'クライシスチェックリスト + 体重ベースの迅速投与')}</p>
                     </div>
                 </div>
             </div>
@@ -67,7 +69,7 @@ const EmergencyCard = ({ navigateToSpecialty }) => {
                 <div className="bg-white dark:bg-surface border-2 border-rose-100 dark:border-rose-900 rounded-lg p-3">
                     <div className="flex items-center gap-2 text-rose-700 dark:text-rose-300 font-bold text-sm mb-2">
                         <Library size={16} />
-                        Subspecialty emergencies
+                        {t('Subspecialty emergencies', '専門領域の緊急')}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                         {subspecialtyEmergencies.map(e => (
@@ -77,30 +79,30 @@ const EmergencyCard = ({ navigateToSpecialty }) => {
                                 className="flex items-center justify-between gap-2 px-2.5 py-2 bg-surface-2/40 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-line hover:border-rose-300 rounded text-left tap-target"
                             >
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-[12px] font-bold text-fg truncate">{e.title}</div>
-                                    <div className="text-[10px] text-fg-muted truncate">{e.shortDescription}</div>
+                                    <div className="text-[12px] font-bold text-fg truncate">{t(e.title, e.titleJa)}</div>
+                                    <div className="text-[10px] text-fg-muted truncate">{t(e.shortDescription, e.shortDescriptionJa)}</div>
                                 </div>
                                 <ChevronRight size={14} className="text-fg-muted flex-shrink-0" />
                             </button>
                         ))}
                     </div>
-                    <div className="text-[10px] text-fg-muted mt-1.5">→ jumps to Specialty › {subspecialtyEmergencies.length === 1 ? 'hub' : 'respective hubs'}</div>
+                    <div className="text-[10px] text-fg-muted mt-1.5">→ {t('jumps to Specialty ›', '専門タブへジャンプ ›')} {subspecialtyEmergencies.length === 1 ? t('hub', 'ハブ') : t('respective hubs', '該当ハブ')}</div>
                 </div>
             )}
 
             {/* Sub-view switcher */}
             <div className="bg-white border border-slate-200 rounded-lg overflow-hidden flex">
                 {[
-                    { id: 'drugs', label: 'Drug Groups' },
-                    { id: 'mh', label: 'MH Protocol' },
-                    { id: 'shock', label: 'Counter Shock' }
-                ].map(t => (
+                    { id: 'drugs', label: t('Drug Groups', '薬剤グループ') },
+                    { id: 'mh', label: t('MH Protocol', 'MH プロトコール') },
+                    { id: 'shock', label: t('Counter Shock', 'カウンターショック') }
+                ].map(tab => (
                     <button
-                        key={t.id}
-                        onClick={() => setView(t.id)}
-                        className={`flex-1 py-2 text-xs font-bold transition-colors ${view === t.id ? 'bg-red-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
+                        key={tab.id}
+                        onClick={() => setView(tab.id)}
+                        className={`flex-1 py-2 text-xs font-bold transition-colors ${view === tab.id ? 'bg-red-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
                     >
-                        {t.label}
+                        {tab.label}
                     </button>
                 ))}
             </div>
@@ -114,14 +116,14 @@ const EmergencyCard = ({ navigateToSpecialty }) => {
                         <div key={group.id} className="bg-white rounded-lg border-2 border-slate-100 overflow-hidden shadow-sm">
                             <div className={`px-4 py-2 border-b flex items-center gap-2 ${accentBg(group.color)}`}>
                                 {groupIcon(group.id)}
-                                <h3 className={`font-bold text-lg ${accentText(group.color)}`}>{group.title}</h3>
+                                <h3 className={`font-bold text-lg ${accentText(group.color)}`}>{lang === 'ja' && group.titleJa ? group.titleJa : group.title}</h3>
                             </div>
                             <div className="divide-y divide-slate-100">
                                 {group.drugs.map(drugName => {
                                     const d = getDrug(drugName);
                                     if (!d) return (
                                         <div key={drugName} className="p-3 text-xs text-slate-400 italic">
-                                            {drugName} (entry not found)
+                                            {drugName} ({t('entry not found', '項目が見つかりません')})
                                         </div>
                                     );
                                     const rowBg = d.badge === 'contraindicated' ? 'bg-red-50' : '';
@@ -129,7 +131,7 @@ const EmergencyCard = ({ navigateToSpecialty }) => {
                                         <div key={d.name} className={`p-4 flex justify-between items-start hover:bg-slate-50 ${rowBg}`}>
                                             <div className="flex-1 pr-4">
                                                 <div className="font-bold text-slate-800 text-base">{d.name}</div>
-                                                <div className="text-xs text-slate-500 font-medium">{d.note}</div>
+                                                <div className="text-xs text-slate-500 font-medium">{lang === 'ja' && d.noteJa ? d.noteJa : d.note}</div>
                                             </div>
                                             <div className="text-right flex flex-col items-end gap-1">
                                                 <div className="text-xl font-black text-slate-900 tracking-tight">{d.calc}</div>
