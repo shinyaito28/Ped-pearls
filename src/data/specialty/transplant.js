@@ -257,16 +257,46 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'transplant_abo_verif_pointer',
-        title: 'Pre-Transplant ABO Verification',
-        shortDescription: 'Source PDF extracted empty (image-based) — see Sharepoint original.',
-        tags: ['abo', 'crossmatch', 'verification', 'safety'],
+        id: 'transplant_abo_verification',
+        title: 'Pre-Transplant ABO Verification (OCC-1057)',
+        shortDescription: 'Two-stage verification: (1) before organ arrives + (2) before anastomosis. Surgeon visual + 2 LHCP signatures.',
+        tags: ['abo', 'crossmatch', 'verification', 'transplant safety', 'occ-1057', 'unos', 'organ implant', 'surgeon attestation', 'lhcp signature'],
         emergency: false,
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'When to perform — TWO MANDATORY VERIFICATIONS',
+                emphasis: 'critical',
+                body: '**Stage 1: BEFORE organ arrives in the OR**\n- Performed prior to induction of anesthesia\n- OR: prior to incision **if patient is receiving continuous sedation prior to OR**\n\n**Stage 2: AFTER organ arrival in OR (ALL RECIPIENTS) — PRIOR TO ANASTOMOSIS**',
+            },
+            {
+                heading: 'Stage 1 — Before organ arrival',
                 emphasis: 'warn',
-                body: 'The Pre-Transplant ABO Verification PDF returned no extractable text (likely image-only). Open the original under `original_pictures/Sharepoint/Transplant/Transplant Perioperative Considerations/` for the verification workflow and add structured steps here once transcribed.',
+                body: 'Verify and document the following on the OCC-1057 form:\n- **Organ to be implanted** (check one): Right Lung / Left Lung / Heart / Right Kidney / Left Kidney\n- **DONOR UNOS #** is _____\n- **DONOR ABO** is _____ *(also add Blood Tube)*\n- **RECIPIENT MRN** is _____\n- **RECIPIENT ABO** is _____ *(also add Blood Tube)*\n- **Donor + recipient blood types are**: ☐ Compatible / ☐ Intended Incompatible\n- **Organ is intended for this recipient**: ☐ YES / ☐ NO\n\n**TWO Licensed Healthcare Professional (LHCP) signatures + printed names + dates + times of visual verification**',
+            },
+            {
+                heading: 'Stage 2 — After organ arrival, before anastomosis',
+                emphasis: 'critical',
+                body: 'Repeat the entire Stage 1 verification (organ + UNOS # + ABO × 2 + MRN + compatibility + intended-recipient confirmation) PLUS:\n\n- **Visual verification by the implanting transplant surgeon** documented (printed name + time)\n- **Implant surgeon attestation**: "I, [implant surgeon printed name], completed the verification and attest the documentation above" — date + time of attestation\n- **Plus 1 additional LHCP signature**\n\n**No anastomosis until Stage 2 complete and signed**.',
+            },
+            {
+                heading: 'Form disposition — Thoracic Organ Transplant',
+                emphasis: 'plain',
+                body: '1. Place **completed WHITE ORIGINAL** form in **recipient\'s medical record**\n2. **Contact Transplant Coordinator** to pick up yellow copy of form **+ the donor packet**',
+            },
+            {
+                heading: 'Form disposition — Kidney Organ Transplant',
+                emphasis: 'plain',
+                body: '1. Place **completed WHITE ORIGINAL** form in **recipient\'s medical record**\n2. Place **yellow copy + deceased donor packet** in the **Organ Transplant mailbox at the Main OR desk** — picked up by Renal Transplant Coordinator',
+            },
+            {
+                heading: 'Why this matters',
+                emphasis: 'critical',
+                body: 'ABO-incompatible organ transplantation can result in **hyperacute rejection** (rapid graft loss + life-threatening complications). Even **intended ABO-incompatible** programs (used in select kidney recipients with desensitization) require explicit checkbox documentation. The two-stage verification + multiple signatures + surgeon visual attestation are designed to catch wrong-organ-to-wrong-recipient errors before they become irreversible.',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'plain',
+                body: '**OCC-1057 Recipient Pre-Transplant ABO Verification Form** (DRAFT 6/13/16) — image-only PDF, transcribed from rendered image. Original form contains structured fillable fields + signature blocks. `original_pictures/Sharepoint/Transplant/Transplant Perioperative Considerations/Pre-Transplant ABO Verif.pdf`.',
             },
         ],
     },
