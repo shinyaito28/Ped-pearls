@@ -198,16 +198,51 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'metabolic_mastocytosis_pointer',
-        title: 'Mastocytosis Recommendations',
-        shortDescription: 'PDF extracted empty (image-only) — see Sharepoint original.',
-        tags: ['mastocytosis', 'mast cell', 'tryptase', 'histamine', 'flushing'],
+        id: 'metabolic_mastocytosis',
+        title: 'Mastocytosis — Drug Avoidance + Periop Plan',
+        shortDescription: 'Mast Cell Society quick-ref + bedside protocol. AVOID succ/atracurium/ester LA; OK roc/sevo.',
+        tags: ['mastocytosis', 'mast cell', 'tryptase', 'histamine', 'flushing', 'anaphylaxis', 'cromolyn', 'ketotifen', 'h1 blocker', 'h2 blocker', 'medicalert', 'preservative-free'],
         emergency: false,
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'AVOID — drugs that trigger mast cell release',
+                emphasis: 'critical',
+                body: '**General**: Alcohol/Ethanol, Amphotericin B, Anticholinergics, Dextran, Dextromethorphan, Polymyxin B, Quinine, IV Vancomycin, **alpha- and beta-adrenergic blockers**\n\n**Pain**: Opioid narcotics (variable individual tolerance), **Toradol/ketorolac**, NSAIDs (unless on chronically)\n\n**Muscle relaxants** (most likely class to cause anaphylaxis): **Succinylcholine, Atracurium, Doxacurium, D-tubocurarine, Metocurine, Mivacurium**\n\n**Local anesthetics — ester group**: Benzocaine, Chloroprocaine, Procaine, Tetracaine',
+            },
+            {
+                heading: 'TYPICALLY TOLERATED',
+                emphasis: 'success',
+                body: '**Pain**: Fentanyl (may need adjunct e.g. Zofran), Tramadol\n\n**Muscle relaxants**: **Pancuronium, Vecuronium** (rocuronium has scattered reports of anaphylaxis — use with caution)\n\n**Local anesthetics — amide group**: Bupivacaine, Lidocaine, Mepivacaine, Prilocaine, Levobupivacaine, Ropivacaine\n\n**Induction**: **Ketamine, Midazolam, Propofol**\n\n**Inhaled**: **Sevoflurane** (inhibitor of mast cell activation; less flushing than other volatiles)',
+            },
+            {
+                heading: 'Pre-op planning',
                 emphasis: 'warn',
-                body: 'The "Mastocytosis recommendations.pdf" returned no extractable text (image-only). Open the original under `original_pictures/Sharepoint/Metabolic & Genetic Disorders/` for the full NCH protocol. Common bedside themes (verify against source): avoid histamine-releasing drugs (atracurium, morphine), pre-medicate with H1 + H2 blocker, dexamethasone, have epinephrine ready, watch for anaphylactoid reactions, tryptase if reaction occurs.',
+                body: '- Engage early: patient + referring MD + surgeon + anesthesiologist + nurses\n- **Schedule as first / early case** of the day\n- Patient continues home regimen: **H1 (e.g. Allegra) + H2 (e.g. Zantac/famotidine)** + mast-cell stabilizer (cromolyn/cromoglycate or ketotifen) on schedule\n- Review records from prior surgeries — drugs tolerated before should be preferred\n- **Beta-blockers may interfere with epinephrine** if it is needed acutely — review with patient\'s physician\n- "Graded challenge" in hospital under allergist supervision for any new med with uncertain history\n- **Anxiolysis**: diazepam family (diazepam / midazolam / lorazepam) usually effective; reduce anxiety-driven release\n- **Steroids** reduce mast cell ability to release inflammatory mediators — discuss premed\n- IV access: **warm blankets on arms** to facilitate vasodilation',
+            },
+            {
+                heading: 'Intra-op precautions',
+                emphasis: 'warn',
+                body: '- **Use IV preparations WITHOUT preservative**\n- Warm room + warm patient — avoid temperature-triggered release\n- Cover with warm blankets in OR\n- Reduce anxiety triggers (continue benzo if appropriate)\n- IV epi drawn up + immediately accessible (IM and IV)\n- Continuous monitoring of skin (drapes can hide flushing/hives)\n- Watch for early airway obstruction signs',
+            },
+            {
+                heading: 'Acute mast cell activation / anaphylaxis intra-op',
+                emphasis: 'critical',
+                body: '**Recognition**: flushing, hives, hypotension, bronchospasm, airway obstruction (may be masked by drapes)\n\n**Treatment**:\n- **Discontinue suspected drug** immediately\n- **Epinephrine** (IM 0.01 mg/kg or IV titrated)\n- **100% O2** + airway support; bronchodilators if bronchospasm\n- **IV fluid resuscitation** for distributive shock\n- **Corticosteroids** (e.g. methylprednisolone)\n- **H1 + H2 blockers IV**\n- Continuous IV epi infusion or other vasopressor if persistent hypotension\n- **Serum tryptase level during the hypotensive episode** + compare with patient\'s baseline ("pre-surgery") tryptase to confirm mast-cell etiology',
+            },
+            {
+                heading: 'Emergency surgery considerations',
+                emphasis: 'warn',
+                body: '- Patient should wear a **MedicAlert bracelet** identifying mast cell disease\n- MedicAlert (1-888-633-4298 in US, 1-209-668-3333 outside) accessed by emergency response 24/7\n- For unconscious / unable-to-communicate patients, the bracelet is the lifeline\n- Mastocytosis Society maintains a list of medications recommended manufacturers\n- Even in emergency, attempt to follow the AVOID/TOLERATED chart',
+            },
+            {
+                heading: 'Post-op',
+                emphasis: 'plain',
+                body: '- Continue H1/H2 + mast cell stabilizer regimen\n- Avoid temperature stress, dehydration, prolonged NPO\n- Monitor for delayed mediator release; tryptase trend if symptomatic\n- Discharge once symptom-free + tolerating PO',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'plain',
+                body: 'Mast Cell Society Quick Reference Guide + "What You Should Know About Anesthesia" (Mastocytosis Society, page references in PDF). Original PDF was image-only; rendered via PyMuPDF + read multimodally for transcription.',
             },
         ],
     },
