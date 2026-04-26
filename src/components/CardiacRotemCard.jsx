@@ -4,7 +4,97 @@ import { usePatient } from '../context/PatientContext';
 import { useRotemCpb, useRotemPostCpb } from '../hooks/useRotemCalc';
 import { preparation, cpbInputs, postCpbInputs } from '../data/rotem_protocol';
 import { CpbDecisionLadder, PostCpbDecisionTree } from './RotemDecisionTree';
+import RotemTrace from './RotemTrace';
+import RotemTooltip from './RotemTooltip';
 import { fmt } from '../utils/calc';
+
+// Map an input slider id to the props needed to render a mock ROTEM trace
+// for that slider. The trace reflects the current values of the relevant
+// assay so HEPTEM CT, HEPTEM CFT and HEPTEM MCF sliders all share one trace
+// with different markers highlighted.
+const traceConfigForInput = (id, values) => {
+    if (id === 'heptemCT' || id === 'heptemCFT' || id === 'heptemMCF') {
+        return {
+            assay: 'HEPTEM',
+            ct: values.heptemCT ?? 200,
+            cft: values.heptemCFT ?? 90,
+            mcf: values.heptemMCF ?? 55,
+            ampMax: 80,
+            mcfGoal: 50,
+            highlight: id === 'heptemCT' ? 'CT' : id === 'heptemCFT' ? 'CFT' : 'MCF',
+            triggered:
+                id === 'heptemCT' ? values.heptemCT > 240 :
+                id === 'heptemCFT' ? values.heptemCFT > 110 :
+                values.heptemMCF < 50,
+        };
+    }
+    if (id === 'fibtemMCF') {
+        return {
+            assay: 'FIBTEM',
+            ct: values.heptemCT ?? 200,
+            cft: values.heptemCFT ?? 90,
+            mcf: values.fibtemMCF ?? 12,
+            ampMax: 25,
+            mcfGoal: 9,
+            highlight: 'MCF',
+            triggered: values.fibtemMCF < 9,
+        };
+    }
+    if (id === 'extemCT') {
+        return {
+            assay: 'EXTEM',
+            ct: values.extemCT ?? 80,
+            cft: 90,
+            mcf: 55,
+            ampMax: 80,
+            mcfGoal: 50,
+            highlight: 'CT',
+            triggered: values.extemCT > 111,
+            showA10: true,
+        };
+    }
+    if (id === 'a10extem') {
+        const a10 = values.a10extem ?? 42;
+        return {
+            assay: 'EXTEM',
+            ct: values.extemCT ?? 80,
+            cft: 90,
+            mcf: Math.max(a10 * 1.3, a10 + 5),
+            ampMax: 80,
+            mcfGoal: 38,
+            highlight: 'A10',
+            a10,
+            triggered: a10 < 38,
+            showA10: true,
+        };
+    }
+    if (id === 'a10fibtem') {
+        const a10 = values.a10fibtem ?? 12;
+        return {
+            assay: 'FIBTEM',
+            ct: values.extemCT ?? 80,
+            cft: 90,
+            mcf: Math.max(a10 * 1.3, a10 + 1.5),
+            ampMax: 25,
+            mcfGoal: 9,
+            highlight: 'A10',
+            a10,
+            triggered: a10 < 9,
+            showA10: true,
+        };
+    }
+    return null;
+};
+
+// Extract the term to look up for a slider's tooltip.
+const tooltipTermForInput = (id) => {
+    if (id.startsWith('heptem')) return 'HEPTEM';
+    if (id.startsWith('fibtem')) return 'FIBTEM';
+    if (id === 'extemCT') return 'EXTEM';
+    if (id === 'a10extem') return 'A10';
+    if (id === 'a10fibtem') return 'A10';
+    return null;
+};
 
 // ---------------------------------------------------------------------------
 // Slider with threshold markers — a number input + range slider that turn rose
@@ -12,7 +102,7 @@ import { fmt } from '../utils/calc';
 // bad if under). The threshold bar color follows the same convention.
 // ---------------------------------------------------------------------------
 
-const ThresholdSlider = ({ spec, value, onChange }) => {
+const ThresholdSlider = ({ spec, value, onChange, allValues }) => {
     const t = spec.thresholds[0];
     const isBad = t.direction === 'over' ? value > t.at : value < t.at;
     const accent = isBad ? 'rose' : 'emerald';
@@ -23,11 +113,15 @@ const ThresholdSlider = ({ spec, value, onChange }) => {
     const markerPct = ((t.at - spec.min) / (spec.max - spec.min)) * 100;
     const valuePct  = ((value  - spec.min) / (spec.max - spec.min)) * 100;
 
-    return (
-        <div className="space-y-1">
-            <div className="flex items-baseline justify-between">
-                <label className="text-[11px] uppercase font-bold text-slate-500 tracking-wide">
+    const traceProps = traceConfigForInput(spec.id, allValues);
+    const tooltipTerm = tooltipTermForInput(spec.id);
+
+    const sliderControls = (
+        <div className="space-y-1 flex-1 min-w-0">
+            <div className="flex items-baseline justify-between gap-2">
+                <label className="text-[11px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wide flex items-center gap-1">
                     {spec.label}
+                    {tooltipTerm && <RotemTooltip term={tooltipTerm} />}
                 </label>
                 <div className="flex items-center gap-1">
                     <input
@@ -69,6 +163,17 @@ const ThresholdSlider = ({ spec, value, onChange }) => {
                     Threshold {t.at}{spec.unit} — {t.meaning}
                 </span>
                 <span>{spec.max}</span>
+            </div>
+        </div>
+    );
+
+    if (!traceProps) return sliderControls;
+
+    return (
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+            {sliderControls}
+            <div className="md:flex-shrink-0 flex justify-end md:justify-start">
+                <RotemTrace {...traceProps} width={220} height={90} />
             </div>
         </div>
     );
@@ -223,12 +328,13 @@ const CardiacRotemCard = () => {
                 <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-200 pb-2 mb-3">
                     <Activity size={18} /> ROTEM values — {phase === 'cpb' ? 'HEPTEM + FIBTEM' : 'EXTEM + FIBTEM'}
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                <div className="space-y-5">
                     {inputsForPhase.map(spec => (
                         <ThresholdSlider
                             key={spec.id}
                             spec={spec}
                             value={valuesForPhase[spec.id]}
+                            allValues={valuesForPhase}
                             onChange={(v) => setForPhase(prev => ({ ...prev, [spec.id]: v }))}
                         />
                     ))}
