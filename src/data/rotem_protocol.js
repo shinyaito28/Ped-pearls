@@ -18,8 +18,8 @@
 // ---------------------------------------------------------------------------
 
 export const preparation = [
-    { item: 'PRBCs', detail: '2 units, split larger unit into two' },
-    { item: 'FFP',   detail: 'Two orders of 20 mL/kg' }
+    { item: 'PRBCs', itemJa: 'PRBC', detail: '2 units, split larger unit into two', detailJa: '2 単位、大きい単位は 2 つに分割' },
+    { item: 'FFP',   itemJa: 'FFP',  detail: 'Two orders of 20 mL/kg',              detailJa: '20 mL/kg を 2 オーダー' }
 ];
 
 // Each phase declares the inputs the user is asked for, with a slider range
@@ -35,7 +35,7 @@ export const cpbInputs = [
         step: 5,
         default: 200,
         // Threshold direction: 'over' = intervention triggered when value > threshold
-        thresholds: [{ at: 240, direction: 'over', meaning: 'Kcentra trigger' }]
+        thresholds: [{ at: 240, direction: 'over', meaning: 'Kcentra trigger', meaningJa: 'Kcentra トリガー' }]
     },
     {
         id: 'heptemCFT',
@@ -45,7 +45,7 @@ export const cpbInputs = [
         max: 300,
         step: 5,
         default: 90,
-        thresholds: [{ at: 110, direction: 'over', meaning: 'Kcentra trigger' }]
+        thresholds: [{ at: 110, direction: 'over', meaning: 'Kcentra trigger', meaningJa: 'Kcentra トリガー' }]
     },
     {
         id: 'heptemMCF',
@@ -55,7 +55,7 @@ export const cpbInputs = [
         max: 80,
         step: 1,
         default: 55,
-        thresholds: [{ at: 50, direction: 'under', meaning: 'Platelets goal' }]
+        thresholds: [{ at: 50, direction: 'under', meaning: 'Platelets goal', meaningJa: '血小板目標' }]
     },
     {
         id: 'fibtemMCF',
@@ -65,7 +65,7 @@ export const cpbInputs = [
         max: 25,
         step: 1,
         default: 12,
-        thresholds: [{ at: 9, direction: 'under', meaning: 'Cryo goal' }]
+        thresholds: [{ at: 9, direction: 'under', meaning: 'Cryo goal', meaningJa: 'クリオ目標' }]
     }
 ];
 
@@ -78,7 +78,7 @@ export const postCpbInputs = [
         max: 250,
         step: 1,
         default: 80,
-        thresholds: [{ at: 111, direction: 'over', meaning: 'FFP / Kcentra' }]
+        thresholds: [{ at: 111, direction: 'over', meaning: 'FFP / Kcentra', meaningJa: 'FFP / Kcentra' }]
     },
     {
         id: 'a10extem',
@@ -88,7 +88,7 @@ export const postCpbInputs = [
         max: 70,
         step: 1,
         default: 42,
-        thresholds: [{ at: 38, direction: 'under', meaning: 'Intervention triggered' }]
+        thresholds: [{ at: 38, direction: 'under', meaning: 'Intervention triggered', meaningJa: '介入トリガー' }]
     },
     {
         id: 'a10fibtem',
@@ -98,7 +98,7 @@ export const postCpbInputs = [
         max: 25,
         step: 1,
         default: 12,
-        thresholds: [{ at: 9, direction: 'under', meaning: 'Choose Cryo over Platelets' }]
+        thresholds: [{ at: 9, direction: 'under', meaning: 'Choose Cryo over Platelets', meaningJa: '血小板よりクリオを選択' }]
     }
 ];
 

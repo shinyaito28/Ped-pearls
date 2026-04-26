@@ -1,5 +1,6 @@
 import React from 'react';
 import { postCpbPath } from '../data/rotem_protocol';
+import { useLanguage } from '../context/LanguageContext';
 
 // Interactive SVG decision tree for the Post-CPB ROTEM phase. The active
 // branch lights up based on the live A10 EXTEM and A10 FIBTEM values; all
@@ -85,18 +86,9 @@ const Edge = ({ from, to, active = false, dim = false, label }) => {
 // ---------------------------------------------------------------------------
 // Post-CPB decision tree (matches the diagram in the institutional guide)
 // ---------------------------------------------------------------------------
-//
-//                                          ┌─ 30-40 → 20 mL/kg
-//                       ┌─ A10 FIBTEM ≥ 9 ─┼─ 20-30 → 30 mL/kg
-//                       │  Platelets       └─ < 20  → 40 mL/kg
-//   A10 EXTEM < 38 ─────┤
-//                       │                  ┌─ 8-9   → 1 unit
-//                       └─ A10 FIBTEM < 9 ─┼─ 7-8   → 2 units
-//                          Cryoprecipitate └─ < 7   → 3 units
-//
-//   Goal A10 EXTEM ≥ 38 mm → no intervention (separate emerald node)
 
 export const PostCpbDecisionTree = ({ a10extem = 42, a10fibtem = 12 }) => {
+    const { t } = useLanguage();
     const path = postCpbPath({ a10extem, a10fibtem });
 
     // Layout ---------------------------------------------------------------
@@ -111,9 +103,9 @@ export const PostCpbDecisionTree = ({ a10extem = 42, a10fibtem = 12 }) => {
         { x: 520, y: 194,  w: 180, h: 36, title: '< 20 mm',  sub: '→ 40 mL/kg', key: 'platelets-lt-20' },
     ];
     const cryoOpts = [
-        { x: 520, y: 240,  w: 180, h: 36, title: '8-9 mm', sub: '→ 1 unit',  key: 'cryo-1' },
-        { x: 520, y: 282,  w: 180, h: 36, title: '7-8 mm', sub: '→ 2 units', key: 'cryo-2' },
-        { x: 520, y: 324,  w: 180, h: 36, title: '< 7 mm', sub: '→ 3 units', key: 'cryo-3' },
+        { x: 520, y: 240,  w: 180, h: 36, title: '8-9 mm', sub: t('→ 1 unit', '→ 1 単位'),  key: 'cryo-1' },
+        { x: 520, y: 282,  w: 180, h: 36, title: '7-8 mm', sub: t('→ 2 units', '→ 2 単位'), key: 'cryo-2' },
+        { x: 520, y: 324,  w: 180, h: 36, title: '< 7 mm', sub: t('→ 3 units', '→ 3 単位'), key: 'cryo-3' },
     ];
 
     const rootRight = { x: root.x + root.w, y: root.y + root.h / 2 };
@@ -137,8 +129,8 @@ export const PostCpbDecisionTree = ({ a10extem = 42, a10fibtem = 12 }) => {
             {/* Edge to goal-met (≥ 38 mm) */}
             <Edge from={rootRight} to={goalLeft} label="≥ 38 mm" active={goalActive} dim={!goalActive} />
             <Node {...goalMet}
-                title="Goal met"
-                sub="No intervention"
+                title={t('Goal met', '目標達成')}
+                sub={t('No intervention', '介入不要')}
                 accent="emerald"
                 active={goalActive}
                 dim={!goalActive}
@@ -147,7 +139,7 @@ export const PostCpbDecisionTree = ({ a10extem = 42, a10fibtem = 12 }) => {
             {/* Edge to platelet branch (< 38 + FIBTEM ≥ 9) */}
             <Edge from={rootRight} to={pltLeft} label="< 38 mm + FIBTEM ≥ 9" active={platelets} dim={!platelets && !cryo} />
             <Node {...branchPlt}
-                title="Transfuse Platelets"
+                title={t('Transfuse Platelets', '血小板輸血')}
                 sub={`A10 FIBTEM ${a10fibtem} mm ≥ 9`}
                 accent="teal"
                 active={platelets}
@@ -170,7 +162,7 @@ export const PostCpbDecisionTree = ({ a10extem = 42, a10fibtem = 12 }) => {
             {/* Edge to cryo branch (< 38 + FIBTEM < 9) */}
             <Edge from={rootRight} to={cryLeft} label="< 38 mm + FIBTEM < 9" active={cryo} dim={!cryo && !platelets} />
             <Node {...branchCry}
-                title="Transfuse Cryo"
+                title={t('Transfuse Cryo', 'クリオ輸血')}
                 sub={`A10 FIBTEM ${a10fibtem} mm < 9`}
                 accent="rose"
                 active={cryo}
@@ -200,6 +192,7 @@ export const PostCpbDecisionTree = ({ a10extem = 42, a10fibtem = 12 }) => {
 // ---------------------------------------------------------------------------
 
 export const CpbDecisionLadder = ({ heptemCT, heptemCFT, heptemMCF, fibtemMCF }) => {
+    const { t } = useLanguage();
     const kcentraTriggered = heptemCT > 240 || heptemCFT > 110;
     const plateletTriggered = heptemMCF < 50;
     const plateletPerKg = plateletTriggered
@@ -221,17 +214,17 @@ export const CpbDecisionLadder = ({ heptemCT, heptemCFT, heptemMCF, fibtemMCF })
                 to={{ x: 270, y: 58 }}
                 active={kcentraTriggered}
                 dim={!kcentraTriggered}
-                label={kcentraTriggered ? 'over' : '— ok —'}
+                label={kcentraTriggered ? t('over', '超過') : t('— ok —', '— OK —')}
             />
             <Node x={270} y={30} w={200} h={56}
                 title="Kcentra (4F-PCC)"
-                sub={kcentraTriggered ? '20 U/kg' : 'not triggered'}
+                sub={kcentraTriggered ? '20 U/kg' : t('not triggered', '非トリガー')}
                 accent="rose"
                 active={kcentraTriggered}
                 dim={!kcentraTriggered}
             />
             <Node x={500} y={30} w={200} h={56}
-                title="Trigger thresholds"
+                title={t('Trigger thresholds', 'トリガー閾値')}
                 sub="CT > 240 sec OR CFT > 110 sec"
                 accent="slate"
                 dim
@@ -240,7 +233,7 @@ export const CpbDecisionLadder = ({ heptemCT, heptemCFT, heptemMCF, fibtemMCF })
             {/* Row 2 — Platelets */}
             <Node x={20}  y={130} w={210} h={56}
                 title="HEPTEM MCF"
-                sub={`${heptemMCF} mm (goal > 50)`}
+                sub={`${heptemMCF} mm (${t('goal', '目標')} > 50)`}
                 active
             />
             <Edge
@@ -248,17 +241,17 @@ export const CpbDecisionLadder = ({ heptemCT, heptemCFT, heptemMCF, fibtemMCF })
                 to={{ x: 270, y: 158 }}
                 active={plateletTriggered}
                 dim={!plateletTriggered}
-                label={plateletTriggered ? '< 50' : '— ok —'}
+                label={plateletTriggered ? '< 50' : t('— ok —', '— OK —')}
             />
             <Node x={270} y={130} w={200} h={56}
-                title="Platelets"
-                sub={plateletTriggered ? `${plateletPerKg} mL/kg` : 'not triggered'}
+                title={t('Platelets', '血小板')}
+                sub={plateletTriggered ? `${plateletPerKg} mL/kg` : t('not triggered', '非トリガー')}
                 accent="teal"
                 active={plateletTriggered}
                 dim={!plateletTriggered}
             />
             <Node x={500} y={130} w={200} h={56}
-                title="Dose ladder"
+                title={t('Dose ladder', '用量ラダー')}
                 sub="40-50 → 20 / 30-40 → 30 / < 30 → 40 mL/kg"
                 accent="slate"
                 dim
@@ -267,7 +260,7 @@ export const CpbDecisionLadder = ({ heptemCT, heptemCFT, heptemMCF, fibtemMCF })
             {/* Row 3 — Cryo */}
             <Node x={20}  y={230} w={210} h={56}
                 title="FIBTEM MCF"
-                sub={`${fibtemMCF} mm (goal > 9)`}
+                sub={`${fibtemMCF} mm (${t('goal', '目標')} > 9)`}
                 active
             />
             <Edge
@@ -275,18 +268,18 @@ export const CpbDecisionLadder = ({ heptemCT, heptemCFT, heptemMCF, fibtemMCF })
                 to={{ x: 270, y: 258 }}
                 active={cryoTriggered}
                 dim={!cryoTriggered}
-                label={cryoTriggered ? '< 9' : '— ok —'}
+                label={cryoTriggered ? '< 9' : t('— ok —', '— OK —')}
             />
             <Node x={270} y={230} w={200} h={56}
-                title="Cryoprecipitate"
-                sub={cryoTriggered ? `${cryoUnits} unit${cryoUnits > 1 ? 's' : ''}` : 'not triggered'}
+                title={t('Cryoprecipitate', 'クリオプレシピテート')}
+                sub={cryoTriggered ? `${cryoUnits} ${cryoUnits > 1 ? t('units', '単位') : t('unit', '単位')}` : t('not triggered', '非トリガー')}
                 accent="rose"
                 active={cryoTriggered}
                 dim={!cryoTriggered}
             />
             <Node x={500} y={230} w={200} h={56}
-                title="Dose ladder"
-                sub="8-9 → 1 / 7-8 → 2 / < 7 → 3 units"
+                title={t('Dose ladder', '用量ラダー')}
+                sub={`8-9 → 1 / 7-8 → 2 / < 7 → 3 ${t('units', '単位')}`}
                 accent="slate"
                 dim
             />

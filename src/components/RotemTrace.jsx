@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 // ----------------------------------------------------------------------------
 // Pure waveform calculation — exported for unit testing.
@@ -96,6 +97,7 @@ const RotemTrace = ({
     mcfGoal = null,         // optional: clinical goal line
     showA10 = false,
 }) => {
+    const { t } = useLanguage();
     const colour = ASSAY_COLOURS[assay] || ASSAY_COLOURS.HEPTEM;
 
     const pad = { l: 18, r: 6, t: 6, b: 14 };
@@ -242,7 +244,7 @@ const RotemTrace = ({
             <text x={bounds.x0 - 3} y={yMid + 3} fontSize="7" fill="#94a3b8" textAnchor="end">0</text>
             <text x={bounds.x0 - 3} y={bounds.y0 + 7} fontSize="7" fill="#94a3b8" textAnchor="end">{ampMax}</text>
             <text x={bounds.x0} y={bounds.y0 + bounds.h + 9} fontSize="7" fill="#94a3b8">0</text>
-            <text x={bounds.x0 + bounds.w} y={bounds.y0 + bounds.h + 9} fontSize="7" fill="#94a3b8" textAnchor="end">60 min</text>
+            <text x={bounds.x0 + bounds.w} y={bounds.y0 + bounds.h + 9} fontSize="7" fill="#94a3b8" textAnchor="end">{t('60 min', '60 分')}</text>
 
             {/* Assay name */}
             <text
