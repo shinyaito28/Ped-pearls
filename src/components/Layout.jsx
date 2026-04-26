@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import {
     Baby, Save, Droplet, Stethoscope, Brain, Anchor, Calculator, Syringe,
-    ClipboardList, AlertTriangle, Search, HeartPulse
+    ClipboardList, AlertTriangle, Search, HeartPulse, Library
 } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import ProfileModal from './ProfileModal';
@@ -24,6 +24,10 @@ import CardiacRoomSetupCard from './CardiacRoomSetupCard';
 import HeparinProtamineCard from './HeparinProtamineCard';
 import TransfusionProtocolCard from './TransfusionProtocolCard';
 import CardiacWorkflowCard from './CardiacWorkflowCard';
+
+// Specialty tab is loaded lazily so the new hub launcher and 100+ NCH manuals
+// (added across phases 1-4) don't bloat the initial bundle.
+const SpecialtyLauncher = lazy(() => import('./specialty/SpecialtyLauncher'));
 
 // Cardiac tab — cards arranged by clinical workflow chronology so that the
 // natural order top→bottom mirrors what the operator does during a case:
@@ -54,6 +58,7 @@ const tabs = [
     { id: 'cardiac',     label: 'Cardiac',  icon: HeartPulse,    accent: 'rose' },
     { id: 'all_drugs',   label: 'Drugs',    icon: Syringe,       accent: 'teal' },
     { id: 'reference',   label: 'Workflow', icon: ClipboardList, accent: 'slate' },
+    { id: 'specialty',   label: 'Specialty', icon: Library,      accent: 'teal' },
 ];
 
 const Layout = () => {
@@ -62,6 +67,14 @@ const Layout = () => {
     const [showProfiles, setShowProfiles] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [activeTab, setActiveTab] = useState('fluids');
+    // Deep-link target for the Specialty tab — set when a cross-link from
+    // another tab (e.g. Crisis) jumps directly into a specific hub.
+    const [specialtyDeepLink, setSpecialtyDeepLink] = useState(null);
+
+    const navigateToSpecialty = useCallback((hubId) => {
+        setSpecialtyDeepLink(hubId);
+        setActiveTab('specialty');
+    }, []);
 
     const w = parseFloat(weight);
     const isWeightValid = !isNaN(w) && w > 0;
@@ -83,7 +96,7 @@ const Layout = () => {
 
     const renderContent = useCallback(() => {
         switch (activeTab) {
-            case 'emergency': return <EmergencyCard />;
+            case 'emergency': return <EmergencyCard navigateToSpecialty={navigateToSpecialty} />;
             case 'fluids': return <FluidCard />;
             case 'airway': return <AirwayCard />;
             case 'sedation': return <SedationCard />;
@@ -92,9 +105,17 @@ const Layout = () => {
             case 'cardiac': return <CardiacTabContent />;
             case 'all_drugs': return <AllDrugsCard />;
             case 'reference': return <ReferenceCard />;
+            case 'specialty': return (
+                <Suspense fallback={<div className="p-8 text-center text-fg-muted text-sm">Loading specialty hub…</div>}>
+                    <SpecialtyLauncher
+                        initialHubId={specialtyDeepLink}
+                        onConsumeInitialHub={() => setSpecialtyDeepLink(null)}
+                    />
+                </Suspense>
+            );
             default: return <FluidCard />;
         }
-    }, [activeTab]);
+    }, [activeTab, specialtyDeepLink, navigateToSpecialty]);
 
     // The tab strip's sticky offset shifts with the header height. Approximate
     // measurements: collapsed ≈ 88 px, expanded ≈ 154 px, plus a small buffer
@@ -223,7 +244,13 @@ const Layout = () => {
             {showSearch && (
                 <GlobalSearch
                     onClose={() => setShowSearch(false)}
-                    onNavigate={(id) => setActiveTab(id)}
+                    onNavigate={(nav) => {
+                        if (nav.tab === 'specialty' && nav.hubId) {
+                            navigateToSpecialty(nav.hubId);
+                        } else {
+                            setActiveTab(nav.tab);
+                        }
+                    }}
                 />
             )}
         </div>

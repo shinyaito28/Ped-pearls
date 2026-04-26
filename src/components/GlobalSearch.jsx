@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, X, Pill, Anchor, Stethoscope, ShieldAlert, Beaker, Pin, HeartPulse } from 'lucide-react';
+import { Search, X, Pill, Anchor, Stethoscope, ShieldAlert, Beaker, Pin, HeartPulse, Library } from 'lucide-react';
 import { useDrugList } from '../hooks/useDrugList';
-import { drugList } from '../data/drugs';
 import { sedationList } from '../data/sedation';
+import { allEntries as specialtyEntries, findHub } from '../data/specialty';
 
-// Section catalog — used to build a unified search index across the app.
+// Section catalog — the original 18 hardcoded sections of the app's existing
+// tabs. Specialty entries (NCH manual library) are layered on top via
+// `specialtyEntries` below.
 const SECTIONS = [
     { id: 'emergency',   tab: 'emergency',   icon: ShieldAlert,  label: 'Emergency / Crisis',         keywords: ['crisis', 'code', 'arrest', 'mh', 'malignant hyperthermia', 'last', 'anaphylaxis', 'shock', 'defibrillation', 'cardioversion'] },
     { id: 'mh',          tab: 'emergency',   icon: ShieldAlert,  label: 'Malignant Hyperthermia protocol', keywords: ['mh', 'malignant hyperthermia', 'dantrolene'] },
@@ -28,10 +30,67 @@ const SECTIONS = [
     { id: 'reference',   tab: 'reference',   icon: Pin,          label: 'Reference (IE Ppx, Standard Cart, links)', keywords: ['ie', 'endocarditis', 'prophylaxis', 'cart', 'antibiotic', 'amoxicillin'] },
 ];
 
+// Build a unified search corpus on first render. Both legacy sections and
+// NCH specialty entries get a normalised shape for Fuse.js.
+const buildCorpus = () => {
+    const sections = SECTIONS.map(s => ({
+        kind: 'section',
+        id: s.id,
+        label: s.label,
+        keywords: s.keywords.join(' '),
+        tabHint: s.tab.toUpperCase(),
+        nav: { tab: s.tab },
+        icon: s.icon,
+    }));
+
+    const specialty = specialtyEntries.map(e => {
+        const hub = findHub(e.hub);
+        return {
+            kind: 'specialty',
+            id: e.id,
+            label: e.title,
+            keywords: [
+                ...(e.tags || []),
+                e.shortDescription || '',
+                hub ? hub.label : '',
+            ].join(' '),
+            tabHint: hub ? hub.label.toUpperCase() : 'SPECIALTY',
+            nav: { tab: 'specialty', hubId: e.hub },
+            emergency: e.emergency,
+            icon: Library,
+        };
+    });
+
+    return [...sections, ...specialty];
+};
+
 const GlobalSearch = ({ onClose, onNavigate }) => {
     const inputRef = useRef(null);
     const [query, setQuery] = useState('');
+    const [fuse, setFuse] = useState(null);
     const drugs = useDrugList('all');
+
+    const corpus = useMemo(() => buildCorpus(), []);
+
+    // Lazy-load Fuse.js so the initial bundle stays small. The first ⌘K open
+    // pays the import cost (~12 KB gz); subsequent opens reuse the index.
+    useEffect(() => {
+        let cancelled = false;
+        import('fuse.js').then(({ default: Fuse }) => {
+            if (cancelled) return;
+            const f = new Fuse(corpus, {
+                keys: [
+                    { name: 'label', weight: 0.6 },
+                    { name: 'keywords', weight: 0.4 },
+                ],
+                threshold: 0.35,
+                ignoreLocation: true,
+                minMatchCharLength: 2,
+            });
+            setFuse(f);
+        });
+        return () => { cancelled = true; };
+    }, [corpus]);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -43,9 +102,11 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
     const results = useMemo(() => {
         const q = query.trim().toLowerCase();
         if (!q) {
-            return { drugs: [], sedation: [], sections: SECTIONS };
+            return { drugs: [], sedation: [], sections: SECTIONS, specialty: corpus.filter(c => c.kind === 'specialty') };
         }
 
+        // Drugs and sedation keep their direct substring match — fast and
+        // already deterministic for clinical names.
         const drugResults = drugs.filter(d =>
             d.name.toLowerCase().includes(q) ||
             d.cat.toLowerCase().includes(q) ||
@@ -57,16 +118,33 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
             (s.note && s.note.toLowerCase().includes(q))
         ).slice(0, 6);
 
-        const sectionResults = SECTIONS.filter(s =>
-            s.label.toLowerCase().includes(q) ||
-            s.keywords.some(k => k.includes(q))
-        );
+        // Sections + specialty entries go through Fuse if it's loaded.
+        // Fall back to substring matching while the dynamic import resolves.
+        let unifiedHits;
+        if (fuse) {
+            unifiedHits = fuse.search(q).map(r => r.item);
+        } else {
+            unifiedHits = corpus.filter(c =>
+                c.label.toLowerCase().includes(q) ||
+                c.keywords.toLowerCase().includes(q)
+            );
+        }
 
-        return { drugs: drugResults, sedation: sedationResults, sections: sectionResults };
-    }, [query, drugs]);
+        const sectionHits = unifiedHits.filter(h => h.kind === 'section').slice(0, 12);
+        const specialtyHits = unifiedHits.filter(h => h.kind === 'specialty').slice(0, 12);
 
-    const goto = (tabId) => {
-        onNavigate(tabId);
+        const reSections = sectionHits.map(h => SECTIONS.find(s => s.id === h.id)).filter(Boolean);
+
+        return {
+            drugs: drugResults,
+            sedation: sedationResults,
+            sections: reSections,
+            specialty: specialtyHits,
+        };
+    }, [query, drugs, fuse, corpus]);
+
+    const goto = (nav) => {
+        onNavigate(nav);
         onClose();
     };
 
@@ -85,7 +163,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                         ref={inputRef}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search drugs, sections, formulas…  (Esc to close)"
+                        placeholder="Search drugs, sections, specialty manuals…  (Esc to close)"
                         className="flex-1 bg-transparent text-fg placeholder:text-fg-muted outline-none text-base"
                     />
                     <button onClick={onClose} className="p-1 text-fg-muted hover:text-fg" aria-label="close">
@@ -94,7 +172,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                 </div>
 
                 <div className="overflow-y-auto divide-y divide-line">
-                    {/* Sections */}
+                    {/* Sections (legacy hardcoded sections of original tabs) */}
                     {results.sections.length > 0 && (
                         <div>
                             <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">Sections</div>
@@ -104,7 +182,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                                     return (
                                         <li key={s.id}>
                                             <button
-                                                onClick={() => goto(s.tab)}
+                                                onClick={() => goto({ tab: s.tab })}
                                                 className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-2 text-left"
                                             >
                                                 <Icon size={16} className="text-teal-500" />
@@ -114,6 +192,29 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                                         </li>
                                     );
                                 })}
+                            </ul>
+                        </div>
+                    )}
+
+                    {/* Specialty manuals */}
+                    {results.specialty.length > 0 && (
+                        <div>
+                            <div className="px-4 py-2 text-[10px] uppercase font-bold text-fg-muted tracking-wide">
+                                Specialty manuals ({results.specialty.length})
+                            </div>
+                            <ul>
+                                {results.specialty.map(s => (
+                                    <li key={s.id}>
+                                        <button
+                                            onClick={() => goto(s.nav)}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-2 text-left"
+                                        >
+                                            <Library size={16} className={s.emergency ? 'text-red-500' : 'text-teal-500'} />
+                                            <span className="text-fg font-medium flex-1">{s.label}</span>
+                                            <span className="text-[10px] text-fg-muted uppercase tracking-wide">{s.tabHint}</span>
+                                        </button>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                     )}
@@ -128,7 +229,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                                 {results.drugs.map(d => (
                                     <li key={d.id}>
                                         <button
-                                            onClick={() => goto('all_drugs')}
+                                            onClick={() => goto({ tab: 'all_drugs' })}
                                             className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-2 text-left"
                                         >
                                             <Pill size={16} className="text-teal-500" />
@@ -159,7 +260,7 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                                 {results.sedation.map((s, i) => (
                                     <li key={i}>
                                         <button
-                                            onClick={() => goto('sedation')}
+                                            onClick={() => goto({ tab: 'sedation' })}
                                             className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-2 text-left"
                                         >
                                             <Pill size={16} className="text-indigo-500" />
@@ -174,9 +275,9 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                         </div>
                     )}
 
-                    {query && results.sections.length === 0 && results.drugs.length === 0 && results.sedation.length === 0 && (
+                    {query && results.sections.length === 0 && results.drugs.length === 0 && results.sedation.length === 0 && results.specialty.length === 0 && (
                         <div className="p-8 text-center text-fg-muted text-sm">
-                            No matches. Try a different keyword (e.g. "epi", "sevoflurane", "MH").
+                            No matches. Try a different keyword (e.g. "epi", "sevoflurane", "MH", "mediastinal").
                         </div>
                     )}
                 </div>

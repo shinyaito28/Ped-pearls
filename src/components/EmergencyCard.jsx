@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { AlertTriangle, ExternalLink, Zap, HeartPulse, Activity, Brain, ShieldAlert, Droplet, Flame } from 'lucide-react';
+import { AlertTriangle, ExternalLink, Zap, HeartPulse, Activity, Brain, ShieldAlert, Droplet, Flame, Library, ChevronRight } from 'lucide-react';
 import { useDrugList } from '../hooks/useDrugList';
 import { emergencyGroups, crisisLinks } from '../data/emergency_data';
+import { emergencyEntries } from '../data/specialty';
 import ElectricalShockCard from './ElectricalShockCard';
 import MHProtocolCard from './MHProtocolCard';
 import DoseBadge from './DoseBadge';
@@ -22,11 +23,12 @@ const groupIcon = (id) => {
 const accentBg = (color) => `bg-${color}-50 border-${color}-100`;
 const accentText = (color) => `text-${color}-800`;
 
-const EmergencyCard = () => {
+const EmergencyCard = ({ navigateToSpecialty }) => {
     const allDrugs = useDrugList('all');
     const [view, setView] = useState('drugs'); // 'drugs' | 'mh' | 'shock'
 
     const getDrug = (name) => allDrugs.find(d => d.name === name);
+    const subspecialtyEmergencies = emergencyEntries();
 
     return (
         <div className="space-y-4 pb-8">
@@ -59,6 +61,32 @@ const EmergencyCard = () => {
                     </a>
                 ))}
             </div>
+
+            {/* Subspecialty emergencies — cross-link into the Specialty tab */}
+            {subspecialtyEmergencies.length > 0 && navigateToSpecialty && (
+                <div className="bg-white dark:bg-surface border-2 border-rose-100 dark:border-rose-900 rounded-lg p-3">
+                    <div className="flex items-center gap-2 text-rose-700 dark:text-rose-300 font-bold text-sm mb-2">
+                        <Library size={16} />
+                        Subspecialty emergencies
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                        {subspecialtyEmergencies.map(e => (
+                            <button
+                                key={e.id}
+                                onClick={() => navigateToSpecialty(e.hub)}
+                                className="flex items-center justify-between gap-2 px-2.5 py-2 bg-surface-2/40 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-line hover:border-rose-300 rounded text-left tap-target"
+                            >
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-[12px] font-bold text-fg truncate">{e.title}</div>
+                                    <div className="text-[10px] text-fg-muted truncate">{e.shortDescription}</div>
+                                </div>
+                                <ChevronRight size={14} className="text-fg-muted flex-shrink-0" />
+                            </button>
+                        ))}
+                    </div>
+                    <div className="text-[10px] text-fg-muted mt-1.5">→ jumps to Specialty › {subspecialtyEmergencies.length === 1 ? 'hub' : 'respective hubs'}</div>
+                </div>
+            )}
 
             {/* Sub-view switcher */}
             <div className="bg-white border border-slate-200 rounded-lg overflow-hidden flex">
