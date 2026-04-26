@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, BookMarked, AlertTriangle, Info, ShieldAlert } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Tiny markdown-lite renderer used inside ManualCard sections.
 // Supports:
@@ -62,6 +63,7 @@ const emphasisStyle = (e) => {
 
 const ManualCard = ({ entry, defaultCollapsed = true, onNavigate }) => {
     const [collapsed, setCollapsed] = useState(defaultCollapsed);
+    const { t } = useLanguage();
 
     if (entry.kind !== 'catalog') {
         // Defensive — flowchart entries should be rendered via their dedicated
@@ -80,8 +82,8 @@ const ManualCard = ({ entry, defaultCollapsed = true, onNavigate }) => {
                     <BookMarked size={18} />
                 </div>
                 <div className="flex-1 text-left">
-                    <h3 className="font-bold text-fg">{entry.title}</h3>
-                    <p className="text-[11px] text-fg-muted">{entry.shortDescription}</p>
+                    <h3 className="font-bold text-fg">{t(entry.title, entry.titleJa)}</h3>
+                    <p className="text-[11px] text-fg-muted">{t(entry.shortDescription, entry.shortDescriptionJa)}</p>
                 </div>
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
             </button>
@@ -94,10 +96,10 @@ const ManualCard = ({ entry, defaultCollapsed = true, onNavigate }) => {
                             <div key={i} className={`${s.wrap} rounded-lg p-3`}>
                                 <div className={`flex items-center gap-1.5 text-[11px] uppercase font-bold tracking-wide mb-1.5 ${s.heading}`}>
                                     {s.icon}
-                                    {sec.heading}
+                                    {t(sec.heading, sec.headingJa)}
                                 </div>
                                 <div className="text-sm text-fg-soft leading-relaxed">
-                                    {renderBody(sec.body)}
+                                    {renderBody(t(sec.body, sec.bodyJa))}
                                 </div>
                             </div>
                         );
@@ -105,7 +107,7 @@ const ManualCard = ({ entry, defaultCollapsed = true, onNavigate }) => {
 
                     {entry.related && entry.related.length > 0 && onNavigate && (
                         <div className="bg-surface-2/40 border border-line rounded-lg p-3">
-                            <div className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1.5">Related</div>
+                            <div className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1.5">{t('Related', '関連')}</div>
                             <div className="flex flex-wrap gap-2">
                                 {entry.related.map(rid => (
                                     <button
