@@ -298,16 +298,97 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'proc_adjunct_infusions_pointer',
-        title: 'Adjunct Infusion Protocols (Dexmed / Ketamine / Lidocaine)',
-        shortDescription: 'NCH analgesia infusion protocols — sources available.',
-        tags: ['dexmedetomidine infusion', 'ketamine infusion', 'lidocaine infusion', 'adjunct', 'opioid sparing'],
+        id: 'proc_adjunct_infusions',
+        title: 'Adjunct Analgesia Infusions (Dexmed / Ketamine / Lidocaine)',
+        shortDescription: 'NCH Pain & Palliative protocols — start/titrate/max/duration + monitoring for all 3.',
+        tags: ['dexmedetomidine infusion', 'precedex', 'ketamine infusion', 'lidocaine infusion', 'adjunct analgesia', 'opioid sparing', 'multimodal', 'pca pump', 'aim service', 'palliative'],
         emergency: false,
         sections: [
             {
-                heading: 'Source available — needs structured transcription',
+                heading: 'Quick reference (all 3 agents)',
+                emphasis: 'info',
+                body: '| | **Start** | **Titrate** | **Max (non-palliative)** | **Duration** |\n|---|---|---|---|---|\n| **Dexmed** | 0.1 mcg/kg/hr | 0.05-0.1 mcg/kg/hr q≥30 min | 0.6 mcg/kg/hr (1 mcg/kg/hr BMT) | ≥5 d → wean + clonidine |\n| **Ketamine** | 0.025-0.1 mg/kg/hr (≤10 mg/hr) | per pain team | 40 mg/hr | ≤7 d (typ 3 d); not >6 d / 2 wk |\n| **Lidocaine** | 1 mg/kg/hr (or 70 mg/hr if >65 kg) | +0.5 mg/kg/hr or +35 mg/hr after 24 hr + level | 2 mg/kg/hr (max 120 mg/hr) | ≤7 d (typ 3 d); not >6 d / 2 wk |\n\n- All 3: **Acute Pain Service / AIM (Advanced Illness Management) supervision required**\n- Use **ideal body weight** for obese patients (Dexmed: adjusted body weight)\n- **Independent double-check** at initiation, dose change, provider change',
+            },
+
+            // ===== DEXMEDETOMIDINE =====
+            {
+                heading: '— DEXMEDETOMIDINE — Background + indications',
+                emphasis: 'plain',
+                body: '**Highly selective alpha-2 agonist** with sedative/analgesic/anxiolytic properties. **Maintains respiratory drive + airway patency** even with dose escalation (key advantage over opioids).\n\n**When to consider** (multimodal adjunct under Pain or AIM service supervision):\n- Acute / post-op pain\n- Risk for or presence of **delirium** + anxiety/pain\n- Anxiety requiring rapid IV onset\n- Palliative / end-of-life analgesia + symptom management\n- Suspected **opioid-induced hyperalgesia**\n- Chronic pain, cancer, chronic opioid requirements',
+            },
+            {
+                heading: '— DEXMEDETOMIDINE — Dosing',
                 emphasis: 'warn',
-                body: 'Three NCH protocols under `original_pictures/Sharepoint/Acute & Regional Pain Medicine/Adjunct infusion protocols/`:\n- `Dexmedetomidine infusion for analgesia protocol NCH 9-2025 updates.pdf`\n- `ketamine of analgesia protocol NCH update Feb 2023 - final.pdf`\n- `Lidocaine for Pain Analgesia Protocol NCH update 8-2023.pdf`\n\nDose ranges already appear scattered through other protocol entries in this catalog (ERAS, sarcoma, spinal fusion). Consolidate into a dedicated single entry on next pass with: starting dose, titration steps, max dose/duration, monitoring requirements, contraindications.',
+                body: '**Continuous IV infusion**: concentration **4 mcg/mL**\n\n**Floor-based use**:\n- Range: **0.05-0.6 mcg/kg/hr**\n- **Start: 0.1 mcg/kg/hr** (may start higher if previous alpha-2 exposure)\n- Titrate **0.05-0.1 mcg/kg/hr** increments **q≥30 min** as tolerated to **max 0.6 mcg/kg/hr**\n- **BMT patients (stable)**: max may be escalated to **1 mcg/kg/hr** (transfer to ICU if patient becomes unstable)\n\n**Adjustments q<30 min ↑ cardiovascular AE risk**\n\n**Infusions ≥5 days → slow taper + clonidine** to avoid withdrawal\n\n**End-of-life care (DNR)**: NO maximum infusion rate — titrate to comfort\n\n**AIM team transfer out of PICU**: up to **1 mcg/kg/hr if no DNR** (case-by-case, stable VS)',
+            },
+            {
+                heading: '— DEXMEDETOMIDINE — Contraindications + AE',
+                emphasis: 'plain',
+                body: '**Absolute**: allergy\n\n**Precautions**: prolonged QT (consider baseline ECG), bradycardia / heart block / significant conduction delays\n\n**Side effects**: hypotension, bradycardia / heart block / conduction delays, dry mouth\n\n**Note**: patients can appear rousable + alert when stimulated — **don\'t mistake this alone for lack of efficacy**; assess overall comfort',
+            },
+            {
+                heading: '— DEXMEDETOMIDINE — Monitoring',
+                emphasis: 'info',
+                body: '- HR + BP: baseline → q30 min × 1 hr after start/dose change → q4h thereafter\n- Continuous pulse ox × **24 hr**, then as ordered, documented q2h\n- Baseline temp\n- Pain/symptom q4h; sedation q2h\n- Patient may attend hospital activities off the unit at provider discretion (RN must accompany if continuous pulse ox required)\n- **Palliative AND code status / Allow Natural Death**: monitoring NOT required unless requested by patient/family',
+            },
+
+            // ===== KETAMINE =====
+            {
+                heading: '— KETAMINE — Background + indications',
+                emphasis: 'plain',
+                body: '**Fast-acting NMDA receptor antagonist**. At sub-anesthetic doses: powerful analgesic, anxiolytic, with minimal sedative/cardio-respiratory effects. NMDA blockade can prevent **opioid tolerance development**. Adult trials show **up to 30% opioid sparing** with minimal AEs in post-op analgesia.\n\n**When to consider**:\n- Acute pain: **trauma, post-op, sickle cell crisis**\n- Chronic pain: cancer, chronic opioid requirements, **neuropathic pain resistant to standard tx**\n- Suspected **opioid-induced hyperalgesia**\n- Palliative / end-of-life',
+            },
+            {
+                heading: '— KETAMINE — Contraindications',
+                emphasis: 'critical',
+                body: '**Absolute**: allergy, **liver failure**, **myocardial ischemia**, **pregnancy**\n\n**Precautions**: uncontrolled HTN, severe hypovolemia, **psychotic disorders**, **↑ ICP without mech ventilation**, cerebrovascular disease/aneurysm, renal/hepatic impairment (dose ↓), heart failure, **pulmonary HTN**, poorly controlled seizures, thyrotoxicosis',
+            },
+            {
+                heading: '— KETAMINE — Dosing',
+                emphasis: 'warn',
+                body: '**Continuous IV infusion** (PCA pump, locked, library-programmed, continuous-only with set range):\n- **Start: 0.025-0.1 mg/kg/hr** (recommend ≤10 mg/hr)\n- **Range: 0.025-0.4 mg/kg/hr**\n- **>10 mg/hr ↑ side effects**\n- **Max non-palliative: 40 mg/hr**\n\n**Duration**:\n- Typically **3 days**, **max 7 days** (slow taper if ≥5 d, typically 3-d taper)\n- **Do not exceed 6 days in any 2-week period**\n- End-of-life: titrate to comfort, max per palliative team\n\n**Oral**:\n- **0.25-1 mg/kg PO q4-6h**\n- **Max non-palliative: 5 mg/kg/day**\n- **IV→PO transition**: start at **30% of 24-hr IV total ÷ 4 doses** OR **0.2 mg/kg q4-6h**; titrate; onset up to 30 min',
+            },
+            {
+                heading: '— KETAMINE — Side effects + management',
+                emphasis: 'warn',
+                body: '- **Fatigue, drowsiness, dizziness, vivid dreams, misperceptions, hallucinations** (dose-dependent; more frequent at anesthetic doses)\n- **Dysphoria/hallucinations** → ↓ ketamine + add benzodiazepine (e.g. **lorazepam 0.025 mg/kg q12h**)\n- **Diazepam ↓ ketamine clearance** (hepatic metabolism inhibition) → may need to titrate ketamine; close monitoring\n- Long-term high-dose use → ↑ hepatic enzymes\n- **Prophylactic scheduled benzo for psychomimetic SE**: lorazepam 0.03-0.05 mg/kg/dose IV q6h\n- Prior paradoxical benzo reactions → **Haldol** as alternative\n- **Hypersalivation**: glycopyrrolate 0.004 mg/kg IV q6h prn (max 0.01 mg/kg, max 1.5 mg/dose; PO/FT 20-40 mcg/kg q6-8h); SL atropine drops as alternative\n- IV site irritation\n- **Ketamine + THC**: enhanced negative side effects (↑ closed-eye visuals, mind tunneling, confusion, dizziness, drowsiness, focus problems). If acute THC intoxication suspected or illicit substance caught during admission: **DC ketamine + drug screen prior to future use**',
+            },
+            {
+                heading: '— KETAMINE — Monitoring',
+                emphasis: 'info',
+                body: '**IV infusion**:\n- Baseline RR/HR/BP/sedation/SpO2/pain\n- RR + HR: q30 min × 2 → q2h × 24 hr → q4h + PRN. After dose ↑ or status change: q30 min × 2\n- Sedation level q2h; BP q4h\n- Continuous pulse ox × first 24 hr, then PRN\n- Pain assessment q4h\n- Palliative: q2-4h documentation\n\n**Oral**: assess + document RR/HR/sedation/pain immediately prior to each dose',
+            },
+
+            // ===== LIDOCAINE =====
+            {
+                heading: '— LIDOCAINE — Background + indications',
+                emphasis: 'plain',
+                body: 'Systemic IV lidocaine for **neuropathic pain control** — burning, tingling, shooting, stabbing, electrical sensations in dermatome/peripheral nerve distribution. Often refractory to high-dose opiates.\n\nMechanism: selectively diminishes pain fiber\'s ability to fire rapid spontaneous impulses → fewer pain signals via afferents.\n\n**When effective IV → can transition to oral analogues** (mexiletine/Mexitil, carbamazepine/Tegretol, gabapentin/Neurontin).\n\n**Indications**: intractable neuropathic pain; chronic pain not responsive to multiple therapies; opioid-induced hyperalgesia; resistant to standard tx; cancer + chronic opioid requirements; palliative / end-of-life',
+            },
+            {
+                heading: '— LIDOCAINE — Contraindications + drug interactions',
+                emphasis: 'critical',
+                body: '**Avoid / careful consideration**: history of **cardiac arrhythmia**, **heart failure**, **electrolyte disturbances**, **hepatic failure**, lidocaine sensitivity, **known seizure history**\n\n**Drug-drug interactions**:\n- Other local anesthetics (e.g. **bupivacaine** displaces lidocaine from PBPs at therapeutic doses)\n- **CYP3A4 inhibitors** ↑ lidocaine: **amiodarone, Emend (aprepitant), multiple antibiotics, valproic acid**\n- **Reglan (metoclopramide)** → methemoglobinemia\n- **Ustekinumab (Stelara)** ↓ plasma lidocaine levels',
+            },
+            {
+                heading: '— LIDOCAINE — Dosing + therapeutic range',
+                emphasis: 'warn',
+                body: '**Continuous IV infusion** (peripheral OR central line OK; pump-administered):\n- **Start: 1 mg/kg/hr** (or **70 mg/hr flat for >65 kg**)\n- **Range: 1-2 mg/kg/hr** (max 2 mg/kg/hr, max **120 mg/hr**)\n- **Use IDEAL body weight** for max calculation if actual > ideal\n- **No dose increase in first 24 hr**\n- **Before any increase: draw lidocaine level — must be < 5**\n  - **Therapeutic range: 1.5-5 mcg/mL**\n- Increase max **0.5 mg/kg/hr** or **35 mg/hr** per step\n- **Re-check lidocaine level 8 hr after a dose increase**\n\n**Duration**: typically **3 days**, **max 7 days**; **not >6 days in 2-week period** (unless EoL or extenuating)',
+            },
+            {
+                heading: '— LIDOCAINE — Toxicity recognition',
+                emphasis: 'critical',
+                body: '**Early signs (report to pain/AIM team)**:\n- Numbness + tingling\n- **Metallic taste**\n- Ringing in ears\n- Dizziness, N/V, tremor, vision changes, BP/HR changes\n\n**Severe — STOP infusion + call pain/AIM service immediately**:\n- **Bradycardia, irregular HR**\n- **Convulsions / seizure**\n- Significant tinnitus\n- **Perioral numbness**\n- New-onset headache\n- **Change in LOC or hallucinations**\n- Severe N/V\n- Slurred speech, blurred vision, **myoclonic jerking**, severe hypotension\n\n**Toxicity progression**: visual changes (diplopia, blurred fields) → slurred speech → focal myoclonic jerking → seizures\n\n**Lipid Emulsion 20% Therapy** may be considered for suspected CNS toxicity\n\n**After symptom resolution**: infusion may restart at **lower dose** at pain/AIM attending\'s discretion once lidocaine level reviewed',
+            },
+            {
+                heading: '— LIDOCAINE — Monitoring',
+                emphasis: 'info',
+                body: '- **Baseline ECG within 30 days** of initial administration (unless lidocaine started in OR with intra-op ECG monitoring)\n- Follow-up ECG as needed; abnormalities → telemetry unit\n- Patient education documented\n- Continuous SpO2\n- VS (BP/HR/RR), sedation/LOC, pain: at start → 30 min → 1 hr → 2 hr → q4h\n- After any dose ↑ or bolus: VS q30 min × 2, then back to standard\n- **IV site check** per hospital policy — **patients may NOT report infiltration discomfort** due to numbing properties\n- CNS toxicity symptoms: document q30 min × 2 → q1h\n- VS at DC + 1 hr post-DC\n- Pulse ox can be DC\'d 1 hr post-infusion DC',
+            },
+            {
+                heading: 'Source',
+                emphasis: 'info',
+                body: 'Three NCH Pain & Palliative Medicine protocols:\n- Dexmedetomidine for Analgesia outside ICU (originated 11/2021, updated 9/2025)\n- Ketamine for Analgesia (originated 1/2014, updated 5/2019, 2/23)\n- IV Lidocaine for Pain/Analgesia (originated 1/20, updated 1/21, 5/21, 2/23, 8/23)',
             },
         ],
     },
