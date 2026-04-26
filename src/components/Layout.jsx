@@ -208,7 +208,7 @@ const Layout = () => {
                 className="glass sticky z-30 tab-strip border-t-0"
                 style={{ top: `${headerHeight}px` }}
             >
-                <div className="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar">
+                <div className="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth">
                     {tabs.map(tab => {
                         const isActive = activeTab === tab.id;
                         const Icon = tab.icon;
@@ -217,7 +217,7 @@ const Layout = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 aria-label={tab.label}
-                                className={`flex-1 min-w-[68px] py-2.5 text-[10px] font-bold flex flex-col items-center gap-0.5 border-b-2 transition-all tap-target ${
+                                className={`flex-shrink-0 sm:flex-1 min-w-[68px] py-2.5 px-1 text-[10px] font-bold flex flex-col items-center gap-0.5 border-b-2 transition-all tap-target snap-start whitespace-nowrap leading-tight ${
                                     isActive
                                         ? `border-${tab.accent}-500 text-${tab.accent}-600 dark:text-${tab.accent}-400`
                                         : 'border-transparent text-fg-muted hover:text-fg-soft'
