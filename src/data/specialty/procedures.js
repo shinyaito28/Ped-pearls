@@ -63,30 +63,85 @@ export const entries = [
     {
         ...COMMON,
         id: 'proc_tpiat',
-        title: 'TPIAT — Total Pancreatectomy + Islet Autotransplant',
-        shortDescription: 'Celiac plexus block + thoracic epidural OR bilateral T10 ESB; methadone; ketamine + dexmed gtt.',
-        tags: ['tpiat', 'pancreatectomy', 'islet', 'celiac plexus', 'epidural', 'erector spinae', 'esb', 'methadone', 'ketamine'],
+        title: 'TPIAT — Total Pancreatectomy + Islet Autotransplant (Comprehensive)',
+        shortDescription: 'Lines + 5 infusions + glucose mgmt + epidural (NEW: replaces ESB) + heparin + portal pressure monitoring.',
+        tags: ['tpiat', 'pancreatectomy', 'islet', 'islet autotransplant', 'celiac plexus', 'thoracic epidural', 'erector spinae', 'esb', 'methadone', 'ketamine', 'lidocaine infusion', 'dextran 40', 'heparin tpiat', 'insulin titration', 'portal pressure', 'gir', 'glucose infusion rate', 'plasmalyte', 'enoxaparin tpiat', 'asra fifth edition'],
         emergency: false,
         sections: [
             {
+                heading: 'IMPORTANT — April 2026 update: epidural replaces ESB',
+                emphasis: 'critical',
+                body: '**Per the April 2026 NCH update, intra-operative thoracic epidural is now the standard regional technique** for TPIAT (replacing the prior practice of bilateral T10 erector spinae catheters), unless contraindications exist for neuraxial regional anesthesia.\n\nAppropriateness of neuraxial determined by anesthesiologist + (if needed) pain anesthesiologist consult.\n\nSee "Regional + anticoagulation timing" section below for the new protocol that allows safe epidural placement despite peri-op enoxaparin + intra-op heparin.',
+            },
+            {
                 heading: 'Pre-op',
                 emphasis: 'info',
-                body: 'Patient evaluated pre-operatively in the **outpatient pain clinic**.',
+                body: '- Patient evaluated pre-operatively in the **outpatient pain clinic**\n- **Anesthesia + Pain Team consult**; review surgery / GI / Endocrinology / Pain notes; review surgeon\'s pre-brief\n- Discuss intra-op meds with Pain attending\n- **Anesthesia TPIAT order set** (pre-admit day prior; meds ordered night before for pharmacy prep)\n- **Antibiotics ordered by surgeon**\n- **Heparin A-line auto-populates** in the order set — ignore (for ICU post-op, not OR setup); use standard A-line\n- **Dextran 40 max 10 mL/hr if patient > 20 kg**\n- **Pre-op floor enoxaparin** scheduled — but **HOLD the 0500 morning-of dose** (per April 2026 update, to allow epidural)',
             },
             {
-                heading: 'Intra-op pain plan — celiac plexus block',
+                heading: 'Room setup',
                 emphasis: 'warn',
-                body: '**Celiac plexus block by surgeons under direct supervision**:\n- 0.2% ropivacaine **0.3 mL/kg** (max 20 mL)',
+                body: '- **1-2 IV poles, 4 Brain syringe pumps (both sides of pole), 12 regular pumps**\n- **2 large-bore PIVs** (pancreatic scarring + splanchnic congestion + heparin → blood loss)\n- **1 Arterial line** (Cook 3Fr or 2.5Fr; **suture in non-dominant hand, stay 10 days**)\n- **1 Central Venous line** (target CVP 6-10, CVP 8-10 at islet infusion):\n  - **5-30 kg: 5Fr 8 or 12cm triple-lumen CVC**\n  - **30-50 kg: 5Fr 12cm triple-lumen CVC**\n  - **>50 kg: 7Fr 15cm triple-lumen CVC**\n- **Foley + NG tube** (NG kept till end of procedure)\n- **3 pressure transducer lines**: arterial, central venous, **portal pressure** (portal tubing passed sterile from surgeon for flush)\n- **ABL machine** in room\n- **Accucheck in room** (peripheral glucose during islet infusion — typically shoulder/ear/finger; A-line for BP)\n- **PRBC ×2 in OR fridge**\n- **BIS** consider\n- **Dopamine** if CVP 10 + persistent hypotension',
             },
             {
-                heading: 'Intra-op pain plan — neuraxial / regional choice',
+                heading: 'IV line layout (5 infusions)',
+                emphasis: 'plain',
+                body: '**PIV 1** (primary volume, blood warmer): Plasmalyte + Antibiotics + bolus meds + blood products PRN\n\n**PIV 2** (secondary volume + pain infusions): Plasmalyte + **Ketamine 0.2 mg/kg/hr** + **Lidocaine 1 mg/kg/hr**\n\n**CL #1**: CVP transducer\n\n**CL #2**: **Insulin 0.01-0.03 U/kg/hr** + LR KVO at 5 mL/hr (do NOT change)\n\n**CL #3**: D10LR (~½ maintenance) + LR (~½ maintenance) + **Heparin 10 U/kg/hr (goal ACT >140)** + **Dextran (0.5 mL/kg/h, max 10 mL/h)** + **Precedex 0.3-0.9 mcg/kg/h** ± Dopamine 3-10 mcg/kg/min\n\n**Avoid LR for resuscitation** (lactate → glucose via Cori cycle); LR only via surgeon-ordered infusions',
+            },
+            {
+                heading: 'Antibiotics (ensure NOT in dextrose)',
+                emphasis: 'warn',
+                body: '- **Piperacillin/Tazobactam (Zosyn) 100 mg/kg q3h**\n- **Fluconazole 6 mg/kg ×1** at start of case\n- **Vancomycin** 20 mg/kg ×1, then **15 mg/kg q6h**\n- **Meropenem 20 mg/kg q3h** if MRSA-positive / MDRO history / PCN allergy → check with surgeon\n- First 2 doses from pharmacy at start of case; discuss redoses with pharmacy\n- **NO Steroids**',
+            },
+            {
+                heading: 'Regional + anticoagulation timing (April 2026 update)',
                 emphasis: 'critical',
-                body: '**If no low-dose lovenox in past 12 hr** (or contraindicating anticoag) → **thoracic epidural at start of case**:\n- Initial bolus: **0.1-0.2 mL/kg of 0.2% ropivacaine**\n- Infusion: **0.2% ropivacaine ± clonidine** (with consideration for post-op dexmed infusion) at **0.1-0.2 mL/kg/hr**\n\n**If lovenox or other contraindications** → **bilateral T10 erector spinae block (ESB) catheters at start of case** by acute pain service:\n- Patient prone for placement\n- Initial bolus: **0.2-0.4 mL/kg/side (max 30 mL/side) of 0.2% ropivacaine**\n- Bilateral infusions: 0.2% ropivacaine, **no basal**, programmed bolus **0.1 mL/kg q60min**, no patient-controlled bolus',
+                body: '**The new sequence** (allowing thoracic epidural despite peri-op enox + heparin):\n\n1. Patient admitted to floor day prior — **NO prophylaxis required**\n2. AM of surgery: **HOLD the 0500 enoxaparin dose**\n3. **Place thoracic epidural intra-operatively**\n4. **1 hour AFTER epidural placement**: anesthesia administers **subQ heparin**:\n   - **>50 kg: 5000 units** (anesthesia team orders)\n   - **<50 kg: 70-100 units/kg** (rounded to nearest 500-unit increment, max 5000 U)\n     - e.g. 25 kg patient → **2000-2500 units** subQ\n   - Dose worked out with NCH ICU + heme pharmacists\n5. **30-35 U/kg IV heparin** per TPIAT protocol prior to islet transplant; baseline ACT before bolus\n6. ACT followed post-transplant per protocol\n7. **Low-dose heparin infusion 5-10 U/kg/hr** post-op × 7 days\n8. **Day 5-7 epidural removal**: pause heparin infusion **4-6 hr prior to removal** (per ASRA 5th edition); additional labs at pain anesthesiologist\'s discretion (coag factors)\n9. **Resume heparin infusion 1 hour after epidural removal**\n10. **LMWH (enoxaparin) may be administered 4 hr after epidural removal**\n\n*Reference: Kopp SL et al, ASRA Fifth Edition, RAPM 2025 (DOI: 10.1136/rapm-2024-105766)*',
             },
             {
-                heading: 'Intra-op systemic',
+                heading: 'Epidural placement + dosing',
                 emphasis: 'warn',
-                body: '- **Methadone 0.1 mg/kg IV (max 10 mg) prior to incision**\n- **Re-dose methadone 0.05 mg/kg (max 5 mg) at start of closure**\n- Intermittent opioid boluses prn\n- **Ketamine 0.1 mg/kg/hr (max 10 mg/hr)** — entire case + continue post-op\n- **No lidocaine infusion** unless epidural + ESB cannot be placed\n- **Dexmedetomidine 0.3-0.9 mcg/kg/hr** — start at closure + continue post-op',
+                body: '**Thoracic epidural at start of case** (after April 2026 anticoag adjustment above):\n- Initial bolus: **0.1-0.2 mL/kg of 0.2% ropivacaine**\n- Infusion: **0.2% ropivacaine ± clonidine** at **0.1-0.2 mL/kg/hr**\n- Consider concurrent post-op dexmedetomidine infusion',
+            },
+            {
+                heading: 'Fallback regional — bilateral T10 ESB (if neuraxial contraindicated)',
+                emphasis: 'plain',
+                body: '**Only if neuraxial cannot be done** (e.g. coag/anatomy/refusal):\n- Bilateral T10 erector spinae block catheters at start of case by acute pain service\n- Patient prone for placement\n- Initial bolus: **0.2-0.4 mL/kg/side (max 30 mL/side) of 0.2% ropivacaine**\n- Bilateral infusions: 0.2% ropivacaine, **no basal**, programmed bolus **0.1 mL/kg q60min**, no patient-controlled bolus',
+            },
+            {
+                heading: 'Celiac plexus block (by surgeon)',
+                emphasis: 'warn',
+                body: '**Celiac plexus block by surgeons under direct supervision**:\n- **0.2% ropivacaine 0.3 mL/kg (max 20 mL)**',
+            },
+            {
+                heading: 'Intra-op phases (chronologic)',
+                emphasis: 'info',
+                body: '**Dissection + Splenectomy**:\n- Antibiotics (above) — ensure NOT in dextrose\n- Start **D10LR ~½ maintenance** + **LR ~½ maintenance** (4-2-1 rule); surgeon may adjust based on GIR\n- **Ketamine 0.2 mg/kg/hr + Lidocaine 1 mg/kg/hr** (continuous)\n- **Insulin 0.01-0.03 U/kg/hr** once **BG >120 mg/dL**\n- **Methadone 0.1 mg/kg IV (max 10 mg) ×1**\n\n**Total Pancreatectomy + Cholecystectomy + Reconstruction**:\n- **Dextran 40 (10 g in 100 mL): 0.5 mL/kg/hr** — **start 30 min PRIOR to islet infusion**, max 10 mL/hr (continues 48 hr post-op)\n- Start insulin infusion if not yet running\n- **Send C-peptide 5 min PRE-pancreatectomy** (dark green tube, NO gel)\n\n**Islet Cell Injection** (highest-acuity phase):\n- **Dedicated anesthesia tech in room** for labs\n- **Send C-peptide 5 min PRE + 5 min POST islet infusion** (dark green tube)\n- **CVP 8-10 to minimize hypotension + avoid portal hypertension**\n- **Target MAP ~70-75** (discuss with surgeon)\n- **Portal pressure check q5 min** during islet infusion (per surgeon)\n- **Glucose check q5 min** during islet infusion via Accucheck peripheral; space PRN after surgeon discussion\n- **Heparin 35 U/kg IV bolus** prior to islet infusion (additional 35 U/kg in islet prep) — **prevents portal vein thrombosis**\n- **ACT q15 min, starting ~15 min before islet infusion**\n- **Heparin infusion 10 U/kg/hr** when ACT normalizes (<150) — continues 7 d post-op (Gen Surg orders)\n- **Phenylephrine + ephedrine** for hypotension during islet (mechanical obstruction of portal flow → ↓ venous return)\n- **Dopamine** (inotropic + mesenteric/renal vasodilator) at surgeon\'s direction',
+            },
+            {
+                heading: 'Glucose / insulin titration',
+                emphasis: 'critical',
+                body: '**GOAL: BG 80-120 mg/dL**\n\n**Initiate insulin infusion 0.01-0.03 U/kg/hr** when pancreas removed OR BG >120\n\n**Monitor BG q30 min on insulin (intra-op)**\n\n**Titration**:\n- **BG > 160**: ↑ rate by **25%**\n- **BG 131-160**: if ↑ or stayed same (within 30 mg/dL) past 30 min → ↑ **25%**; if ↓ by 30+ mg/dL past 30 min → ↓ **10%**\n- **BG 121-130**: if ↑ or stayed same past 30 min → ↑ **10%**; if ↓ by 30+ mg/dL → ↓ **10%**\n- **BG 80-120**: NO change (target!)\n- **BG 60-79**: ↑ rate of D10 LR by **50%**\n\n**HYPOGLYCEMIA <60 mg/dL — STAT response**:\n- **STOP insulin infusion STAT**\n- **↑ D10 LR by 50%**\n- Consider **1 mL/kg D10 bolus**\n- When BG **>80**, restart insulin',
+            },
+            {
+                heading: 'Maintenance fluid via GIR (if surgeon requests)',
+                emphasis: 'plain',
+                body: '**Glucose Infusion Rate (GIR)** = (Concentration g/100 mL) × (Infusion rate mL/hr) × 1000 / (Weight kg) × 60 min/hr\n\n**Target: minimum GIR 2-3 mg/kg/min**\n\nEasy calculator: pediatriconcall.com/calculators/glucose-infusion-rate-gir-calculator',
+            },
+            {
+                heading: 'Intra-op systemic analgesia + adjuncts',
+                emphasis: 'warn',
+                body: '- **Methadone 0.1 mg/kg IV (max 10 mg) prior to incision**\n- **Re-dose methadone 0.05 mg/kg (max 5 mg) at start of closure**\n- Intermittent opioid boluses prn\n- **Ketamine 0.2 mg/kg/hr** — entire case + continue post-op\n- **Lidocaine 1 mg/kg/hr** — entire case (omit if epidural + ESB BOTH not placed)\n- **Dexmedetomidine 0.3-0.9 mcg/kg/hr** — start at closure + continue post-op',
+            },
+            {
+                heading: 'Transport to ICU',
+                emphasis: 'warn',
+                body: '- **Dexmedetomidine 0.3-0.9 mcg/kg/hr** — start during closing\n- **Ketamine 0.2 mg/kg/hr** — continue\n- **Lidocaine 1 mg/kg/hr** — continue\n- **Discuss extubation with surgeon — MOST patients stay intubated**\n- Discuss maintenance fluid rates with surgeon, consider GIR\n- **Acetaminophen 15 mg/kg IV prior to leaving OR**',
+            },
+            {
+                heading: 'Lab schedule',
+                emphasis: 'plain',
+                body: '**Dissection / Pancreatectomy / Reconstruction**:\n- ABG prn, BG prn, ACT baseline\n- C-peptide 5 min pre-pancreatectomy (dark green tube, NO gel)\n\n**Islet Cell Injection → finish**:\n- C-peptide: 5 min PRE + 5 min POST injection\n- BG: q5 min from injection start, continue q5 min × duration; can space after with surgeon\n- ACT: 15 min PRE + q15 min after\n- ABG prn',
             },
             {
                 heading: 'Pain team coordination',
@@ -96,12 +151,17 @@ export const entries = [
             {
                 heading: 'Post-op (ICU minimum 7 days)',
                 emphasis: 'info',
-                body: '- **ICU manages**: dexmed, opioid, benzodiazepine infusions\n- **Pain team manages**: ketamine infusion, IV methadone, PCA pump, ESB catheter infusions\n- Continue ketamine at 0.1 mg/kg/hr\n- **Patients on pre-op opioids (scheduled)**: IV methadone 0.05 mg/kg (max 5 mg) q8h, start 8 hr after last intra-op methadone; demand-dose-only PCA/NCA before extubation\n- **Opioid-naive**: no post-op methadone; PCA/NCA with continuous (basal) dose\n- IV acetaminophen, **NO NSAIDs**',
+                body: '- **ICU manages**: dexmed, opioid, benzodiazepine infusions\n- **Pain team manages**: ketamine infusion, IV methadone, PCA pump, epidural infusion\n- Continue **ketamine 0.1 mg/kg/hr** (note: intra-op rate was 0.2; post-op ~0.1)\n- **Heparin infusion 5-10 U/kg/hr × 7 days post-op** (Gen Surg orders)\n- **Day 5-7**: epidural removal per pain anesthesiologist; transition to LMWH\n- **Patients on pre-op opioids (scheduled)**: IV methadone 0.05 mg/kg (max 5 mg) q8h, start 8 hr after last intra-op methadone; demand-dose-only PCA/NCA before extubation\n- **Opioid-naive**: no post-op methadone; PCA/NCA with continuous (basal) dose\n- IV acetaminophen, **NO NSAIDs**',
             },
             {
                 heading: 'Post-op methadone caveat',
                 emphasis: 'warn',
                 body: 'Standardized early post-op methadone is **dependent on identifying a healthcare provider, local to the patient, able/willing to manage methadone dosing + wean** after discharge. The pediatric pancreatology team handles this preoperatively.',
+            },
+            {
+                heading: 'Source files (4 NCH documents)',
+                emphasis: 'plain',
+                body: '- **TPIAT NCH Anesthesia 7.28.22 updates.docx** — comprehensive anesthesia protocol (lines, fluids, glucose, antibiotics, intra-op phases, glucose-insulin titration table)\n- **TPIAT Pain Protocol updated 1_14_26.docx** — pain regional + systemic plan\n- **TPIAT Guidelines_April 2026 Related to Regional Anesthesia.pdf** — epidural-replaces-ESB update + new anticoagulation timing per ASRA 5th edition (2025)\n- **TPIAT Protocol.pptx** — overview deck\n\nAll under `original_pictures/Sharepoint/TPIAT/`.',
             },
         ],
     },
