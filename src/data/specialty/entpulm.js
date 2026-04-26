@@ -120,16 +120,26 @@ export const entries = [
     },
     {
         ...COMMON,
-        id: 'entpulm_trach_vented_pointer',
-        title: 'Trach-Vented Patients — Guidelines',
-        shortDescription: 'Source is .doc — needs manual transcription.',
-        tags: ['tracheostomy', 'trach', 'mechanical ventilation', 'tts', 'cuffed trach'],
+        id: 'entpulm_trach_vented',
+        title: 'Trach-Vented Patient — PAT Workflow',
+        shortDescription: 'Mandatory NCH Pulmonary consult at PAT; Pulm determines disposition; handoff in PACU.',
+        tags: ['tracheostomy', 'trach', 'mechanical ventilation', 'pulmonology consult', 'pat review', 'home vent'],
         emergency: false,
         sections: [
             {
-                heading: 'Source not yet transcribed',
+                heading: 'PAT review process',
                 emphasis: 'warn',
-                body: 'The "Guidelines for Trach Vented patients.doc" is in legacy .doc format. Open the original under `original_pictures/Sharepoint/ENT_Pulmonary/ENT_Pulm_OMFS Periop Considerations/` and transcribe key points (trach inventory, swap-to-circuit during transport, anchoring, cuffed vs uncuffed, suction setup, emergency tube replacement).',
+                body: '- **Mandatory NCH Pulmonary consult** during PAT review — applies to **external patients too** (Pulm needs to be aware + comfortable placing orders)\n- Continue Pulm consult even if **patient is non-compliant** with home treatment modality — still obtain pulmonologist recommendations\n- **Pulmonologist determines disposition** (where the patient goes post-anesthesia)',
+            },
+            {
+                heading: 'Day of surgery — handoff',
+                emphasis: 'plain',
+                body: 'After GA completion, handoff to pulmonologist in PACU at **x5-0221** (NCH internal).',
+            },
+            {
+                heading: 'Status note',
+                emphasis: 'info',
+                body: '⚠ Per the source document: **this process is under review currently; expect changes** (note as of NCH source). Verify current workflow with Pulm or PAT director if discrepancy seen.',
             },
         ],
     },
