@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Droplet, AlertTriangle, ChevronDown, ChevronRight, Filter, Layers } from 'lucide-react';
+import { Droplet, AlertTriangle, ChevronDown, ChevronRight, Filter, Layers, Info } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
-import { txaCaseTypes, buildTransfusionPlan } from '../data/transfusion_protocol';
+import { procedureTypes, txaPracticeOptions, buildTransfusionPlan } from '../data/transfusion_protocol';
 import { fmt } from '../utils/calc';
 
 const ProductRow = ({ label, p, unit = 'mL' }) => (
@@ -18,11 +18,12 @@ const TransfusionProtocolCard = () => {
     const w = parseFloat(weight) || 0;
 
     const [collapsed, setCollapsed] = useState(true);
-    const [caseTypeId, setCaseTypeId] = useState('neonate');
+    const [procedureId, setProcedureId] = useState('neonate');
+    const [txaPractice, setTxaPractice] = useState('routine');
 
     const plan = useMemo(
-        () => buildTransfusionPlan({ weight, caseTypeId }),
-        [weight, caseTypeId]
+        () => buildTransfusionPlan({ weight, procedureId, txaPractice }),
+        [weight, procedureId, txaPractice]
     );
 
     return (
@@ -37,43 +38,76 @@ const TransfusionProtocolCard = () => {
                 </div>
                 <div className="flex-1 text-left">
                     <h3 className="font-bold text-fg">Transfusion Protocol (NCH 2.0)</h3>
-                    <p className="text-[11px] text-fg-muted">Recipe-based — complementary to ROTEM-driven dosing above.</p>
+                    <p className="text-[11px] text-fg-muted">Recipe-based — complementary to ROTEM-driven dosing.</p>
                 </div>
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
             </button>
 
             {!collapsed && (
                 <div className="p-4 space-y-4">
-                    {/* Case type */}
+                    {/* Procedure picker */}
                     <div>
-                        <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">Case type</label>
+                        <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">Procedure</label>
                         <select
-                            value={caseTypeId}
-                            onChange={e => setCaseTypeId(e.target.value)}
+                            value={procedureId}
+                            onChange={e => setProcedureId(e.target.value)}
                             className="w-full bg-surface text-fg font-bold px-3 py-2 rounded-lg border border-line focus:border-rose-500 outline-none"
                         >
-                            {txaCaseTypes.map(c => (
+                            {procedureTypes.map(c => (
                                 <option key={c.id} value={c.id}>
                                     {c.label}{c.highRisk ? ' — high-risk' : ''}
                                 </option>
                             ))}
                         </select>
+                        <p className="text-[10px] text-fg-muted mt-1">
+                            High-risk procedures get the post-CPB product recipe below; lower-risk procedures fall back to ROTEM-guided dosing.
+                        </p>
                     </div>
 
-                    {/* TXA */}
-                    <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                    {/* TXA practice toggle */}
+                    <div>
+                        <label className="text-[10px] uppercase font-bold text-fg-muted tracking-wide mb-1 block">Attending TXA practice</label>
+                        <div className="flex bg-surface-2/60 rounded-xl p-1 border border-line">
+                            {txaPracticeOptions.map(opt => {
+                                const active = txaPractice === opt.id;
+                                return (
+                                    <button
+                                        key={opt.id}
+                                        onClick={() => setTxaPractice(opt.id)}
+                                        className={`flex-1 py-2 px-2 rounded-lg transition-all text-left ${active ? 'bg-surface shadow-sm ring-2 ring-rose-500' : 'hover:bg-surface'}`}
+                                    >
+                                        <div className={`text-xs font-bold ${active ? 'text-rose-700 dark:text-rose-300' : 'text-fg-soft'}`}>{opt.label}</div>
+                                        <div className="text-[10px] text-fg-muted leading-tight mt-0.5">{opt.description}</div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* TXA result */}
+                    <div className={plan.txa.indicated
+                        ? 'bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3'
+                        : 'bg-surface-2/60 border border-line rounded-lg p-3 opacity-75'
+                    }>
                         <div className="flex items-baseline justify-between gap-2 mb-1">
-                            <div className="text-[11px] uppercase font-bold text-amber-800 dark:text-amber-300 tracking-wide">Tranexamic Acid</div>
-                            <div className="text-2xl font-black text-amber-900 dark:text-amber-200">
-                                {fmt(plan.txa.dose)} <span className="text-sm font-bold">mg</span>
+                            <div className={`text-[11px] uppercase font-bold tracking-wide ${plan.txa.indicated ? 'text-amber-800 dark:text-amber-300' : 'text-fg-muted'}`}>
+                                Tranexamic Acid {plan.txa.indicated ? '— indicated' : '— not indicated'}
                             </div>
+                            {plan.txa.indicated && plan.txa.dose && (
+                                <div className="text-2xl font-black text-amber-900 dark:text-amber-200">
+                                    {fmt(plan.txa.dose.dose)} <span className="text-sm font-bold">mg</span>
+                                </div>
+                            )}
                         </div>
-                        <div className="text-[11px] text-amber-900 dark:text-amber-200">
-                            {plan.txa.perKg} mg/kg{plan.txa.capped ? ` (capped at ${plan.txa.cap} mg)` : ''}
-                            <ul className="list-disc list-inside mt-1 pl-1 space-y-0.5">
-                                {plan.txa.timing.map((t, i) => <li key={i}>{t}</li>)}
-                            </ul>
-                        </div>
+                        <div className="text-[11px] text-fg-soft italic">{plan.txa.rationale}</div>
+                        {plan.txa.indicated && plan.txa.dose && (
+                            <div className="text-[11px] text-amber-900 dark:text-amber-200 mt-1">
+                                {plan.txa.dose.perKg} mg/kg{plan.txa.dose.capped ? ` (capped at ${plan.txa.dose.cap} mg)` : ''}
+                                <ul className="list-disc list-inside mt-1 pl-1 space-y-0.5">
+                                    {plan.txa.dose.timing.map((t, i) => <li key={i}>{t}</li>)}
+                                </ul>
+                            </div>
+                        )}
                     </div>
 
                     {/* Blood prime */}
@@ -118,14 +152,21 @@ const TransfusionProtocolCard = () => {
                         </ul>
                     </div>
 
-                    {!plan.caseType.highRisk && (
+                    {!plan.procedure.highRisk && (
                         <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-[11px] p-2.5 rounded-lg flex items-start gap-2">
                             <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
                             <div>
-                                Selected case type is <b>not classified high-risk</b>. The tier-1 NCH transfusion plan above doesn't apply directly — fall back to ROTEM-guided dosing in the card above and clinical judgement.
+                                Selected procedure is <b>not classified high-risk</b>. The tier-1 NCH transfusion plan above doesn't apply directly — fall back to ROTEM-guided dosing in the card above and clinical judgement.
                             </div>
                         </div>
                     )}
+
+                    <div className="bg-surface-2/60 border border-line text-fg-muted text-[10px] p-2.5 rounded-lg flex items-start gap-2">
+                        <Info size={11} className="flex-shrink-0 mt-0.5" />
+                        <div>
+                            Original protocol differentiates TXA practice by attending. To keep this app generic, those individual preferences are abstracted into the <b>Routine</b> / <b>Selective</b> toggle above. Confirm with the attending of the day.
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

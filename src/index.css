@@ -84,6 +84,25 @@ button { touch-action: manipulation; }
 .dark .border-slate-200          { border-color: rgb(var(--border)) !important; }
 .dark .border-slate-300          { border-color: rgb(var(--border-strong)) !important; }
 
+/* Hover variants — Tailwind's `hover:bg-slate-50` compiles to `.hover\:bg-slate-50`,
+   which the bare-class patches above don't match. Without these the row turns
+   nearly white on hover in dark mode while the patched text colour stays
+   bright → unreadable. */
+.dark .hover\:bg-slate-50:hover  { background-color: rgb(var(--bg-surface-2)) !important; }
+.dark .hover\:bg-slate-100:hover { background-color: rgb(var(--bg-surface-2)) !important; }
+.dark .hover\:bg-white:hover     { background-color: rgb(var(--bg-surface)) !important; }
+
+/* Opacity-modified pastel backgrounds (e.g. `bg-amber-50/50`, `bg-red-50/60`).
+   Tailwind compiles each opacity step into its own class name, so we have to
+   enumerate the ones actually used in the codebase. */
+.dark .bg-amber-50\/50           { background-color: rgb(120 53 15 / 0.16) !important; }
+.dark .bg-red-50\/60             { background-color: rgb(127 29 29 / 0.20) !important; }
+
+/* Tailwind `divide-slate-100` injects a border on every direct child after the
+   first; the bare-class patch doesn't reach those children. */
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: rgb(var(--border)) !important; }
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: rgb(var(--border)) !important; }
+
 /* =========================================================================
    Pastel surfaces in dark mode → tinted alpha of the *same* color so the
    visual color-coding survives. (-50 and -100 both touched.)

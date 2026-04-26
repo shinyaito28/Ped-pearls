@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-    txaDose, bloodPrimePlan, postCpbProductsHighRisk, buildTransfusionPlan
+    txaDose, txaIndication, bloodPrimePlan, postCpbProductsHighRisk, buildTransfusionPlan
 } from '../src/data/transfusion_protocol';
 
 describe('Transfusion — TXA dose', () => {
@@ -15,6 +15,28 @@ describe('Transfusion — TXA dose', () => {
     });
     it('lists three timing windows', () => {
         expect(txaDose(5).timing.length).toBe(3);
+    });
+});
+
+describe('Transfusion — TXA indication (procedure × attending practice)', () => {
+    it('routine attending → TXA always indicated', () => {
+        const r = txaIndication({ procedureId: 'other', txaPractice: 'routine', weight: 20 });
+        expect(r.indicated).toBe(true);
+        expect(r.dose.dose).toBe(400);
+    });
+    it('selective attending + high-risk procedure → TXA indicated', () => {
+        const r = txaIndication({ procedureId: 'norwood', txaPractice: 'selective', weight: 3.2 });
+        expect(r.indicated).toBe(true);
+        expect(r.dose.dose).toBeCloseTo(64, 1);
+    });
+    it('selective attending + lower-risk procedure → TXA NOT indicated', () => {
+        const r = txaIndication({ procedureId: 'other', txaPractice: 'selective', weight: 20 });
+        expect(r.indicated).toBe(false);
+        expect(r.dose).toBeNull();
+    });
+    it('selective attending + arterial switch → TXA indicated', () => {
+        const r = txaIndication({ procedureId: 'switch', txaPractice: 'selective', weight: 3.5 });
+        expect(r.indicated).toBe(true);
     });
 });
 
@@ -49,17 +71,21 @@ describe('Transfusion — post-CPB high-risk products', () => {
 
 describe('Transfusion — buildTransfusionPlan classification', () => {
     it('Norwood is high-risk → produces post-CPB product plan', () => {
-        const plan = buildTransfusionPlan({ weight: 3.2, caseTypeId: 'norwood' });
-        expect(plan.caseType.highRisk).toBe(true);
+        const plan = buildTransfusionPlan({ weight: 3.2, procedureId: 'norwood', txaPractice: 'routine' });
+        expect(plan.procedure.highRisk).toBe(true);
         expect(plan.products).not.toBeNull();
     });
-    it('Other case → no high-risk products', () => {
-        const plan = buildTransfusionPlan({ weight: 20, caseTypeId: 'other' });
-        expect(plan.caseType.highRisk).toBe(false);
+    it('Other procedure → no high-risk product plan', () => {
+        const plan = buildTransfusionPlan({ weight: 20, procedureId: 'other', txaPractice: 'routine' });
+        expect(plan.procedure.highRisk).toBe(false);
         expect(plan.products).toBeNull();
     });
-    it('TXA always provided regardless of case type', () => {
-        const plan = buildTransfusionPlan({ weight: 20, caseTypeId: 'other' });
-        expect(plan.txa.dose).toBe(400);
+    it('Routine TXA practice → TXA indicated even for lower-risk', () => {
+        const plan = buildTransfusionPlan({ weight: 20, procedureId: 'other', txaPractice: 'routine' });
+        expect(plan.txa.indicated).toBe(true);
+    });
+    it('Selective TXA practice + lower-risk → TXA NOT indicated', () => {
+        const plan = buildTransfusionPlan({ weight: 20, procedureId: 'other', txaPractice: 'selective' });
+        expect(plan.txa.indicated).toBe(false);
     });
 });
