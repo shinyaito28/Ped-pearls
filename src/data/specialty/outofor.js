@@ -250,4 +250,40 @@ export const entries = [
             },
         ],
     },
+    {
+        ...COMMON,
+        id: 'outofor_ect_evidence',
+        title: 'Pediatric ECT — Evidence + Anesthesiologist Perspective',
+        shortDescription: 'Companion academic references to outofor_ect_routine. Key clinical takeaways from 2 reviews.',
+        tags: ['ect academic', 'ect systematic review', 'ect pediatric evidence', 'methohexital ect', 'anesthesia ect best practice', 'methohexital seizure dynamics', 'sevoflurane ect'],
+        emergency: false,
+        related: ['outofor_ect_routine'],
+        sections: [
+            {
+                heading: 'For NCH bedside use → outofor_ect_routine',
+                emphasis: 'success',
+                body: 'The **NCH ECT routine + methohexital + flumazenil** entry (`outofor_ect_routine`) is the operational protocol. **Use that for actual case planning.** This entry summarizes the academic background from 2 reference papers in the Sharepoint folder.',
+            },
+            {
+                heading: 'Why ECT in pediatrics has evolved',
+                emphasis: 'info',
+                body: '- Modern ECT under GA is **safe + effective** for treatment-refractory pediatric psychiatric disease (depression, mania, psychosis, NMS, status epilepticus, catatonia)\n- **Underutilized historically** due to negative cultural perception (despite low risk + good outcomes)\n- Evolution from awake → modern GA + muscle paralysis dramatically improved tolerability\n- **Anesthetic goals**: deep hypnosis + muscle relaxation + minimal effect on seizure dynamics + rapid recovery to baseline',
+            },
+            {
+                heading: 'Anesthetic agents — seizure-dynamics impact',
+                emphasis: 'warn',
+                body: '- **Methohexital** = standard induction; **<2 mg/kg keeps seizure threshold reasonable**\n- **Higher methohexital doses (>2 mg/kg) shorten seizure duration** → may reduce ECT efficacy\n- **Propofol** = acceptable but more **anti-convulsant** at typical induction doses → may reduce seizure quality\n- **Ketamine** = some evidence of **enhancing seizure quality** in refractory cases, but variable\n- **Etomidate** = reasonable alternative; less anti-convulsant than propofol\n- **Volatile anesthetics**: brief use OK for inhalation induction, but turn down END-tidal **<1%** before sux + ECT to avoid seizure dampening',
+            },
+            {
+                heading: 'Multidisciplinary considerations',
+                emphasis: 'plain',
+                body: '- **Open communication between anesthesia + psychiatry + ECT team** is the single biggest predictor of program success\n- **Three planning phases**: pre-procedural (med review, NPO, anxiety), intra-procedural (induction + airway + seizure quality), post-procedural (cognitive recovery, delirium prevention)\n- Patients often on multiple psychotropics — review for interactions (lithium, MAOIs, SSRIs, benzos)',
+            },
+            {
+                heading: 'Source files (academic, in Sharepoint folder)',
+                emphasis: 'plain',
+                body: '- **"Anesthetic Considerations in Children ECT"** — Anesth Analg 2020;130:126 (15-page systematic review)\n- **"Pediatric Electroconvulsive Therapy: An Anesthesiologist\'s Perspective"** — Franklin AD, et al. Child Adolesc Psychiatric Clin N Am 2019;28:21-32 (12-page chapter)\n\nBoth under `original_pictures/Sharepoint/Out of OR_Off-site/ECT/`. These are reference reading; for ACTUAL bedside protocol see the `outofor_ect_routine` entry.',
+            },
+        ],
+    },
 ];

@@ -60,10 +60,40 @@ export const documentationSteps = [
     'Coagulation studies (ACT/PTT) documented',
 ];
 
-// Stroke Protocol pointer — the source .doc was binary and did not extract.
-// Until the file is manually transcribed, surface a note rather than guess
-// at content that could have clinical doses.
-export const strokeProtocolNote = {
-    title: 'Emergent Stroke Protocol',
-    body: 'The NCH IR Emergent Stroke Protocol source file is in a legacy .doc format that did not auto-extract. Open the original PDF/Word file in the IR folder for the full protocol — once transcribed, the steps will appear here.',
+// Stroke Protocol — NCH MRI Emergent Stroke Protocol
+// (Radiology Dept Procedure Manual, originated 5/15/2017).
+// Source: NCH Sharepoint / Out of OR / IR / Emergent Stroke Protocol (1).doc
+// (Word COM -> .docx -> python-docx).
+//
+// This is the imaging triage / scheduling protocol (NOT the
+// thrombolysis dose protocol). Defines when an MRI counts as
+// "Emergent Stroke" + what abbreviated MRI series is performed.
+
+export const strokeProtocolScheduling = {
+    afterHours: 'After normal MRI work hours (Mon-Fri 22:30-06:00, all day Sat-Sun)',
+    triggerCriteria: 'Patient presents with new-onset stroke symptoms < 6 hours',
+    requiredConsultation: [
+        'An attending Neurologist OR Neurosurgeon must be involved with patient evaluation + management',
+        'They must be available to speak to the Radiologist for the exam to be declared an emergency',
+    ],
+    delayedScenario: 'If symptoms > 6 hours: MRI is NOT emergent — perform within 18 hours of MRI request',
+    cerebellarException: 'EXCEPTION: Suspected cerebellar stroke (rapid deterioration without surgical intervention)',
+    treatmentWindow: 'Emergent declaration only if treatment can begin within 4.5-6 hours of new symptoms (4.5 hr for IV thrombolysis, 6 hr for endovascular thrombectomy)',
 };
+
+export const strokeProtocolImaging = [
+    '**Short Stroke Protocol** initially:',
+    '  - Axial Diffusion (DWI)',
+    '  - Axial FLAIR',
+    '  - Axial GRE T2*',
+    'If diffusion POSITIVE (radiologist call): **head MRA** is performed (separate order/accession # for billing)',
+    'Ordering physician notified of results if positive',
+    'Positive exam → patient receives treatment, then returns for **Full Stroke Protocol** once stable',
+];
+
+export const strokeProtocolWorkflow = [
+    'After-hours: Radiologist calls in MRI technologists to complete the exam',
+    'Anesthesia involvement: per emergency-MRI workflow (see outofor_offhours_mri)',
+    'Confirm patient is hemodynamically stable + airway secure if intubated',
+    'Standard MR-safety pre-scanning checklist (see flow_imri_checklist for iMRI; standard MRI follows similar principles)',
+];

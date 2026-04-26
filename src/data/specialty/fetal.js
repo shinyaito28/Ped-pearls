@@ -161,4 +161,20 @@ export const entries = [
             },
         ],
     },
+    {
+        ...COMMON,
+        id: 'fetal_emergent_cesarean_protocol_crossref',
+        title: 'Emergent Cesarean Delivery Protocol — see flowchart',
+        shortDescription: 'The standalone "Emergent Cesarean Delivery Protocol" PDF content is fully captured in the interactive flowchart card.',
+        tags: ['emergent cesarean', 'protocol', 'cross-link', 'rsi cesarean', 'oxytocin'],
+        emergency: true,
+        related: ['flow_emergency_cesarean'],
+        sections: [
+            {
+                heading: 'Where this content lives',
+                emphasis: 'info',
+                body: 'The **"Emergent Cesarean Delivery Protocol_March 2026.pdf"** is the longer 2-page protocol form of the **same content** that\'s already in the interactive **Emergency Cesarean Section Flowsheet** (`flow_emergency_cesarean`) flowchart card.\n\n**For bedside use → open the flowchart card** (interactive: stable vs hemorrhage RSI dose toggle, weight-based calculations, full step sequence). Sections covered there:\n- Pre-procedure (call fetal team, sodium citrate, fetal kit, oxytocin from pharmacy, blood to fridge)\n- Room set-up (machine, video laryngoscopy, troop pillow)\n- RSI doses by maternal stability (propofol/sux vs etomidate/ketamine)\n- Intra-op flow + maintenance hemodynamics (SBP > 100, ephedrine/phenylephrine)\n- **Oxytocin dosing**: 5 U over 10 min (500 mL/hr) → 70 mL/hr until bag complete\n- Backup uterotonics (Methergine, Hemabate, Misoprostol)\n- Post-cord-clamp uterine atony management\n- Emergence + epidural alternative dosing (if time allows)\n\n*This pointer entry exists only to confirm the source file is captured.*',
+            },
+        ],
+    },
 ];

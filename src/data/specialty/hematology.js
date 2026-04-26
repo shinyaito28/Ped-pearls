@@ -291,4 +291,54 @@ export const entries = [
             },
         ],
     },
+    {
+        ...COMMON,
+        id: 'heme_oncology_prep',
+        title: 'Oncology Patient — Pre-Anesthesia Prep Guidelines',
+        shortDescription: 'H&P <7d, labs 24-48h pre-op, blood products 24-48h pre-op, "Heme-Onc sheet" day before.',
+        tags: ['oncology prep', 'pre-anesthesia oncology', 'heme onc sheet', 'pre-op labs oncology', 'platelet count post-transfusion', 'cvl access oncology', 'radiology oncology'],
+        emergency: false,
+        sections: [
+            {
+                heading: 'Documentation requirements',
+                emphasis: 'warn',
+                body: '- **Documented physical exam within 7 days** of scheduled procedure requiring GA\n- **"Heme-Onc sheet" (Pre-anesthesia form)** completed the day before scheduled procedure\n- Refer to OR policy for facility-appropriateness (Main OR vs Surgery Center)',
+            },
+            {
+                heading: 'Pre-op timing',
+                emphasis: 'plain',
+                body: '- Patients **may be seen in clinic on the day of procedure** ONLY for: CVL access / IV chemotherapy / physical examination\n- Patients scheduled to be **in OR or Surgery Center 2 hours before scheduled procedure**',
+            },
+            {
+                heading: 'Lab timing',
+                emphasis: 'critical',
+                body: '- **Obtain labs 24-48 hours before** scheduled procedure → determine if procedure requires rescheduling\n- **Exception**: labs obtained Friday for scheduled Monday procedure\n- **CBC + diff/platelets on the SAME day of the procedure should be AVOIDED** if possible',
+            },
+            {
+                heading: 'Blood products',
+                emphasis: 'warn',
+                body: '- **Blood product administration completed 24-48 hours before procedure**\n- **One-hour post-platelet-transfusion count drawn** if patient transfused with platelets (verify functional response)',
+            },
+            {
+                heading: 'Cancellation + radiology coverage',
+                emphasis: 'plain',
+                body: '- **Notify Main OR ASAP** when procedure cancelled\n- **Patients scheduled for radiology procedures requiring GA** adhere to the **same criteria** as patients undergoing OR / surgery center procedures',
+            },
+        ],
+    },
+    {
+        ...COMMON,
+        id: 'heme_thrombosis_cpg',
+        title: 'Thrombosis in Oncology Patients (CPG)',
+        shortDescription: 'PDF source extraction failed (likely image-only) — pointer for now.',
+        tags: ['thrombosis', 'vte oncology', 'dvt prevention', 'cancer thrombosis', 'cpg'],
+        emergency: false,
+        sections: [
+            {
+                heading: 'Source not yet transcribed',
+                emphasis: 'warn',
+                body: 'The "CPG-Management of Thrombosis in Oncology Patients.pdf" returned only **32 chars** when extracted (image-only PDF, blank pages). Open the original under `original_pictures/Sharepoint/Hematology & Oncology/Hematology & Oncology Perioperative Considerations/` and transcribe key thresholds (when to anticoagulate, when to hold, bridging strategies, ITP/thrombocytopenia management). Until then, refer to the source PDF directly. General periop principles for known thrombosis: see the **ASRA Anticoag-Regional** entry under Procedures hub for neuraxial-anticoag timing.',
+            },
+        ],
+    },
 ];

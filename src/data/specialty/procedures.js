@@ -472,4 +472,65 @@ export const entries = [
             },
         ],
     },
+    {
+        ...COMMON,
+        id: 'proc_wound_catheter',
+        title: 'Wound Catheter Protocol (laparotomy, non-epidural)',
+        shortDescription: 'Surgeon-inserted at end of case; Ropi 0.2% 0.1 mL/kg/hr (max 4 mL/hr); pain service manages.',
+        tags: ['wound catheter', 'laparotomy', 'ropivacaine wound', 'continuous infiltration', 'no bolus', 'epidural alternative'],
+        emergency: false,
+        sections: [
+            {
+                heading: 'Patient population',
+                emphasis: 'info',
+                body: 'Patients with **laparotomies who are NOT appropriate candidates for epidural analgesia** (coagulopathy, anatomy, anticoag protocol, refusal).',
+            },
+            {
+                heading: 'Insertion (end of case, surgeon-placed)',
+                emphasis: 'plain',
+                body: '- **Surgeon communicates** to OR anesthesiologist + OR nurse of plan to insert wound catheter\n- **OR anesthesiologist communicates with pain service attending** that wound catheter is to be inserted\n- OR nurse acquires catheter from OR supply on surgeon request\n- **Wound catheter inserted by surgeon at end of case** + secured (suture and/or steri-strips)\n- Surgeon **boluses with local anesthetic at end of case**, labels, caps',
+            },
+            {
+                heading: 'Initiation',
+                emphasis: 'warn',
+                body: '- Pain service attending places order under order set **"wound catheter"**\n- **Recommended initial order: Ropivacaine 0.2% at 0.1 mL/kg/hr, max 4 mL/hr**\n- Pain service attending notifies pain service APN\n- Infusion pump set up, then **connected by pain service attending or APN** (most likely in PACU)',
+            },
+            {
+                heading: 'Maintenance',
+                emphasis: 'critical',
+                body: '- Pain service rounds daily on patients with wound catheter infusions\n- **Wound catheters are NOT to be bolused** (continuous infiltration only; bolus risks LAST given local rates)\n- **Maximum rate**:\n  - **>6 months of age**: Ropi 0.2% **0.2 mL/kg/hr**, **NOT to exceed 4 mL/hr (= 0.4 mg/kg/hr)**\n  - **<6 months of age**: Ropi 0.2% **0.1 mL/kg/hr (= 0.2 mg/kg/hr)** — do not exceed',
+            },
+            {
+                heading: 'Removal',
+                emphasis: 'plain',
+                body: '- **Removed by surgical team** (usually POD #2 or #3)\n- Surgical team notifies pain service when removed\n- Pain service DCs orders for wound catheter infusion\n- **Patients NOT to be discharged with indwelling wound catheters**',
+            },
+        ],
+    },
+    {
+        ...COMMON,
+        id: 'proc_neuraxial_pnc_post_placement_checklist',
+        title: 'Neuraxial / PNC Post-Placement Checklist',
+        shortDescription: 'PACU sign-out + q24h floor: tubing, infusion, dressing, pump confirmation.',
+        tags: ['catheter checklist', 'epidural checklist', 'caudal checklist', 'pnc checklist', 'aps round', 'stat-lock', 'hy-tape', 'post-placement safety'],
+        emergency: false,
+        related: ['proc_wound_catheter', 'proc_anticoag_regional'],
+        sections: [
+            {
+                heading: 'When to perform',
+                emphasis: 'info',
+                body: '**Complete this checklist**:\n- **Prior to PACU patient sign-out**\n- **Q24h on the floor** (during APS rounds)\n\nApplies to **caudal epidural, epidural catheters, and peripheral nerve catheters (PNCs)**.',
+            },
+            {
+                heading: 'Checklist items',
+                emphasis: 'critical',
+                body: '☐ **Tubing connections tightly closed and secured**, no leaking fluid\n\n☐ **Catheter firmly connected to infusion port**\n\n☐ **Hy-tape used around tubing connections** (extra security)\n\n☐ **Stat-Lock in place for epidural infusions** with tubing in correct position (when applicable)\n\n☐ **Infusion is confirmed running, no alarms**\n\n☐ **Epidural or PNC dressing remains occlusive** without signs of bleeding / fluid leak',
+            },
+            {
+                heading: 'Responsible providers',
+                emphasis: 'plain',
+                body: '**In PACU**: APS attending + APS fellow(s) + Primary anesthesiologist for the case\n\n**On the floor**: Rounding APS team — APS attending + fellows + APNs',
+            },
+        ],
+    },
 ];

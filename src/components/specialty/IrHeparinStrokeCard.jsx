@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { MapPin, AlertTriangle } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { usePatient } from '../../context/PatientContext';
 import { FlowchartShell, Section, Bullets, RequireWeight } from './FlowchartShell';
 import {
@@ -9,7 +9,9 @@ import {
     setupSteps,
     monitoringSteps,
     documentationSteps,
-    strokeProtocolNote,
+    strokeProtocolScheduling,
+    strokeProtocolImaging,
+    strokeProtocolWorkflow,
 } from '../../data/specialty/flowcharts/ir_heparin_stroke';
 
 const IrHeparinStrokeCard = ({ entry }) => {
@@ -63,11 +65,21 @@ const IrHeparinStrokeCard = ({ entry }) => {
                 <Bullets items={documentationSteps} />
             </Section>
 
-            <Section title={strokeProtocolNote.title} emphasis="warn">
-                <div className="flex items-start gap-2">
-                    <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
-                    <div>{strokeProtocolNote.body}</div>
-                </div>
+            <Section title="Emergent Stroke Protocol — when triggered" emphasis="critical">
+                <div className="text-[12px] mb-2"><b>{strokeProtocolScheduling.afterHours}</b></div>
+                <div className="mb-1">{strokeProtocolScheduling.triggerCriteria}</div>
+                <Bullets items={strokeProtocolScheduling.requiredConsultation} />
+                <div className="mt-2 text-[12px] italic">{strokeProtocolScheduling.delayedScenario}</div>
+                <div className="mt-1 text-[12px] italic">⚠ {strokeProtocolScheduling.cerebellarException}</div>
+                <div className="mt-2 text-[12px] font-bold">{strokeProtocolScheduling.treatmentWindow}</div>
+            </Section>
+
+            <Section title="Stroke Protocol — imaging series" emphasis="warn">
+                <Bullets items={strokeProtocolImaging} />
+            </Section>
+
+            <Section title="Stroke Protocol — anesthesia workflow" emphasis="info">
+                <Bullets items={strokeProtocolWorkflow} />
             </Section>
         </FlowchartShell>
     );

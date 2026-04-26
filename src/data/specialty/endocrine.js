@@ -204,4 +204,65 @@ export const entries = [
             },
         ],
     },
+    {
+        ...COMMON,
+        id: 'endo_mps3_trial_protocol',
+        title: 'MPS III Gene Therapy TRIAL Anesthetic Protocol',
+        shortDescription: 'TIVA: Dexmed 0.5 mcg/kg load + 0.5 mcg/kg/hr, Propofol 150 mcg/kg/min, NC O2. Avoid inhaled (alters LP opening pressure).',
+        tags: ['mps iii', 'sanfilippo', 'gene therapy trial', 'aav viral vector', 'tiva', 'lp opening pressure', 'dexmedetomidine load', 'natural history', 'spinal needle'],
+        emergency: false,
+        related: ['endo_mps3_gene_therapy'],
+        sections: [
+            {
+                heading: 'Authority statement',
+                emphasis: 'info',
+                body: 'At any point in care, the **attending anesthesiologist has the authority and expectation to care for the patient in a manner they feel is in the patient\'s best interest**. While following this protocol is encouraged, deviations for unanticipated events are understood.',
+            },
+            {
+                heading: 'Pre-op + induction',
+                emphasis: 'plain',
+                body: '- Premedication as needed\n- **Mask induction with sevoflurane** (N2O may also be used)',
+            },
+            {
+                heading: 'Once IV placed',
+                emphasis: 'warn',
+                body: '- **Draw 20 mL of blood for the study**\n- **Dexmedetomidine load: 0.5 mcg/kg over 5 minutes**\n- **Dexmedetomidine infusion: 0.5 mcg/kg/hr**\n- **Propofol 150 mcg/kg/min**\n- **Oxygen via nasal cannula**\n- Adjust propofol dose as needed; dexmedetomidine can also be adjusted',
+            },
+            {
+                heading: 'Helpful hints',
+                emphasis: 'plain',
+                body: '- **Small repositionings** of the airway / neck / shoulders work better than large movements\n- The airway tends to **become less obstructive once TIVA replaces the inhaled anesthetic**\n- **Stop the infusions once the spinal needle shows CSF**\n- **AVOID inhaled anesthetics** during the procedure — they **alter the LP opening pressure** and may confound study data\n- All patients in the natural history did well with this protocol',
+            },
+            {
+                heading: 'How this differs from the basic MPS III entry',
+                emphasis: 'info',
+                body: 'See `endo_mps3_gene_therapy` (basic) for general MPS III patient flow (pre-op 4 hr early, dedicated gene therapy line, PICU post-op). This **TRIAL protocol entry** adds the specific TIVA recipe (Dexmed + Propofol + NC O2) that protects the LP opening pressure measurement.',
+            },
+        ],
+    },
+    {
+        ...COMMON,
+        id: 'endo_first_case_starts',
+        title: 'First Case Starts — Medically Fragile Patient List',
+        shortDescription: 'Schedule first if possible: DM, mito, infants, hypopit, sickle cell, MD, MH precautions.',
+        tags: ['first case starts', 'medically fragile', 'scheduling', 'mh precautions', 'diabetes scheduling', 'sickle cell scheduling', 'mitochondrial', 'hypopituitary', 'muscular dystrophy'],
+        emergency: false,
+        sections: [
+            {
+                heading: 'Patients to consider for first-case scheduling',
+                emphasis: 'warn',
+                body: 'If possible, schedule these patients **first**. When not possible due to scheduling, **discuss with anesthesia attending** whether case can be later or needs rescheduling.',
+            },
+            {
+                heading: 'List',
+                emphasis: 'info',
+                body: '- **MH precautions** — *please do not label unless actually known to be*\n- **Diabetics** (BG management + NPO sensitivity)\n- **Mitochondrial disorders**\n- **Infants**\n- **Hypopituitary**\n- **Sickle cell anemia**\n- **Any patient who cannot withstand the stress of NPO** — *consider overnight admission for IVF*\n- **Metabolic disorders**\n- **Muscular dystrophy** — *patients should be labelled as possible TIVA/DMD*\n- **Muscle biopsy** (usually to rule out mitochondrial disorder or muscular dystrophy) — *please do not label as MH unless known to be*',
+            },
+            {
+                heading: 'Rationale (paraphrased)',
+                emphasis: 'plain',
+                body: 'These are medically fragile patients. Early scheduling minimizes:\n- NPO duration (DM, mito, sickle cell, infants)\n- Time waiting in pre-op (anxiety + dehydration)\n- Conflicts with other complex cases later in the day\n- Recovery overlap with longer post-op observation needs',
+            },
+        ],
+    },
 ];

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Stethoscope, Baby, Brain, MapPin, ClipboardCheck, Droplets, Activity,
-    Replace, Bone, Scissors, Dna, Anchor, Library
+    Replace, Bone, Scissors, Dna, Anchor, Library, HeartPulse, Filter, Donut, Clipboard
 } from 'lucide-react';
 import { hubs, entriesByHub } from '../../data/specialty';
 import SpecialtyHubCard from './SpecialtyHubCard';
@@ -10,7 +10,7 @@ import SpecialtyHubCard from './SpecialtyHubCard';
 // React imports.
 const ICONS = {
     Stethoscope, Baby, Brain, MapPin, ClipboardCheck, Droplets, Activity,
-    Replace, Bone, Scissors, Dna, Anchor, Library,
+    Replace, Bone, Scissors, Dna, Anchor, Library, HeartPulse, Filter, Donut, Clipboard,
 };
 
 const SpecialtyLauncher = ({ initialHubId, onConsumeInitialHub }) => {

@@ -17,6 +17,10 @@ export const hubs = [
     { id: 'gensurg',    label: 'General Surgery',    iconName: 'Scissors',    accent: 'teal',    description: 'CDH, bariatric, IBD ERAS, appendectomy' },
     { id: 'metabolic',  label: 'Metabolic / Genetic', iconName: 'Dna',        accent: 'fuchsia', description: 'MCAD, mito, ketogenic, mastocytosis, MPS III' },
     { id: 'procedures', label: 'Pain Procedures',    iconName: 'Anchor',      accent: 'purple',  description: 'Pectus Nuss, TPIAT, dorsal rhizotomy, hemipelvectomy' },
+    { id: 'cardiacsub', label: 'Cardiac Subspecialty', iconName: 'HeartPulse', accent: 'red',    description: 'CHD case-based, common congenital, Long QT' },
+    { id: 'urology',    label: 'Urology',            iconName: 'Filter',      accent: 'yellow',  description: 'Bladder exstrophy, robotic, ICG fluorescent, pyeloplasty' },
+    { id: 'colorectal', label: 'Colorectal',         iconName: 'Donut',       accent: 'lime',    description: 'Colorectal ERAS, green dye, motility' },
+    { id: 'asc',        label: 'ASC (Ambulatory)',   iconName: 'Clipboard',   accent: 'indigo',  description: 'Ambulatory Surgery Center triage + OSA PAT' },
 ];
 
 // --- Entries (flowcharts populated in Phase 1, catalog in Phase 2+) ---------
@@ -44,6 +48,10 @@ import { entries as entpulmEntries } from './entpulm';
 import { entries as metabolicEntries } from './metabolic';
 import { entries as proceduresEntries } from './procedures';
 import { entries as preopEntries } from './preop';
+import { entries as cardiacsubEntries } from './cardiacsub';
+import { entries as urologyEntries } from './urology';
+import { entries as colorectalEntries } from './colorectal';
+import { entries as ascEntries } from './asc';
 
 export const flowcharts = [
     mediastinalMass,
@@ -68,6 +76,10 @@ export const catalog = [
     ...metabolicEntries,
     ...proceduresEntries,
     ...preopEntries,
+    ...cardiacsubEntries,
+    ...urologyEntries,
+    ...colorectalEntries,
+    ...ascEntries,
 ];
 
 export const allEntries = [...flowcharts, ...catalog];
