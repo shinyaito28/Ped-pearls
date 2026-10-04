@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Pencil, Settings2, Lock, Clock } from 'lucide-react';
+import { ChevronDown, Settings2, Lock, Clock } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import { useLanguage } from '../context/LanguageContext';
+import { formatPatientSummaryNumber } from '../utils/patientSummary';
 
 // Compact 1-row summary that replaces the full patient input bar after
 // auto-collapse. Click anywhere on the chip to expand back to the form.
@@ -12,6 +13,7 @@ const PatientChip = ({ onExpand, pref, setPref }) => {
     const { t } = useLanguage();
     const [showSettings, setShowSettings] = useState(false);
     const settingsRef = useRef(null);
+    const settingsButtonRef = useRef(null);
 
     useEffect(() => {
         const onClick = (e) => {
@@ -20,56 +22,70 @@ const PatientChip = ({ onExpand, pref, setPref }) => {
             }
         };
         if (showSettings) {
+            const onKeyDown = e => {
+                if (e.key === 'Escape') {
+                    setShowSettings(false);
+                    settingsButtonRef.current?.focus();
+                }
+            };
             window.addEventListener('mousedown', onClick);
-            return () => window.removeEventListener('mousedown', onClick);
+            window.addEventListener('keydown', onKeyDown);
+            return () => {
+                window.removeEventListener('mousedown', onClick);
+                window.removeEventListener('keydown', onKeyDown);
+            };
         }
     }, [showSettings]);
 
-    const ageUnitShort = ageUnit === 'days' ? t('d', '日') : ageUnit === 'months' ? t('mo', 'ヶ月') : t('y', '歳');
-    const ageLabel = `${age}${ageUnitShort}`;
+    const ageUnitShort = ageUnit === 'days' ? t('d', '日') : ageUnit === 'months' ? t('mo', 'か月') : t('y', '歳');
+    const ageLabel = `${formatPatientSummaryNumber(age)}${ageUnitShort}`;
+    const weightLabel = formatPatientSummaryNumber(weight), heightLabel = formatPatientSummaryNumber(height);
+    const full = v => v == null || String(v).trim() === '' ? '—' : String(v);
+    const label = `${t('Expand patient inputs', '患者入力欄を展開')}: ${full(age)}${ageUnitShort}, ${full(weight)} kg, ${full(height)} cm, ${gender === 'female' ? t('female', '女') : t('male', '男')}${isPreemie ? t(', premature', '、早産児') : ''}`;
+    const approximate = [ageLabel, weightLabel, heightLabel].some(v => v.includes('≈'));
     const sexGlyph = gender === 'female' ? '♀' : '♂';
     const sexAccent = gender === 'female' ? 'text-rose-500' : 'text-sky-500';
 
     return (
-        <div className="bg-surface-2/60 border border-line rounded-xl px-2 py-1.5 flex items-center gap-2 transition-all">
+        <div data-patient-summary className="flex min-w-0 items-center gap-1 border-t border-line">
             <button
                 onClick={onExpand}
-                className="flex-1 flex items-center gap-2 text-left tap-target hover:bg-surface-2/80 rounded-lg px-2 py-1.5 -mx-1 transition-colors"
-                aria-label="Edit patient parameters"
+                className="flex h-11 min-w-0 flex-1 items-center gap-1 rounded-md px-1.5 text-left text-[11px] min-[360px]:text-xs leading-none tap-target hover:bg-surface-2/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-500 transition-colors"
+                aria-label={label}
                 aria-expanded="false"
+                aria-controls="patient-inputs"
+                title={`${label}${approximate ? t(' · ≈ marks shortened display values; expand to read exact inputs.', ' · ≈は表示だけの概数です。展開すると元の入力値を確認できます。') : ''}`}
             >
-                <Pencil size={14} className="text-fg-muted flex-shrink-0" />
-                <div className="flex items-baseline gap-2 flex-wrap">
-                    <span className="font-bold text-fg text-sm">{ageLabel}</span>
-                    <span className={`font-bold text-sm ${sexAccent}`}>{sexGlyph}</span>
-                    <span className="text-fg-muted">•</span>
-                    <span className="font-bold text-fg text-sm">{weight} <span className="font-normal text-[11px] text-fg-muted">kg</span></span>
-                    {height && (
-                        <>
-                            <span className="text-fg-muted">•</span>
-                            <span className="font-bold text-fg text-sm">{height} <span className="font-normal text-[11px] text-fg-muted">cm</span></span>
-                        </>
-                    )}
+                <div aria-hidden="true" className="flex min-w-0 flex-1 items-baseline gap-0.5 whitespace-nowrap tabular-nums sm:gap-2">
+                    <span className="font-bold text-fg">{ageLabel}</span>
+                    <span className={`hidden min-[360px]:inline font-bold ${sexAccent}`}>{sexGlyph}</span>
+                    <span className="text-fg-muted">·</span>
+                    <span className="font-bold text-fg">{weightLabel}<span className="font-normal text-[10px] text-fg-muted"> kg</span></span>
+                    <span className="text-fg-muted">·</span>
+                    <span className="font-bold text-fg">{heightLabel}<span className="font-normal text-[10px] text-fg-muted"> cm</span></span>
                     {isPreemie && (
-                        <span className="ml-1 text-[9px] uppercase font-bold text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700">
-                            {t('Preemie', '早産児')}
+                        <span title={t('Preemie', '早産児')} className="text-[10px] font-bold text-amber-700 dark:text-amber-300">
+                            {t('P', '早')}
                         </span>
                     )}
                 </div>
-                <span className="ml-auto hidden sm:inline text-[10px] text-fg-muted uppercase tracking-wide">{t('tap to edit', 'タップで編集')}</span>
+                <ChevronDown aria-hidden="true" size={14} className="shrink-0 text-fg-muted" />
             </button>
 
             {/* Settings popover */}
             <div className="relative" ref={settingsRef}>
                 <button
                     onClick={(e) => { e.stopPropagation(); setShowSettings(s => !s); }}
-                    aria-label="Bar preferences"
-                    className="p-1.5 text-fg-muted hover:text-fg rounded-md tap-target"
+                    ref={settingsButtonRef}
+                    aria-label={t('Bar preferences', '患者欄の表示設定')}
+                    aria-expanded={showSettings}
+                    aria-haspopup="dialog"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center text-fg-muted hover:text-fg rounded-md tap-target focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-500"
                 >
                     <Settings2 size={14} />
                 </button>
                 {showSettings && (
-                    <div className="absolute right-0 top-full mt-1 w-56 bg-surface border border-line rounded-lg shadow-lg z-50 p-1 text-sm">
+                    <div role="dialog" aria-label={t('Bar preferences', '患者欄の表示設定')} className="absolute right-0 top-full mt-1 w-56 bg-surface border border-line rounded-lg shadow-lg z-50 p-1 text-sm">
                         <button
                             onClick={() => { setPref('auto'); setShowSettings(false); }}
                             className={`w-full text-left px-2 py-1.5 rounded flex items-center gap-2 ${pref === 'auto' ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold' : 'hover:bg-surface-2'}`}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, Suspense, lazy } from 'react';
 import {
     Baby, Save, Droplet, Stethoscope, Brain, Anchor, Calculator, Syringe,
     ClipboardList, AlertTriangle, Search, HeartPulse, Library
@@ -137,12 +137,19 @@ const Layout = () => {
         }
     }, [activeTab, specialtyDeepLink, navigateToSpecialty]);
 
-    // The tab strip's sticky offset shifts with the header height. Approximate
-    // measurements: collapsed ≈ 88 px, expanded ≈ 154 px, plus a small buffer
-    // when the warning banner appears.
-    const headerHeight =
-        mode === 'collapsed' ? 92 :
-        isWeightValid        ? 154 : 196;
+    // Measure the responsive header so sticky tabs stay below patient controls.
+    const headerRef = useRef(null);
+    const [headerHeight, setHeaderHeight] = useState(0);
+    useLayoutEffect(() => {
+        const header = headerRef.current;
+        if (!header) return undefined;
+        const measure = () => setHeaderHeight(Math.ceil(header.getBoundingClientRect().height));
+        measure();
+        const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+        observer?.observe(header);
+        window.addEventListener('resize', measure);
+        return () => { observer?.disconnect(); window.removeEventListener('resize', measure); };
+    }, [mode, isWeightValid, lang]);
 
     return (
         <div
@@ -150,8 +157,8 @@ const Layout = () => {
             onClick={() => showProfiles && setShowProfiles(false)}
         >
             {/* ==================== HEADER ==================== */}
-            <header className="glass sticky top-0 z-40 shadow-sm">
-                <div className="max-w-5xl mx-auto px-3 py-3 flex flex-col gap-3">
+            <header ref={headerRef} className="glass sticky top-0 z-40 shadow-sm">
+                <div className={`max-w-5xl mx-auto px-3 flex flex-col ${mode === 'collapsed' ? 'py-1 gap-1' : 'py-3 gap-3'}`}>
                     {/* Top row: brand + utility buttons */}
                     <div className="flex items-center justify-between gap-2">
                         <div
@@ -163,11 +170,11 @@ const Layout = () => {
                                 <Baby size={20} />
                             </div>
                             <div className="leading-tight">
-                                <h1 className="text-sm font-extrabold tracking-tight">
-                                    {t('Pediatric', '小児')} <span className="text-teal-600 dark:text-teal-400 font-light">{t('Anesthesia Pearls', '麻酔パール')}</span>
+                                <h1 aria-label={t('Pediatric Anesthesia Pearls', '小児麻酔パール')} className={`text-sm font-extrabold tracking-tight ${mode === 'collapsed' ? 'whitespace-nowrap' : ''}`}>
+                                    {mode === 'collapsed' ? t('Ped Pearls', '麻酔パール') : <>{t('Pediatric', '小児')} <span className="text-teal-600 dark:text-teal-400 font-light">{t('Anesthesia Pearls', '麻酔パール')}</span></>}
                                 </h1>
-                                <p className="text-[10px] text-fg-muted">
-                                    Nationwide Children's 2021
+                                <p title="Nationwide Children's 2021" className={`text-[10px] text-fg-muted ${mode === 'collapsed' ? 'whitespace-nowrap' : ''}`}>
+                                    {mode === 'collapsed' ? 'NCH 2021' : "Nationwide Children's 2021"}
                                     {lang === 'ja' && <span className="ml-2 px-1 rounded bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold">JA</span>}
                                 </p>
                             </div>
@@ -207,12 +214,14 @@ const Layout = () => {
 
                     {/* Patient bar — collapses to a chip after 5 s of inactivity */}
                     {mode === 'expanded' ? (
+                        <div id="patient-inputs">
                         <PatientBar
                             bumpInteraction={bumpInteraction}
                             onCollapse={collapse}
                             pref={pref}
                             setPref={setPref}
                         />
+                        </div>
                     ) : (
                         <PatientChip onExpand={expand} pref={pref} setPref={setPref} />
                     )}
