@@ -5,74 +5,50 @@ export const fmt = (num) => {
     return num.toFixed(0);
 };
 
-// Generic Dose Calculator with Min/Max logic
-export const calculateDose = (doseStr, weight, maxVal = null, minVal = null) => {
-    let type = 'single';
-    let min = 0, max = 0, single = 0;
-    let unit = 'mg';
-    let isInfusion = false;
+// Preserve the source's unit; never infer mg for an unrecognised unit.
+const doseUnits = { mcg: 'mcg', mg: 'mg', g: 'g', ml: 'mL', meq: 'mEq', mu: 'mU', unit: 'Units', units: 'Units', u: 'Units' };
 
-    const d = doseStr.toLowerCase();
+// kg-based, fixed and heparin-dependent amounts are distinct calculation bases.
+// The heparin ratio is a reference only here: the Cardiac calculator collects
+// the required heparin inputs and applies its existing protocol-specific limits.
+export const calculateDose = (doseStr, weight, maxVal = null, minVal = null, options = {}) => {
+    if (options.doseBasis === 'heparin') {
+        return { result: '-', formula: 'Requires heparin units; see Cardiac calculator', isInfusion: false, requiresInput: 'heparin' };
+    }
+    const parsed = String(doseStr).match(/^\s*(\d+(?:\.\d+)?|\.\d+)(?:\s*[-–]\s*(\d+(?:\.\d+)?|\.\d+))?\s*(mcg|mg|g|ml|meq|mu|units?|u)(\/kg)?(?:\/(min|hr|hour))?\s*$/i);
+    if (!parsed) return { result: '-', formula: '-', isInfusion: false };
+
+    const [, first, second, sourceUnit, perKg, time] = parsed;
+    const basis = options.doseBasis || (perKg ? 'perKg' : 'fixed');
+    const isInfusion = Boolean(time);
+    if (!['fixed', 'perKg'].includes(basis) || (basis === 'fixed' && perKg) || (basis === 'perKg' && !perKg)) {
+        return { result: '-', formula: '-', isInfusion };
+    }
     const w = parseFloat(weight);
-
-    if (d.includes('/kg/min') || d.includes('/kg/hr') || d.includes('/kg/hour')) {
-        isInfusion = true;
-        unit = d.includes('mcg') ? 'mcg' : (d.includes('mu') ? 'mU' : 'mg');
-        const time = (d.includes('hr') || d.includes('hour')) ? 'hr' : 'min';
-        unit += `/${time}`;
-    } else {
-        unit = d.includes('mcg') ? 'mcg' : (d.includes('units') ? 'Units' : (d.includes('meq') ? 'mEq' : (d.includes('ml') ? 'mL' : 'mg')));
+    if (basis === 'perKg' && (!Number.isFinite(w) || w <= 0)) {
+        return { result: '-', formula: 'Requires positive weight', isInfusion };
     }
-
-    const matches = doseStr.match(/(\d+(\.\d+)?)/g);
-    if (!matches) return { result: '-', formula: '-', isInfusion };
-
-    if (doseStr.includes('-') && matches.length >= 2) {
-        type = 'range';
-        min = parseFloat(matches[0]);
-        max = parseFloat(matches[1]);
-    } else {
-        single = parseFloat(matches[0]);
-    }
-
-    const applyLimits = (val) => {
-        let v = val;
-        let msg = '';
-        if (maxVal && v > maxVal) { v = maxVal; msg = '(Max)'; }
-        if (minVal && v < minVal) { v = minVal; msg = '(Min)'; }
-        return { v, msg };
+    const unit = doseUnits[sourceUnit.toLowerCase()] + (time ? `/${time.toLowerCase() === 'min' ? 'min' : 'hr'}` : '');
+    const factor = basis === 'perKg' ? w : 1;
+    const baseFormula = `${first}${second ? `-${second}` : ''}` + (basis === 'perKg' ? ` × ${w}kg` : ` ${unit} (fixed)`);
+    const hasMax = maxVal != null && Number.isFinite(Number(maxVal));
+    const hasMin = minVal != null && Number.isFinite(Number(minVal));
+    const applyLimits = (value) => {
+        // Infusion range references previously had no hard caps. Preserve that.
+        if (isInfusion) return { value, message: '' };
+        if (hasMax && value > Number(maxVal)) return { value: Number(maxVal), message: '(Max)' };
+        if (hasMin && value < Number(minVal)) return { value: Number(minVal), message: '(Min)' };
+        return { value, message: '' };
     };
-
-    if (isInfusion) {
-        if (type === 'range') {
-            const minRate = min * w;
-            const maxRate = max * w;
-            return { result: `${fmt(minRate)} - ${fmt(maxRate)} ${unit}`, formula: `${min}-${max} × ${w}kg`, isInfusion };
-        } else {
-            const rate = single * w;
-            return { result: `${fmt(rate)} ${unit}`, formula: `${single} × ${w}kg`, isInfusion };
-        }
-    } else {
-        if (type === 'range') {
-            const vMin = applyLimits(min * w);
-            const vMax = applyLimits(max * w);
-
-            if (vMin.msg === '(Max)' && vMax.msg === '(Max)') {
-                return { result: `${fmt(vMax.v)} ${unit} (Max)`, formula: `Capped at ${maxVal}`, isInfusion };
-            }
-
-            return {
-                result: `${fmt(vMin.v)} - ${fmt(vMax.v)} ${unit} ${vMax.msg}`,
-                formula: `${min}-${max} × ${w}kg` + (maxVal ? ` (Max ${maxVal})` : '') + (minVal ? ` (Min ${minVal})` : ''),
-                isInfusion
-            };
-        } else {
-            const v = applyLimits(single * w);
-            return {
-                result: `${fmt(v.v)} ${unit} ${v.msg}`,
-                formula: `${single} × ${w}kg` + (maxVal ? ` (Max ${maxVal})` : '') + (minVal ? ` (Min ${minVal})` : ''),
-                isInfusion
-            };
-        }
+    const low = applyLimits(Number(first) * factor);
+    const high = second ? applyLimits(Number(second) * factor) : null;
+    const limits = !isInfusion ? (hasMax ? ` (Max ${maxVal})` : '') + (hasMin ? ` (Min ${minVal})` : '') : '';
+    if (high && low.message === '(Max)' && high.message === '(Max)') {
+        return { result: `${fmt(high.value)} ${unit} (Max)`, formula: `Capped at ${maxVal}`, isInfusion };
     }
+    return {
+        result: high ? `${fmt(low.value)} - ${fmt(high.value)} ${unit} ${high.message}` : `${fmt(low.value)} ${unit} ${low.message}`,
+        formula: baseFormula + limits,
+        isInfusion
+    };
 };

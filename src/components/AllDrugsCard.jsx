@@ -112,6 +112,11 @@ const AllDrugsCard = () => {
                             </div>
                             <div className="text-right flex flex-col items-end gap-1">
                                 <div className="font-bold text-lg text-teal-700 whitespace-nowrap">{d.calc}</div>
+                                {d.requiresInput === 'heparin' && (
+                                    <div className="text-xs text-amber-800 max-w-44 whitespace-normal">
+                                        {t('Needs heparin dose. See Cardiac tab.', 'ヘパリン投与量が必要。Cardiacタブで確認。')}
+                                    </div>
+                                )}
                                 <div className="text-[10px] text-slate-400 font-mono hidden sm:block">{d.formula}</div>
                                 <DoseBadge badge={d.badge} label={lang === 'ja' && d.badgeLabelJa ? d.badgeLabelJa : d.badgeLabel} compact />
                             </div>

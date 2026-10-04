@@ -136,7 +136,7 @@ export const PatientProvider = ({ children }) => {
 
     // Auto-update weight when age changes, unless manual
     useEffect(() => {
-        if (!isManualWeight) {
+        if (!isManualWeight && Number.isFinite(ageMonths) && ageMonths >= 0) {
             const w = calculateStandardWeight(age, ageUnit);
             setWeight(w);
         }
@@ -149,7 +149,7 @@ export const PatientProvider = ({ children }) => {
 
     const resetToAutoWeight = () => {
         setIsManualWeight(false);
-        setWeight(calculateStandardWeight(age, ageUnit));
+        if (Number.isFinite(ageMonths) && ageMonths >= 0) setWeight(calculateStandardWeight(age, ageUnit));
     };
 
     // --- Profile Management ---
@@ -217,7 +217,7 @@ export const PatientProvider = ({ children }) => {
 
     // Update Height when Age changes (if auto)
     useEffect(() => {
-        if (!manualHeight) {
+        if (!manualHeight && Number.isFinite(ageYears) && ageYears >= 0) {
             setHeight(Math.round(estimateHeight(ageYears)));
         }
     }, [ageYears, manualHeight]);

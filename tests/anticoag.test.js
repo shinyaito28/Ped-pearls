@@ -62,10 +62,11 @@ describe('Anticoagulation — protamine reversal', () => {
     it('U of M neonate: 1:1 of loading dose', () => {
         const r = protamineReversal({
             protocol: 'UOFM', weight: 3.5, ageYears: 0.05,
-            loadingUnits: 2100, totalUnits: 4200
+            loadingUnits: 1500, totalUnits: 4200
         });
-        // 2100 U / 100 = 21 mg
-        expect(r.rawMg).toBeCloseTo(21, 1);
+        // Actual initial 1500 U / 100 = 15 mg; cumulative dose is not the neonatal basis.
+        expect(r.rawMg).toBeCloseTo(15, 1);
+        expect(r.mg).toBe(15);
         expect(r.basis).toMatch(/loading.*neonate/i);
     });
     it('U of M >30 days: 1:1 of total cumulative heparin', () => {
@@ -89,25 +90,28 @@ describe('Anticoagulation — protamine reversal', () => {
         expect(r.capApplied).toBe(true);
         expect(r.mg).toBe(50);
     });
-    it('NCH neonate may exceed 5 mg/kg per source', () => {
-        const r = protamineReversal({
-            protocol: 'NCH', weight: 3, ageYears: 0.05,
-            loadingUnits: 1800, totalUnits: 1800, pumpUnits: 200
-        });
-        // combined = 2000, 2000/100 = 20 mg; cap = 15 mg → allowed over
-        expect(r.allowOverCap).toBe(true);
-        expect(r.mg).toBe(20);
+    it.each(['NCH', 'UOFM'])('withholds %s neonatal doses above the disputed 5 mg/kg limit', protocol => {
+        const r = protamineReversal({ protocol, weight: 3, ageYears: 0.05, loadingUnits: 1800, totalUnits: 1800, pumpUnits: 200 });
+        expect(r.allowOverCap).toBe(false); expect(r.mg).toBeNull(); expect(r.status).toBe('held');
     });
-    it('Hemobag adds 50 mg', () => {
-        const r = protamineReversal({
-            protocol: 'UOFM', weight: 60, ageYears: 16,
-            loadingUnits: 27000, totalUnits: 30000,
-            includeHemobag: true
-        });
-        // 30000/100 = 300, cap = 300 → no cap, +50 hemobag = 350
-        expect(r.hemobagAdded).toBe(50);
-        expect(r.mg).toBe(350);
+    it('withholds the final dose when Hemobag requires protocol confirmation', () => {
+        const r = protamineReversal({ protocol: 'UOFM', weight: 60, ageYears: 16, totalUnits: 30000, includeHemobag: true });
+        expect(r.hemobagAdded).toBe(0); expect(r.mg).toBeNull(); expect(r.basis).toMatch(/Hemobag/);
     });
+    it('requires actual patient and circuit inputs for NCH without falling back to a combined recommendation', () => {
+        expect(protamineReversal({ protocol: 'NCH', weight: 20, ageYears: 3, loadingUnits: 4200, pumpUnits: 1000 }).mg).toBeNull();
+        expect(protamineReversal({ protocol: 'NCH', weight: 20, ageYears: 3, totalUnits: 4200 }).mg).toBeNull();
+        expect(protamineReversal({ protocol: 'NCH', weight: 20, ageYears: 3, totalUnits: 3200, pumpUnits: 1000 }).mg).toBe(42);
+        expect(protamineReversal({ protocol: 'NCH', weight: 20, ageYears: 3, totalUnits: 3200, pumpUnits: 0 }).mg).toBe(32);
+    });
+    it('rejects missing, negative, nonfinite and overflowing required inputs', () => {
+        const valid = { protocol: 'UOFM', weight: 20, ageYears: 3, totalUnits: 1000 };
+        for (const field of ['weight', 'ageYears', 'totalUnits']) for (const value of [null, '', -1, NaN, Infinity, true])
+            expect(protamineReversal({ ...valid, [field]: value }).mg).toBeNull();
+        expect(protamineReversal({ ...valid, weight: 1e308 }).mg).toBeNull();
+        expect(protamineReversal({ ...valid, ageDays: 30 }).mg).toBeNull();
+    });
+
 });
 
 describe('Anticoagulation — slope decision', () => {

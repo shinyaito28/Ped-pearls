@@ -54,15 +54,40 @@ export const infusionPresets = [
 // Convert any infusion to mL/hr for syringe pump.
 // dose * weight * timeFactor / concentration_in_drug_units
 //   timeFactor for /min units is 60 (to get hr), 1 for /hr units.
-export const calcInfusionMlPerHr = (dose, weight, concentration, unit) => {
-    if (!dose || !weight || !concentration) return 0;
+const substanceUnits = {
+    mcg: { dimension: 'mass', factor: 1 },
+    mg: { dimension: 'mass', factor: 1000 },
+    g: { dimension: 'mass', factor: 1000000 },
+    mu: { dimension: 'activity', factor: 0.001 },
+    u: { dimension: 'activity', factor: 1 },
+    unit: { dimension: 'activity', factor: 1 },
+    units: { dimension: 'activity', factor: 1 },
+};
+
+// Express concentration in the dose's substance unit before division.
+// Missing or incompatible units cannot yield a plausible pump rate.
+const concentrationInDoseUnits = (concentration, unit, concUnit) => {
+    if (!/^\w+\/kg\/(min|hr)$/.test(unit)) return NaN;
+    if (!/^\w+\/mL$/i.test(concUnit)) return NaN;
+    const doseUnit = substanceUnits[unit.split('/')[0].toLowerCase()];
+    const concentrationUnit = substanceUnits[concUnit.split('/')[0].toLowerCase()];
+    if (!doseUnit || !concentrationUnit || doseUnit.dimension !== concentrationUnit.dimension) return NaN;
+    return concentration * concentrationUnit.factor / doseUnit.factor;
+};
+
+export const calcInfusionMlPerHr = (dose, weight, concentration, unit, concUnit) => {
+    if (typeof unit !== 'string' || typeof concUnit !== 'string') return NaN;
+    if (![dose, weight, concentration].every(Number.isFinite) || dose < 0 || weight <= 0 || concentration <= 0) return NaN;
+    const convertedConcentration = concentrationInDoseUnits(concentration, unit, concUnit);
     const timeFactor = unit.endsWith('/min') ? 60 : 1;
-    return (dose * weight * timeFactor) / concentration;
+    return (dose * weight * timeFactor) / convertedConcentration;
 };
 
 // Convert mL/hr back to dose.
-export const calcDoseFromMlPerHr = (mlPerHr, weight, concentration, unit) => {
-    if (!mlPerHr || !weight || !concentration) return 0;
+export const calcDoseFromMlPerHr = (mlPerHr, weight, concentration, unit, concUnit) => {
+    if (typeof unit !== 'string' || typeof concUnit !== 'string') return NaN;
+    if (![mlPerHr, weight, concentration].every(Number.isFinite) || mlPerHr < 0 || weight <= 0 || concentration <= 0) return NaN;
+    const convertedConcentration = concentrationInDoseUnits(concentration, unit, concUnit);
     const timeFactor = unit.endsWith('/min') ? 60 : 1;
-    return (mlPerHr * concentration) / (weight * timeFactor);
+    return (mlPerHr * convertedConcentration) / (weight * timeFactor);
 };

@@ -148,10 +148,11 @@ describe('useAirwayCalc — depth at lip', () => {
         expect(result.current.airway.depth).toBe('16 cm');
     });
 
-    it('teen ≥ 11 yr caps at 22 cm', () => {
+    it('withholds depth beyond the explicit 1–10 yr source range', () => {
         const { result } = renderHook(useTestRig, { wrapper: wrap });
         setAge(result.current, 16, 'years');
-        expect(result.current.airway.depth).toBe('22 cm');
+        expect(result.current.airway.depth).toBe('—');
+        expect(result.current.airway.depthHeld).toBe(true);
     });
 });
 

@@ -3,13 +3,15 @@ import { Stethoscope, AlertTriangle } from 'lucide-react';
 import { useAirwayCalc } from '../hooks/useAirwayCalc';
 import { useLanguage } from '../context/LanguageContext';
 import CatheterCard from './CatheterCard';
+import TubeSizePicker from './TubeSizePicker';
 import DifficultAirwayCard from './DifficultAirwayCard';
 
 const AirwayCard = () => {
     const { t } = useLanguage();
     const {
         ettUncuffed, ettCuffed, ettRule,
-        depth, depthRule, blade, lma,
+        ettUncuffedCalculatedMm, ettCuffedCalculatedMm, tubeSelectionKey,
+        depth, depthRule, depthHeld, blade, lma,
         airqMaxEtt, olv, beyondPediatricRange
     } = useAirwayCalc();
 
@@ -27,24 +29,24 @@ const AirwayCard = () => {
                 <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b pb-2 mb-3">
                     <Stethoscope size={18} /> {t('Tube & Laryngoscopy', 'チューブ + 喉頭鏡')}
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-blue-50 p-3 rounded">
-                        <div className="text-xs text-slate-500">{t('ETT (Uncuffed)', 'ETT(カフなし)')}</div>
-                        <div className="text-2xl font-bold text-slate-800">{ettUncuffed}</div>
-                        <div className="text-[10px] text-slate-400">{ettRule}</div>
-                    </div>
-                    <div className="bg-blue-50 p-3 rounded">
-                        <div className="text-xs text-slate-500">{t('ETT (Cuffed)', 'ETT(カフあり)')}</div>
-                        <div className="text-2xl font-bold text-slate-800">{ettCuffed}</div>
-                        <div className="text-[10px] text-slate-400">{t('If using cuffed, reduce by 0.5 mm ID.', 'カフあり使用時は内径を 0.5 mm 減らす。')}</div>
-                    </div>
-                    <div className="bg-slate-50 p-3 rounded col-span-2 flex justify-between items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <TubeSizePicker key={`uncuffed-${tubeSelectionKey}`}
+                        label={t('ETT (Uncuffed)', 'ETT(カフなし)')}
+                        reference={ettUncuffed} calculatedMm={ettUncuffedCalculatedMm} rule={ettRule} />
+                    <TubeSizePicker key={`cuffed-${tubeSelectionKey}`}
+                        label={t('ETT (Cuffed)', 'ETT(カフあり)')}
+                        reference={ettCuffed} calculatedMm={ettCuffedCalculatedMm}
+                        rule={t('Existing age-specific source rule.', '従来の年齢別条件に基づく参考値。')} />
+                    <div className="bg-slate-50 p-3 rounded sm:col-span-2 flex justify-between items-center">
                         <div>
                             <div className="text-xs text-slate-500">{t('Depth at lip', '口唇での深さ')}</div>
                             <div className="text-xl font-bold text-blue-700">{depth}</div>
                         </div>
                         <div className="text-[10px] text-slate-500 text-right">{t('Rule:', '式:')} {depthRule}</div>
                     </div>
+                    <p role={depthHeld ? 'status' : undefined} className="text-xs text-amber-900 bg-amber-50 p-2 rounded sm:col-span-2">
+                        {depthHeld ? t('Automatic depth withheld: the source age/weight range does not apply or is unclear. Use an applicable reference and confirm placement.', '出典の年齢・体重条件が適用外または不明のため深さの自動計算を保留しています。適用できる資料と位置確認が必要です。') : t('Oral depth reference measured at the lips to mid-trachea; teeth/gums or nasal measurements use different references. Confirm the actual tube and placement.', '経口・口唇から気管中央までの参考深度です。歯・歯肉や経鼻で測る深度とは基準が異なります。実際のチューブと留置位置を確認してください。')}
+                    </p>
                     <div className="p-2 border rounded">
                         <div className="text-xs text-slate-500">{t('Blade options', 'ブレード選択肢')}</div>
                         <div className="font-bold text-slate-800">{blade}</div>

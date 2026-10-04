@@ -31,6 +31,7 @@ const PatientBar = ({ bumpInteraction, onCollapse, pref, setPref }) => {
             onPointerDown={bumpInteraction}
             onKeyDown={bumpInteraction}
         >
+            {String(age).trim() === '' && <p role="status" className="w-full text-xs text-amber-800">{t('Enter an age before using age-dependent calculations. Blank age is not a newborn age of zero.', '年齢条件のある計算を使用する前に年齢を入力してください。空欄を新生児の0日として扱いません。')}</p>}
             {/* Age */}
             <div className="flex-1 min-w-[140px]">
                 <label className="text-[10px] text-fg-muted uppercase font-bold mb-0.5 block">{t('Age', '年齢')}</label>
@@ -38,7 +39,7 @@ const PatientBar = ({ bumpInteraction, onCollapse, pref, setPref }) => {
                     <input
                         type="number"
                         value={age}
-                        onChange={e => onChangeAndBump(setAge)(Math.max(0, e.target.value))}
+                        onChange={e => onChangeAndBump(setAge)(e.target.value === '' ? '' : Math.max(0, Number(e.target.value)))}
                         className="w-16 bg-surface text-fg font-bold text-lg px-2 py-1 rounded-lg outline-none border border-line focus:border-teal-500 text-center"
                         placeholder="0"
                         aria-label="age value"

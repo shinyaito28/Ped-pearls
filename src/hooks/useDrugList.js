@@ -113,7 +113,7 @@ export const useDrugList = (type = 'all') => {
                 badgeLabel = `Neonate dose: ${d.neonateDose}`;
             }
 
-            const { result, formula, isInfusion } = calculateDose(dose, w, max, d.min);
+            const { result, formula, isInfusion, requiresInput } = calculateDose(dose, w, max, d.min, { doseBasis: d.doseBasis });
 
             // Special handling for Ceftriaxone neonate msg
             let finalResult = result;
@@ -127,6 +127,7 @@ export const useDrugList = (type = 'all') => {
                 calc: finalResult,
                 formula,
                 isInfusion,
+                requiresInput,
                 realDose: dose,
                 badge,
                 badgeLabel,

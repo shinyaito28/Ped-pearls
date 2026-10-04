@@ -5,11 +5,12 @@ import { usePatient } from '../context/PatientContext';
 // adult sizing — flagged in the UI so the operator knows the source guide
 // no longer applies.
 export const useAirwayCalc = () => {
-    const { weight, ageMonths, ageYears, isNeonate, isPreemie, ageUnit, gender } = usePatient();
+    const { weight, age, ageMonths, ageYears, isNeonate, isPreemie, ageUnit, gender } = usePatient();
     const w = parseFloat(weight);
 
     let ettUncuffed, ettCuffed, ettRule, depth, depthRule, blade, lma;
     let beyondPediatricRange = false;
+    let ettUncuffedCalculatedMm = null, ettCuffedCalculatedMm = null;
 
     // ----- ETT size -----
     if (isPreemie || w < 2.5) {
@@ -35,6 +36,8 @@ export const useAirwayCalc = () => {
             ettRule     = '≥12 yr → adult sizing';
         } else if (ageYears >= 2) {
             const size = (ageYears / 4) + 4;
+            ettUncuffedCalculatedMm = size;
+            ettCuffedCalculatedMm = size - 0.5;
             ettUncuffed = `${size.toFixed(1)} mm`;
             ettCuffed = `${(size - 0.5).toFixed(1)} mm`;
             ettRule = '(Age / 4) + 4';
@@ -71,21 +74,29 @@ export const useAirwayCalc = () => {
         else lma = '5';
     }
 
-    // ----- ETT depth at lip (cm) -----
-    if (w <= 3) {
-        if (w <= 1) depth = '7 cm';
-        else if (w <= 2) depth = '8 cm';
-        else depth = '9 cm';
-        depthRule = '1 kg = 7, 2 kg = 8, 3 kg = 9';
-    } else if (ageYears >= 1) {
-        let d = Math.floor(ageYears + 11);
-        if (d > 22) d = 22;
-        depth = `${d} cm`;
-        depthRule = 'Age + 11 cm';
+    // Source: IMG_0061, lips to mid-trachea. The age + 11 formula is
+    // explicitly 1–10 yr; no floor, 22-cm cap or adult extrapolation is stated.
+    let depthHeld = false;
+    if (!Number.isFinite(w) || w <= 0 || !Number.isFinite(ageYears) || ageYears < 0) {
+        depth = '—'; depthRule = 'Valid age and weight required'; depthHeld = true;
+    } else if (w <= 3) {
+        // The newborn card lists exactly 1, 2 and 3 kg. Intermediate weights,
+        // very premature infants and older low-weight children need a specific reference.
+        if (isNeonate && [1, 2, 3].includes(w)) {
+            depth = `${w + 6} cm`;
+            depthRule = 'NCH newborn reference: 1 kg = 7, 2 kg = 8, 3 kg = 9';
+        } else {
+            depth = '—'; depthRule = 'Newborn table applicability / intermediate weight requires confirmation'; depthHeld = true;
+        }
+    } else if (ageYears >= 1 && ageYears <= 10) {
+        depth = `${Number((ageYears + 11).toFixed(2))} cm`;
+        depthRule = 'NCH reference: age + 11 cm, 1–10 yr, lips to mid-trachea';
+    } else if (ageYears > 10) {
+        depth = '—'; depthRule = 'Outside the NCH age + 11 source range (1–10 yr)'; depthHeld = true;
     } else {
         const id = parseFloat(ettUncuffed);
         depth = `${(id * 3).toFixed(1)} cm`;
-        depthRule = 'ETT ID × 3';
+        depthRule = 'NCH ETT ID × 3 reference; confirm the actual tube and position';
     }
 
     // ----- One Lung Ventilation (OLV) -----
@@ -120,7 +131,9 @@ export const useAirwayCalc = () => {
 
     return {
         ettUncuffed, ettCuffed, ettRule,
-        depth, depthRule,
+        ettUncuffedCalculatedMm, ettCuffedCalculatedMm,
+        tubeSelectionKey: JSON.stringify([age, ageUnit, weight, gender, isPreemie]),
+        depth, depthRule, depthHeld,
         blade, lma,
         airqMaxEtt,
         olv,

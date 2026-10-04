@@ -27,18 +27,20 @@ const InfusionCalcCard = () => {
 
     const computed = useMemo(() => {
         if (mode === 'dose-to-rate') {
-            const ml = calcInfusionMlPerHr(parseFloat(dose), w, parseFloat(concentration), drug.unit);
+            const ml = calcInfusionMlPerHr(parseFloat(dose), w, parseFloat(concentration), drug.unit, drug.concUnit);
             return { ml, dose: parseFloat(dose) };
         } else {
-            const d = calcDoseFromMlPerHr(parseFloat(mlPerHr), w, parseFloat(concentration), drug.unit);
+            const d = calcDoseFromMlPerHr(parseFloat(mlPerHr), w, parseFloat(concentration), drug.unit, drug.concUnit);
             return { ml: parseFloat(mlPerHr), dose: d };
         }
-    }, [mode, dose, mlPerHr, w, concentration, drug.unit]);
+    }, [mode, dose, mlPerHr, w, concentration, drug.unit, drug.concUnit]);
 
-    const inRange = computed.dose >= drug.doseRange[0] && computed.dose <= drug.doseRange[1];
+    const validCalculation = Number.isFinite(computed.ml) && Number.isFinite(computed.dose);
+    const inRange = validCalculation && computed.dose >= drug.doseRange[0] && computed.dose <= drug.doseRange[1];
     const drugNote = lang === 'ja' && drug.noteJa ? drug.noteJa : drug.note;
 
     const copyResult = () => {
+        if (!validCalculation) return;
         const text = `${drug.drug}: ${fmt(computed.dose)} ${drug.unit} = ${fmt(computed.ml)} mL/hr (${concentration} ${drug.concUnit}, ${w} kg)`;
         navigator.clipboard?.writeText(text).then(() => {
             setCopied(true);
@@ -155,7 +157,7 @@ const InfusionCalcCard = () => {
                         onClick={copyResult}
                         className="flex items-center gap-1 text-xs bg-white border border-slate-200 rounded-md px-2 py-1 hover:border-teal-400"
                         aria-label="copy"
-                        disabled={!w}
+                        disabled={!validCalculation}
                     >
                         {copied ? <Check size={12} /> : <Copy size={12} />}
                         {copied ? t('Copied', 'コピー済み') : t('Copy', 'コピー')}
@@ -173,7 +175,12 @@ const InfusionCalcCard = () => {
                     </div>
                 </div>
 
-                {!inRange && computed.dose > 0 && (
+                {!validCalculation && (
+                    <div className="text-xs text-amber-800 mt-2">
+                        {t('Enter a valid weight, dose/rate and concentration.', '体重・用量または流量・濃度に有効な値を入力してください。')}
+                    </div>
+                )}
+                {validCalculation && !inRange && computed.dose > 0 && (
                     <div className="text-xs text-amber-800 mt-2 flex items-start gap-1">
                         <ArrowRightLeft size={12} className="mt-0.5 flex-shrink-0" />
                         {t('Dose is outside the typical range', '用量が通常範囲外')} ({drug.doseRange[0]}–{drug.doseRange[1]} {drug.unit}){t('. Verify carefully.', '。慎重に確認すること。')}
@@ -205,7 +212,7 @@ const InfusionCalcCard = () => {
                             <tr key={i} className="border-t border-slate-200">
                                 <td className="py-1.5 pl-3 font-mono">{fmt(d)}</td>
                                 <td className="py-1.5 pr-3 text-right font-bold text-teal-700">
-                                    {fmt(calcInfusionMlPerHr(d, w, parseFloat(concentration), drug.unit))}
+                                    {fmt(calcInfusionMlPerHr(d, w, parseFloat(concentration), drug.unit, drug.concUnit))}
                                 </td>
                             </tr>
                         ))}

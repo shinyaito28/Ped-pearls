@@ -97,74 +97,56 @@ export const heparinRedose = ({ hpt, act, weight }) => {
     };
 };
 
-// Protamine reversal (mg).
-//   protocol: 'NCH' | 'UOFM'
-//   weight, ageYears
-//   loadingUnits   (initial heparin loading, used by U of M neonate)
-//   totalUnits     (cumulative heparin, used by U of M >30d and reference)
-//   pumpUnits      (heparin in the bypass circuit; for NCH COMBINED accounting)
-//   includeHemobag (boolean: +50 mg if true, used in teens/adults)
+// Institutional CPB reversal reference only, not generic heparin/LMWH reversal.
+// Anticoagulation Protocol 3.2 and Cardiac Rotation 2020 disagree about
+// neonatal doses above 5 mg/kg. Do not infer administration from a recommendation.
 export const protamineReversal = ({
-    protocol, weight, ageYears, loadingUnits = 0, totalUnits = 0,
-    pumpUnits = 0, includeHemobag = false
+    protocol, weight, ageYears, ageDays, loadingUnits, totalUnits,
+    pumpUnits, includeHemobag = false
 }) => {
-    const w = parseFloat(weight) || 0;
-    const isNeonate = ageYears != null && ageYears < (30 / 365);
-
-    let mg = 0;
-    let basis = '';
-    let basisJa = '';
-    if (protocol === 'NCH') {
-        // Combined patient + pump 1:1
-        const combined = (totalUnits || loadingUnits) + pumpUnits;
-        mg = combined / 100;
-        basis = `1:1 of COMBINED ${combined} U (patient + pump)`;
-        basisJa = `COMBINED ${combined} U (患者 + ポンプ) に対し 1:1`;
-    } else {
-        // U of M: neonate uses loading dose only; >30d uses total cumulative.
-        if (isNeonate) {
-            mg = loadingUnits / 100;
-            basis = `1:1 of loading dose ${loadingUnits} U (neonate)`;
-            basisJa = `ローディング量 ${loadingUnits} U に対し 1:1(新生児)`;
-        } else {
-            mg = totalUnits / 100;
-            basis = `1:1 of total heparin ${totalUnits} U`;
-            basisJa = `ヘパリン総量 ${totalUnits} U に対し 1:1`;
-        }
-    }
-
-    const cap = w * 5; // 5 mg/kg
-    let cappedMg = mg;
-    let capApplied = false;
-    // NCH neonate is the only exception that may exceed 5 mg/kg per source.
-    const allowOverCap = protocol === 'NCH' && isNeonate;
-    if (mg > cap && !allowOverCap) {
-        cappedMg = cap;
-        capApplied = true;
-    }
-
-    if (includeHemobag) cappedMg += 50;
-
-    return {
-        mg: Math.round(cappedMg * 10) / 10,
-        rawMg: Math.round(mg * 10) / 10,
-        cap: Math.round(cap * 10) / 10,
-        capApplied,
-        allowOverCap,
-        hemobagAdded: includeHemobag ? 50 : 0,
-        basis,
-        basisJa,
-        notes: [
-            'Run through peripheral IV (NOT central line)',
-            'Carrier 20 mL/hr',
-            '1:1 dilution with NS (especially neonates/infants)',
-            'Watch tidal volume + peak pressure → epi 1-2 mcg if reaction'
-        ],
-        notesJa: [
-            '末梢 IV から投与(中心静脈ラインは使わない)',
-            'キャリア 20 mL/hr',
-            'NS で 1:1 希釈(特に新生児/乳児)',
-            'TV + ピーク圧を観察 → 反応あればエピ 1-2 mcg'
-        ]
+    const number = value => {
+        if (value == null || typeof value === 'boolean' || String(value).trim() === '') return null;
+        const n = Number(value);
+        return Number.isFinite(n) ? n : null;
     };
+    const w = number(weight), age = number(ageYears);
+    const days = ageDays == null ? (age == null ? null : age * 365) : number(ageDays);
+    const result = {
+        mg: null, rawMg: null, cap: w != null && w > 0 ? w * 5 : null,
+        capApplied: false, allowOverCap: false, hemobagAdded: 0,
+        basis: '', basisJa: '', status: 'held',
+        notes: ['CPB institutional reference only. Confirm with the perfusion/anesthesia team; not a generic heparin or LMWH reversal calculator.'],
+        notesJa: ['人工心肺（CPB）の院内参考計算です。灌流・麻酔チームと確認してください。一般的なヘパリン・LMWH拮抗には適用しません。']
+    };
+    const hold = (en, ja) => ({ ...result, mg: null, rawMg: null, capApplied: false, status: 'held', basis: en, basisJa: ja });
+    if (w == null || w <= 0 || !Number.isFinite(w * 5) || days == null || days < 0 || !['NCH', 'UOFM'].includes(protocol))
+        return hold('Enter a valid weight, age and CPB protocol.', '有効な体重・年齢・CPBプロトコルを入力してください。');
+    if (days === 30) return hold('The source does not define the exact 30-day boundary. Confirm the age category.', '資料は生後30日ちょうどの分類を定義していません。年齢区分を確認してください。');
+    const isNeonate = days < 30;
+    const loading = number(loadingUnits), total = number(totalUnits), pump = number(pumpUnits);
+    let units;
+    if (protocol === 'NCH') {
+        if (total == null || total < 0 || pump == null || pump < 0)
+            return hold('Enter actual patient heparin excluding the circuit, and actual circuit heparin (enter 0 if none). HMS recommendations are not administered doses.', '患者への実投与ヘパリン総量（回路分を除く）と実際の回路ヘパリン量（なしは0）を入力してください。HMS推奨量を実投与量として扱いません。');
+        units = total + pump;
+        result.basis = `1 mg / 100 U: actual patient ${total} U + actual circuit ${pump} U = ${units} U`;
+        result.basisJa = `1 mg / 100 U：患者実投与 ${total} U + 回路実量 ${pump} U = ${units} U`;
+    } else {
+        units = isNeonate ? loading : total;
+        if (units == null || units < 0)
+            return hold(isNeonate ? 'Enter the actual initial heparin loading dose administered to the patient.' : 'Enter the actual cumulative heparin administered to the patient.', isNeonate ? '患者に実投与した初回ヘパリン量を入力してください。' : '患者に実投与したヘパリン累積量を入力してください。');
+        result.basis = `1 mg / 100 U: actual ${isNeonate ? 'loading dose (neonate)' : 'patient cumulative dose'} ${units} U`;
+        result.basisJa = `1 mg / 100 U：実投与${isNeonate ? '初回量（新生児）' : '患者累積量'} ${units} U`;
+    }
+    if (!Number.isFinite(units) || !Number.isFinite(units / 100)) return hold('Input exceeds the calculation range.', '入力値が計算範囲を超えています。');
+    if (units <= 0) return hold('Enter a positive actual heparin amount to calculate a protamine reference.', 'プロタミン参考量を計算するには、正の実投与ヘパリン量を入力してください。');
+    const raw = units / 100;
+    if (includeHemobag) return hold('Hemobag: the 2020 source lists an additional 50 mg for teens/older patients, but timing and the total cap need confirmation. Automatic final dose withheld.', 'Hemobag：2020年資料に思春期以降で50 mg追加の記載がありますが、投与時点と総量上限の確認が必要です。最終量の自動計算を保留しています。');
+    if (isNeonate && raw > result.cap) return hold('Neonatal dose exceeds 5 mg/kg. Institutional sources disagree about an exception; automatic dose withheld.', '新生児で5 mg/kgを超えます。院内資料間で例外の記載が異なるため、自動計算を保留しています。');
+    result.rawMg = raw;
+    result.capApplied = raw > result.cap;
+    result.mg = Math.round(Math.min(raw, result.cap) * 10) / 10;
+    if (result.mg === 0) return hold('The reference dose is below the display precision. Automatic dose withheld; confirm the amount.', '参考量が表示精度未満です。自動計算を保留し、量の確認が必要です。');
+    result.status = 'reference';
+    return result;
 };

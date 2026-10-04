@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Beaker, AlertTriangle, Copy, Check, Info, ChevronDown, ChevronRight, Activity } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -11,6 +11,7 @@ const NumInput = ({ label, value, onChange, unit, placeholder, step = 1 }) => (
         <div className="flex items-stretch">
             <input
                 type="number"
+                aria-label={label}
                 value={value ?? ''}
                 step={step}
                 placeholder={placeholder}
@@ -45,7 +46,7 @@ const ResultRow = ({ label, value, sub, accent = 'slate' }) => {
 };
 
 const HeparinProtamineCard = () => {
-    const { weight, ageYears } = usePatient();
+    const { weight, ageYears, age, ageUnit, gender, isPreemie } = usePatient();
     const { lang, t } = useLanguage();
     const w = parseFloat(weight) || 0;
 
@@ -56,23 +57,40 @@ const HeparinProtamineCard = () => {
     const [act, setAct] = useState(null);
     const [pumpUnits, setPumpUnits] = useState(null);
     const [totalUnits, setTotalUnits] = useState(null);
+    const [loadingUnits, setLoadingUnits] = useState(null);
     const [includeHemobag, setIncludeHemobag] = useState(false);
     const [copied, setCopied] = useState(false);
 
+    const actualDoseContext = JSON.stringify([weight, age, ageUnit, gender, isPreemie, protocol]);
+    const confirmedContext = useRef(actualDoseContext);
+    const actualInputsCurrent = confirmedContext.current === actualDoseContext;
+
     const { loading, redose, cathLab, protamine } = useAnticoag({
         protocol,
-        hmsCombinedDose,
-        hpt,
-        act,
-        loadingUnits: undefined,    // hook falls back to loading.doseUnits
-        totalUnits: totalUnits ?? 0,
-        pumpUnits: pumpUnits ?? 0,
-        includeHemobag
+        hmsCombinedDose: actualInputsCurrent ? hmsCombinedDose : null,
+        hpt: actualInputsCurrent ? hpt : null,
+        act: actualInputsCurrent ? act : null,
+        loadingUnits: actualInputsCurrent ? loadingUnits : null,
+        totalUnits: actualInputsCurrent ? totalUnits : null,
+        pumpUnits: actualInputsCurrent ? pumpUnits : null,
+        includeHemobag: actualInputsCurrent && includeHemobag
     });
+
+    useEffect(() => {
+        confirmedContext.current = actualDoseContext;
+        setHmsCombinedDose(null); setHpt(null); setAct(null);
+        setLoadingUnits(null); setTotalUnits(null); setPumpUnits(null);
+        setIncludeHemobag(false); setCopied(false);
+    }, [weight, age, ageUnit, gender, isPreemie, protocol]);
+    const held = protamine.mg == null;
+    const protamineValue = held ? t('Withheld — confirmation required', '保留 — 確認が必要') : `${protamine.mg} mg`;
 
     const loadingMethod = lang === 'ja' && loading.methodJa ? loading.methodJa : loading.method;
     const loadingNotes = lang === 'ja' && loading.notesJa ? loading.notesJa : loading.notes;
     const redoseReasons = lang === 'ja' && redose.reasonsJa ? redose.reasonsJa : redose.reasons;
+    const redoseHold = redose.reviewReason === 'hms'
+        ? t('Withheld — HMS confirmation required', '保留 — HMS確認が必要')
+        : t('Withheld — valid patient, HPT and ACT required', '保留 — 有効な患者条件・HPT・ACTが必要');
     const protamineBasis = lang === 'ja' && protamine.basisJa ? protamine.basisJa : protamine.basis;
     const protamineNotes = lang === 'ja' && protamine.notesJa ? protamine.notesJa : protamine.notes;
 
@@ -81,9 +99,9 @@ const HeparinProtamineCard = () => {
         const lines = [
             `${t('Anticoagulation summary', '抗凝固サマリー')} (${fmt(w)} kg, ${fmt(ageYears, 1)} ${t('yr', '歳')}) — ${t('protocol:', 'プロトコール:')} ${protoLabel}`,
             `• ${t('Loading:', 'ローディング:')} ${loading.doseUnits ? `${fmt(loading.doseUnits)} U` : t('— (enter HMS combined dose)', '— (HMS combined 量を入力)')}  [${loadingMethod}]`,
-            redose.trigger ? `• ${t('REDOSE:', '追加投与:')} ${redose.doseUnits} U  [${redoseReasons.join('; ')}]` : `• ${t('Redose: not triggered', '追加投与: 該当せず')}`,
+            redose.reviewRequired ? `• ${t('Redose:', '追加投与：')} ${redoseHold}` : redose.trigger ? `• ${t('REDOSE:', '追加投与:')} ${redose.doseUnits} U  [${redoseReasons.join('; ')}]` : `• ${t('Redose: not triggered', '追加投与: 該当せず')}`,
             `• ${t('Cath lab heparin:', 'カテ室ヘパリン:')} ${cathLab.doseUnits} U (100 U/kg)`,
-            `• ${t('Protamine:', 'プロタミン:')} ${protamine.mg} mg${protamine.capApplied ? `  ⚠ ${t('capped at 5 mg/kg', '5 mg/kg に上限化')}` : ''}${protamine.allowOverCap ? ` (${t('NCH neonate exception', 'NCH 新生児例外')})` : ''}`,
+            `• ${t('Protamine:', 'プロタミン:')} ${protamineValue}${protamine.capApplied ? `  ⚠ ${t('capped at 5 mg/kg', '5 mg/kg に上限化')}` : ''}`,
             `  ${t('basis:', '根拠:')} ${protamineBasis}`,
         ];
         navigator.clipboard?.writeText(lines.join('\n')).then(() => {
@@ -103,7 +121,7 @@ const HeparinProtamineCard = () => {
                     <Beaker size={18} />
                 </div>
                 <div className="flex-1 text-left">
-                    <h3 className="font-bold text-fg">{t('Heparin / Protamine Calculator', 'ヘパリン / プロタミン計算機')}</h3>
+                    <h3 className="font-bold text-fg">{t('Heparin / Protamine Calculator — CPB', 'ヘパリン / プロタミン計算機 — 人工心肺')}</h3>
                     <p className="text-[11px] text-fg-muted">{t('NCH Investigational + U of M Technique. Always read-back dose.', 'NCH Investigational + U of M Technique。常に用量復唱。')}</p>
                 </div>
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
@@ -165,9 +183,9 @@ const HeparinProtamineCard = () => {
                         </div>
                         <ResultRow
                             label={t('Redose', '追加投与')}
-                            value={redose.trigger ? `${fmt(redose.doseUnits)} U` : t('Not triggered', '該当せず')}
-                            sub={redose.trigger ? redoseReasons.join('; ') : t('HPT ≥ 2.0 IU/mL AND ACT ≥ 480 sec', 'HPT ≥ 2.0 IU/mL かつ ACT ≥ 480 秒')}
-                            accent={redose.trigger ? 'amber' : 'emerald'}
+                            value={redose.reviewRequired ? redoseHold : redose.trigger ? `${fmt(redose.doseUnits)} U` : t('Not triggered', '該当せず')}
+                            sub={redose.reviewRequired ? (redose.reviewReason === 'hms' ? t('NCH source: re-dose according to the HMS COMBINED patient + circuit recommendation. The U of M 100 U/kg rule is not applied.', 'NCH資料：患者＋回路のHMS COMBINED推奨量に従って追加投与。U of Mの100 U/kg則を適用しません。') : t('No negative check is established from missing or invalid measurements. Enter both positive finite HPT and ACT values and valid patient inputs.', '測定値の欠落・不正から「該当せず」とは判断しません。正の有限値のHPT・ACTと有効な患者条件が必要です。')) : redose.trigger ? redoseReasons.join('; ') : t('HPT ≥ 2.0 IU/mL AND ACT ≥ 480 sec', 'HPT ≥ 2.0 IU/mL かつ ACT ≥ 480 秒')}
+                            accent={redose.reviewRequired || redose.trigger ? 'amber' : 'emerald'}
                         />
                     </div>
 
@@ -184,9 +202,12 @@ const HeparinProtamineCard = () => {
                         <div className="text-[11px] uppercase font-bold text-fg-muted tracking-wide flex items-center gap-1">
                             <Activity size={12} /> {t('Protamine reversal', 'プロタミン拮抗')}
                         </div>
+                        <p className="text-xs text-fg-muted">{t('CPB institutional reference only. Enter administered heparin separately from the loading recommendation; confirm the selected protocol with the perfusion team.', '人工心肺の院内参考計算です。ローディング推奨量とは別に実投与量を入力し、灌流チームと選択プロトコルを確認してください。')}</p>
+                        <p className="text-xs text-amber-800 dark:text-amber-200">{t('Sources: Anticoagulation Protocol 3.2 (date unconfirmed) and Cardiac Rotation guide 2020-08-01. The neonatal exception above 5 mg/kg and Hemobag +50 mg timing/total are unresolved; those outputs remain withheld. A capped reference does not establish adequate reversal.', '出典：Anticoagulation Protocol 3.2（日付未確認）、Cardiac Rotation guide 2020-08-01。新生児の5 mg/kg超の例外とHemobag追加50 mgの時点・総量は未確定のため保留しています。上限を適用した参考量だけでは十分な拮抗を判断できません。')}</p>
                         <div className="flex flex-wrap gap-2">
-                            <NumInput label={t('Total heparin given', '投与ヘパリン総量')} value={totalUnits} onChange={setTotalUnits} unit="U" placeholder={t('cumulative', '累積')} step={100} />
-                            <NumInput label={t('Pump prime heparin (NCH)', 'ポンププライムヘパリン (NCH)')} value={pumpUnits} onChange={setPumpUnits} unit="U" placeholder={t('circuit', '回路')} step={100} />
+                            {protocol === 'UOFM' && <NumInput label={t('Actual initial patient heparin (neonate)', '患者への実投与初回ヘパリン（新生児）')} value={loadingUnits} onChange={setLoadingUnits} unit="U" step={100} />}
+                            <NumInput label={t('Actual patient cumulative heparin (exclude circuit)', '患者への実投与ヘパリン累積量（回路分を除く）')} value={totalUnits} onChange={setTotalUnits} unit="U" step={100} />
+                            {protocol === 'NCH' && <NumInput label={t('Actual circuit heparin (NCH; 0 if none)', '実際の回路ヘパリン（NCH・なしは0）')} value={pumpUnits} onChange={setPumpUnits} unit="U" step={100} />}
                         </div>
                         <label className="flex items-center gap-2 text-xs text-fg-soft cursor-pointer">
                             <input
@@ -195,14 +216,14 @@ const HeparinProtamineCard = () => {
                                 onChange={e => setIncludeHemobag(e.target.checked)}
                                 className="w-3.5 h-3.5 accent-rose-500"
                             />
-                            {t('Hemobag administered (teen+) — adds 50 mg', 'Hemobag 投与済(思春期以上) — 50 mg 追加')}
+                            {t('Hemobag involved — requires manual protocol confirmation', 'Hemobagあり — 手動でプロトコル確認が必要')}
                         </label>
 
                         <ResultRow
                             label={t('Protamine', 'プロタミン')}
-                            value={`${protamine.mg} mg`}
-                            sub={protamineBasis + (protamine.capApplied ? ` • ${t('CAPPED at 5 mg/kg =', '5 mg/kg に上限化 =')} ${protamine.cap} mg` : '') + (protamine.allowOverCap && protamine.rawMg > protamine.cap ? ` • ${t('NCH neonate exception (cap not applied)', 'NCH 新生児例外(上限不適用)')}` : '')}
-                            accent={protamine.capApplied ? 'amber' : 'rose'}
+                            value={protamineValue}
+                            sub={protamineBasis + (protamine.capApplied ? ` • ${t('CAPPED at 5 mg/kg =', '5 mg/kg に上限化 =')} ${protamine.cap} mg` : '')}
+                            accent={held || protamine.capApplied ? 'amber' : 'rose'}
                         />
 
                         <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-[11px] p-2.5 rounded-lg space-y-1">

@@ -12,7 +12,7 @@ export const drugList = [
     { name: 'Epinephrine (Cardiac Arrest)', cat: 'Emergency', dose: '10 mcg/kg', note: 'IV/IO, 1:10,000 (0.1 mL/kg). q3-5min. ETT dose 100 mcg/kg.', noteJa: 'IV/IO、1:10,000 (0.1 mL/kg)。q3-5 分。ETT 投与は 100 mcg/kg。', max: 1000 },
     { name: 'Epinephrine (Anaphylaxis)', cat: 'Emergency', dose: '10 mcg/kg', note: 'IM 1 mg/mL (0.01 mL/kg). Max 0.3-0.5 mg.', noteJa: 'IM 1 mg/mL (0.01 mL/kg)。最大 0.3-0.5 mg。', max: 500 },
     { name: 'Epinephrine (Vasopressor)', cat: 'Emergency', dose: '2-10 mcg/kg', note: 'IV/IO bolus for hypotension.', noteJa: '低血圧に対する IV/IO ボーラス。', max: 1000 },
-    { name: 'Epinephrine, Racemic (Neb)', cat: 'Emergency', dose: '0.5 mL', note: '2.5% solution 0.25-0.5 mL in 3 mL NS. Stridor.', noteJa: '2.5% 溶液 0.25-0.5 mL を NS 3 mL に。喘鳴。', max: null },
+    { name: 'Epinephrine, Racemic (Neb)', doseBasis: 'fixed', cat: 'Emergency', dose: '0.5 mL', note: '2.5% solution 0.25-0.5 mL in 3 mL NS. Stridor.', noteJa: '2.5% 溶液 0.25-0.5 mL を NS 3 mL に。喘鳴。', max: null },
     { name: 'Atropine (IV/IO)', cat: 'Emergency', dose: '0.01-0.02 mg/kg', note: 'Min 0.1 mg. Bradycardia.', noteJa: '最小 0.1 mg。徐脈。', max: 'teen_dependent', min: 0.1 },
     { name: 'Atropine (IM/PO)', cat: 'Emergency', dose: '0.02-0.04 mg/kg', note: 'Min 0.1 mg. Premed/anti-sialagogue.', noteJa: '最小 0.1 mg。前投薬/唾液分泌抑制。', max: 'teen_dependent', min: 0.1 },
     { name: 'Succinylcholine (IV)', cat: 'Emergency', dose: '1-2 mg/kg', note: 'RSI. Watch hyperkalemia.', noteJa: 'RSI。高 K 血症に注意。', max: 150 },
@@ -153,7 +153,7 @@ export const drugList = [
     { name: 'Tolazoline (Infusion)', cat: 'CV', dose: '15-30 mcg/kg/min', note: 'Pulm HTN infusion.', noteJa: '肺高血圧持続投与。', max: null },
     { name: 'Heparin (Bolus)', cat: 'CV', dose: '50-100 Units/kg', note: 'IV bolus. Follow ACT/PTT.', noteJa: 'IV ボーラス。ACT/PTT でフォロー。', max: null },
     { name: 'Heparin (Infusion)', cat: 'CV', dose: '10-25 Units/kg/hr', note: 'Maintenance. Follow ACT/PTT.', noteJa: '維持。ACT/PTT でフォロー。', max: null },
-    { name: 'Protamine', cat: 'CV', dose: '1 mg', note: 'Per 100 Units heparin. Slow IV.', noteJa: 'ヘパリン 100 単位ごと。緩徐 IV。', max: null },
+    { name: 'Protamine', doseBasis: 'heparin', cat: 'CV', dose: '1 mg', note: 'Per 100 Units heparin. Slow IV.', noteJa: 'ヘパリン 100 単位ごと。緩徐 IV。', max: null },
     { name: 'Propranolol (TET spell)', cat: 'CV', dose: '0.15-0.25 mg/kg', note: 'IV for TET spell.', noteJa: 'TET 発作時の IV。', max: null },
     { name: 'Propranolol (Dysrhythmia)', cat: 'CV', dose: '0.01-0.1 mg/kg', note: 'IV per dose.', noteJa: 'IV 1 回量。', max: null },
 
@@ -194,7 +194,7 @@ export const drugList = [
         ]
     },
     { name: 'Prochlorperazine', cat: 'Other', dose: '0.1-0.15 mg/kg', note: 'PO/IM/PR q6-8h. Compazine.', noteJa: 'PO/IM/PR q6-8h。Compazine。', max: 10 },
-    { name: 'Tigan (Trimethobenzamide)', cat: 'Other', dose: '100-200 mg', note: 'PO/PR fixed dose.', noteJa: 'PO/PR 固定量。', max: null },
+    { name: 'Tigan (Trimethobenzamide)', doseBasis: 'fixed', cat: 'Other', dose: '100-200 mg', note: 'PO/PR fixed dose.', noteJa: 'PO/PR 固定量。', max: null },
     { name: 'Dolasetron', cat: 'Other', dose: '0.35 mg/kg', note: 'IV. Anzemet.', noteJa: 'IV。Anzemet。', max: 12.5 },
     { name: 'Granisetron', cat: 'Other', dose: '10 mcg/kg', note: 'IV/IM. Kytril.', noteJa: 'IV/IM。Kytril。', max: null },
     { name: 'Haloperidol', cat: 'Other', dose: '10-30 mcg/kg', note: 'IV/IM.', noteJa: 'IV/IM。', max: null },

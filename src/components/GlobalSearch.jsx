@@ -241,6 +241,11 @@ const GlobalSearch = ({ onClose, onNavigate }) => {
                                             </div>
                                             <div className="text-right whitespace-nowrap">
                                                 <div className="text-fg font-bold">{d.calc}</div>
+                                                {d.requiresInput === 'heparin' && (
+                                                    <div className="text-xs text-amber-800 max-w-44 whitespace-normal">
+                                                        {t('Needs heparin dose. See Cardiac tab.', 'ヘパリン投与量が必要。Cardiacタブで確認。')}
+                                                    </div>
+                                                )}
                                                 {d.badge === 'contraindicated' && (
                                                     <div className="text-[9px] uppercase font-bold text-red-600">{t('not for this age', 'この年齢では禁忌')}</div>
                                                 )}
