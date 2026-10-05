@@ -6,20 +6,25 @@ import { useLanguage } from '../context/LanguageContext';
 import { fmt } from '../utils/calc';
 import { positiveNumber } from '../utils/localAnestheticPlan';
 import LocalAnestheticPlan from './LocalAnestheticPlan';
+import AdultLocalAnestheticReference from './AdultLocalAnestheticReference';
 
 const RegionalCard = () => {
     const { weight, isNeonate, ageYears } = usePatient();
     const { t } = useLanguage();
     const r = useRegionalCalc();
 
-    if (positiveNumber(weight) === null || !Number.isFinite(Number(weight) * 30)) return (
+    if (positiveNumber(weight) === null || !Number.isFinite(Number(weight) * 30)) return (<div className="space-y-4"><AdultLocalAnestheticReference />
         <div role="status" className="bg-white border border-slate-200 rounded p-4">
             {t('Enter a positive finite patient weight within the calculation range to calculate regional amounts.', '区域麻酔の量を計算するには、計算可能な正の有限値を患者体重に入力してください。')}
-        </div>
+        </div></div>
     );
 
     return (
         <div className="space-y-4">
+            <AdultLocalAnestheticReference />
+            <details className="bg-white border border-slate-200 rounded-lg p-3">
+                <summary className="min-h-[44px] flex items-center cursor-pointer font-semibold text-slate-700">{t('Pediatric and procedure-specific references', '小児・手技別の参考情報')}</summary>
+                <div className="space-y-4 mt-3">
             {/* Landmarks */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
                 <h3 className="font-bold text-purple-800 flex items-center gap-2 border-b pb-2 mb-3">
@@ -108,7 +113,14 @@ const RegionalCard = () => {
                 </div>
             </div>
 
-            <LocalAnestheticPlan />
+            </div></details>
+            <details className="bg-white border border-slate-200 rounded-lg p-3">
+                <summary className="min-h-[44px] flex items-center cursor-pointer font-semibold text-slate-700">{t('Planned amounts and single-caudal comparison', '予定量の換算・単回カウダルとの比較')}</summary>
+                <div className="mt-3"><LocalAnestheticPlan /></div>
+            </details>
+            <details className="bg-white border border-slate-200 rounded-lg p-3">
+                <summary className="min-h-[44px] flex items-center cursor-pointer font-semibold text-slate-700">{t('NCH source figures, adjuvants and evidence', 'NCHの原典・添加薬・根拠')}</summary>
+                <div className="space-y-4 mt-3">
 
             <section className="bg-amber-50 p-3 rounded border border-amber-200">
                 <h3 className="font-semibold text-sm text-amber-900 dark:text-amber-200">{t('Historical single-dose figures — no generic safe maximum', '過去資料の単回参考値 — 共通の安全上限ではありません')}</h3>
@@ -141,6 +153,8 @@ const RegionalCard = () => {
                 <Info size={12} className="flex-shrink-0 mt-0.5" />
                 {t('Always aspirate. Use ultrasound when able. Target nerve stimulator 0.4-0.5 mA. Know where intra-lipid is stored.', '常に吸引試験。可能なら超音波を使用。神経刺激装置目標 0.4-0.5 mA。脂肪乳剤の保管場所を把握しておく。')}
             </div>
+                </div>
+            </details>
         </div>
     );
 };

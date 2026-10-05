@@ -98,6 +98,8 @@ describe('Visible cautions and independent arithmetic', () => {
     it('withholds generic maxima, unspecified blocks and route-unclear adjuvant calculations', () => {
         patient = { ...child, ageYears: 3, isNeonate: false };
         render(<RegionalCard />);
+        fireEvent.click(screen.getByText('Pediatric and procedure-specific references'));
+        fireEvent.click(screen.getByText('NCH source figures, adjuvants and evidence'));
         expect(screen.getByText(/Patient-specific maximum amounts are withheld/)).toBeVisible();
         expect(screen.getByText(/Automatic caudal volume withheld/)).toBeVisible();
         expect(screen.getByText(/Age, site allocation and protocol are not established/)).toBeVisible();

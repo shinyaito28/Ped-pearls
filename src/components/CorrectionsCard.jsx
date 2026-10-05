@@ -4,10 +4,10 @@ import { useCorrectionCalc } from '../hooks/useCorrectionCalc';
 import { usePatient } from '../context/PatientContext';
 import { useLanguage } from '../context/LanguageContext';
 import { fmt } from '../utils/calc';
-import { getVitals } from '../data/vitals';
+import { getVitals, sbpHypotensionReference } from '../data/vitals';
 
 const CorrectionsCard = () => {
-    const { weight, ageYears, isNeonate, idealWeight } = usePatient();
+    const { weight, age, ageUnit, ageYears, isNeonate, isPreemie, idealWeight } = usePatient();
     const { t } = useLanguage();
     const w = parseFloat(weight);
     const [baseDeficit, setBaseDeficit] = useState(5); // Positive number representing deficit
@@ -17,10 +17,24 @@ const CorrectionsCard = () => {
         hyperKCalc, hyperKBicarb, hyperKInsulin, hyperKGluc
     } = useCorrectionCalc(-baseDeficit); // Pass as negative BE
 
-    const v = getVitals(ageYears, isNeonate);
+    const ageValue = typeof age === 'string' && !age.trim() ? NaN : Number(age);
+    const ageDays = ageUnit === 'days' ? ageValue : ageUnit === 'months' ? ageValue * 30.4 : ageValue * 365;
+    const v = getVitals(ageYears, isNeonate, { ageDays, isPreemie });
 
     // Derived values
     const idealW = idealWeight ? idealWeight.toFixed(1) : '-';
+
+    const sbpFormulaLabel = !v.sbpDetails
+        ? t('Enter age', '年齢を入力')
+        : v.sbpDetails.band === 'preterm'
+            ? t('Confirm a preterm neonatal reference', '早産新生児の基準を確認')
+            : v.sbpDetails.band === 'term-neonate'
+                ? t('Term neonate · ≤28 days', '正期産新生児 · 生後28日以内')
+                : v.sbpDetails.band === 'infant'
+                    ? t('Infant · <1 year', '乳児 · 1歳未満')
+                    : v.sbpDetails.band === 'child'
+                        ? v.sbpDetails.formula
+                        : t('Child · >10 years', '小児 · 10歳超');
 
     return (
         <div className="space-y-4">
@@ -43,10 +57,11 @@ const CorrectionsCard = () => {
                         <div className="text-lg font-bold text-slate-700">{v.rr}</div>
                         <div className="text-[9px] text-slate-400">/min</div>
                     </div>
-                    <div className="bg-slate-50 p-2 rounded text-center border border-slate-100">
+                    <div className="bg-slate-50 p-2 rounded text-center border border-slate-100" aria-label={t('Systolic hypotension threshold', '収縮期血圧の低血圧閾値')}>
                         <div className="text-[10px] text-slate-400 font-bold uppercase">{t('SBP (Hypo)', 'SBP (低血圧域)')}</div>
-                        <div className="text-lg font-bold text-rose-600">{v.sbp}</div>
-                        <div className="text-[9px] text-slate-400">{t('Hypotension Limit', '低血圧閾値')}</div>
+                        <div className="text-lg font-bold text-rose-600">{v.sbp} {v.sbpDetails?.threshold != null && <span className="text-xs">mmHg</span>}</div>
+                        <div className="text-[9px] text-slate-400 font-mono">{sbpFormulaLabel}</div>
+                        <a href={sbpHypotensionReference} target="_blank" rel="noreferrer" className="text-[10px] underline text-slate-500">{t('Pediatric reference', '小児の参考基準')}</a>
                     </div>
                 </div>
             </div>

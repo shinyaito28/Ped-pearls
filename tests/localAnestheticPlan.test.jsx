@@ -122,6 +122,7 @@ describe('Planned amount UI and patient guards', () => {
     it('withholds automatic spinal amounts and identifies the drug-specific infant reference', () => {
         patient = { weight: 20, age: 6, ageYears: 6, ageUnit: 'years', isNeonate: false };
         render(<RegionalCard />);
+        fireEvent.click(screen.getByText('Pediatric and procedure-specific references'));
         expect(screen.queryByText('2.0 - 4.0 mL')).not.toBeInTheDocument();
         expect(screen.getByText(/The 2015 NCH spinal sheet lists/)).toBeVisible();
         const source = screen.getByText(/0.1–0.2 mL\/kg = 0.5–1 mg\/kg/);
@@ -143,6 +144,7 @@ describe('Planned amount UI and patient guards', () => {
     it('withholds patient-specific infusion rates and keeps uncertain coefficients inside a closed source disclosure', () => {
         patient = { weight: 20, age: 6, ageYears: 6, ageUnit: 'years', isNeonate: false };
         render(<RegionalCard />);
+        fireEvent.click(screen.getByText('Pediatric and procedure-specific references'));
         expect(screen.getByText('Continuous infusion — review pending')).toBeVisible();
         expect(screen.queryByText(/Ropivacaine 0\.1%/)).not.toBeInTheDocument();
         expect(screen.queryByText(/Bupivacaine 0\.1%/)).not.toBeInTheDocument();
