@@ -52,7 +52,11 @@ describe('Dose basis and source-unit regressions', () => {
     it('shows required heparin input in the drug list instead of a weight-derived dose', () => {
         render(<AllDrugsCard />, { wrapper });
         fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Protamine' } });
-        expect(screen.getByText('Needs heparin dose. See Cardiac tab.')).toBeVisible();
+        expect(screen.getByLabelText('Protamine heparin basis')).toBeVisible();
+        expect(screen.getByLabelText('Protamine heparin units')).toBeVisible();
+        fireEvent.change(screen.getByLabelText('Protamine heparin basis'), { target: { value: 'patient-cumulative' } });
+        fireEvent.change(screen.getByLabelText('Protamine heparin units'), { target: { value: '3000' } });
+        expect(screen.getByText('30')).toBeVisible();
         expect(screen.queryByText(/^10 mg/)).not.toBeInTheDocument();
     });
     it('shows the fixed amount in the Crisis drug group', () => {

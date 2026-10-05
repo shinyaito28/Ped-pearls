@@ -65,10 +65,10 @@ describe('Administered heparin is distinct from a recommendation', () => {
         const writeText = vi.fn().mockResolvedValue(undefined);
         vi.stubGlobal('navigator', { clipboard: { writeText } });
         const view = render(<HeparinProtamineCard />);
-        fireEvent.click(screen.getByRole('button', { name: /Heparin \/ Protamine Calculator/ }));
+        fireEvent.click(screen.getByLabelText('CPB actual heparin mode'));
         const input = () => screen.getByLabelText('Actual patient cumulative heparin (exclude circuit)');
         fireEvent.click(screen.getByRole('button', { name: 'Copy anticoag summary' }));
-        expect(writeText.mock.calls[0][0]).toMatch(/Protamine:.*Withheld/);
+        expect(writeText.mock.calls[0][0]).toMatch(/Entered actual UFH reference/);
         expect(writeText.mock.calls[0][0]).not.toMatch(/null mg|NCH neonate exception/);
         await waitFor(() => expect(screen.getByText('Copied')).toBeVisible());
         fireEvent.change(input(), { target: { value: '3200' } });
@@ -80,7 +80,7 @@ describe('Administered heparin is distinct from a recommendation', () => {
         fireEvent.change(input(), { target: { value: '3200' } });
         fireEvent.click(screen.getByRole('button', { name: /NCH Investigational HDR/ }));
         expect(input()).toHaveValue(null);
-        expect(screen.getByText('Withheld — confirmation required')).toBeVisible();
+        expect(view.container.querySelector('[data-cpb-reference-mg]')).toHaveTextContent('—');
     });
 });
 

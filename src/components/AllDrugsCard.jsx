@@ -4,6 +4,7 @@ import { useDrugList } from '../hooks/useDrugList';
 import { useLanguage } from '../context/LanguageContext';
 import DoseBadge from './DoseBadge';
 import InfusionCalcCard from './InfusionCalcCard';
+import ProtamineReferenceCalculator from './ProtamineReferenceCalculator';
 
 const AllDrugsCard = () => {
     const drugs = useDrugList('all');
@@ -99,7 +100,8 @@ const AllDrugsCard = () => {
                         ? 'bg-red-50/60'
                         : (pinnedDrugs.includes(d.name) ? 'bg-amber-50/50' : '');
                     return (
-                        <div key={d.id} className={`p-3 flex justify-between items-start hover:bg-slate-50 ${rowBg}`}>
+                        <div key={d.id} className={`p-3 hover:bg-slate-50 ${rowBg}`}>
+                            <div className="flex justify-between items-start">
                             <div className="flex-1 mr-2">
                                 <div className="font-bold text-sm text-slate-800 flex items-center gap-2 flex-wrap">
                                     <button onClick={() => togglePin(d.name)} className={pinnedDrugs.includes(d.name) ? 'text-amber-500' : 'text-slate-300'}>
@@ -112,14 +114,11 @@ const AllDrugsCard = () => {
                             </div>
                             <div className="text-right flex flex-col items-end gap-1">
                                 <div className="font-bold text-lg text-teal-700 whitespace-nowrap">{d.calc}</div>
-                                {d.requiresInput === 'heparin' && (
-                                    <div className="text-xs text-amber-800 max-w-44 whitespace-normal">
-                                        {t('Needs heparin dose. See Cardiac tab.', 'ヘパリン投与量が必要。Cardiacタブで確認。')}
-                                    </div>
-                                )}
                                 <div className="text-[10px] text-slate-400 font-mono hidden sm:block">{d.formula}</div>
                                 <DoseBadge badge={d.badge} label={lang === 'ja' && d.badgeLabelJa ? d.badgeLabelJa : d.badgeLabel} compact />
                             </div>
+                            </div>
+                            {d.requiresInput === 'heparin' && <ProtamineReferenceCalculator />}
                         </div>
                     );
                 })}
