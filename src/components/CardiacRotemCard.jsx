@@ -7,6 +7,7 @@ import { preparation, cpbInputs, postCpbInputs } from '../data/rotem_protocol';
 import { CpbDecisionLadder, PostCpbDecisionTree } from './RotemDecisionTree';
 import RotemTrace from './RotemTrace';
 import RotemTooltip from './RotemTooltip';
+import RotemLearningPanel, { RotemLearningSafety } from './RotemLearningPanel';
 import { fmt } from '../utils/calc';
 
 // Map an input slider id to the props needed to render a mock ROTEM trace
@@ -299,8 +300,12 @@ const CardiacRotemCard = () => {
                 {collapsed ? <ChevronRight size={16} className="text-fg-muted" /> : <ChevronDown size={16} className="text-fg-muted" />}
             </button>
 
+            <RotemLearningSafety />
+
             {!collapsed && (
                 <div className="p-4 space-y-4">
+                    <RotemLearningPanel />
+
                     {/* Preparation panel */}
                     <div className="bg-surface-2/60 border border-line rounded-xl p-3">
                         <h4 className="font-bold text-rose-700 dark:text-rose-300 flex items-center gap-2 text-sm mb-2">
