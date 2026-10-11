@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { HeartPulse, Activity, Droplet, Copy, Check, AlertTriangle, Info, ChevronDown, ChevronRight } from 'lucide-react';
 import { usePatient } from '../context/PatientContext';
 import { useLanguage } from '../context/LanguageContext';

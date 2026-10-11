@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ClipboardCheck, Copy, Check } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { asaPSClasses, apfelFactors, povocFactors, povocRisk, cormackLehaneGrades } from '../data/npo_guidelines';
+import { asaPSClasses, povocFactors, povocRisk, cormackLehaneGrades } from '../data/npo_guidelines';
 
 const PreOpAssessmentCard = () => {
     const { lang, t } = useLanguage();

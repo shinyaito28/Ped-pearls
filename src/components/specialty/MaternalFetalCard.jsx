@@ -41,7 +41,6 @@ const MaternalFetalCard = ({ entry }) => {
     const cocktail = proc.fetalCocktail ? cocktailMap[proc.fetalCocktail] : null;
     const fetalEmergency = proc.fetalEmergency ? emergencyMap[proc.fetalEmergency] : null;
     const pre = lang === 'ja' ? commonPreopJa : commonPreop;
-    const procLabel = lang === 'ja' ? proc.labelJa : proc.label;
     const procAnesthesia = lang === 'ja' ? proc.anesthesiaJa : proc.anesthesia;
     const procKeyPoints = lang === 'ja' ? proc.keyPointsJa : proc.keyPoints;
     const procLines = lang === 'ja' ? proc.linesJa : proc.lines;

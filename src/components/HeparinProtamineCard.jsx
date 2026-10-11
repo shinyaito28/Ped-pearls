@@ -48,7 +48,7 @@ const ResultRow = ({ label, value, sub, accent = 'slate' }) => {
 };
 
 const HeparinProtamineCard = () => {
-    const { weight, ageYears, age, ageUnit, gender, isPreemie } = usePatient();
+    const { weight, age, ageUnit, gender, isPreemie } = usePatient();
     const { lang, t } = useLanguage();
     const w = parseFloat(weight) || 0;
 

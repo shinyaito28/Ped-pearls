@@ -128,7 +128,6 @@ const RotemTrace = ({
 
     const goalY = mcfGoal != null ? yMid - mcfGoal * ampScale : null;
 
-    const glowColour = triggered ? '#f43f5e' : colour.stroke;
     const filterId = `rotem-glow-${assay}-${ct}-${mcf}-${triggered ? 't' : 'f'}`;
 
     return (

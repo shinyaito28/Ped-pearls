@@ -203,8 +203,6 @@ export const PatientProvider = ({ children }) => {
         return 160; // teen
     };
 
-    const currentHeight = manualHeight && height ? parseFloat(height) : estimateHeight(ageYears);
-
     // Lean Body Weight (James Formula is for adults, not peds).
     // For Peds, LBW is often approx by BMI charts or specific formulas (Peters).
     // Simple logic: LBW generally not exceeding IBW by much. 
